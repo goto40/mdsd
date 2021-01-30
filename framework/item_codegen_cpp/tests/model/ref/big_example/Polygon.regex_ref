@@ -11,7 +11,7 @@ struct Polygon {
       static constexpr const char\* __name\(\) { return "info"; }
       static constexpr auto __get_ref\(STRUCT &s\) { return mdsd::String\(s.info\); }
       static constexpr const auto __get_ref\(const STRUCT &s\) { return mdsd::String\(s.info\); }
-      static constexpr bool __has_defaultStringValue = false;
+      static constexpr bool __has_defaultStringValue = true;
       static constexpr const char\* defaultStringValue\(\) { return "your favorite polygon";}
       static constexpr bool __has_defaultValue = false;
       static constexpr bool __has_description = false;
@@ -27,7 +27,7 @@ struct Polygon {
       static constexpr bool __is_struct = false;
       static constexpr bool __is_container = false;
       static constexpr bool __is_embedded = false;
-    }; // struct info
+    }; // meta struct info
 
 ###...
 

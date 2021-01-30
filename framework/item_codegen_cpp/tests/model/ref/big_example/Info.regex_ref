@@ -11,15 +11,15 @@ struct Info {
       static constexpr bool __has_char_content = true;
       static constexpr auto __get_ref\(STRUCT &s\) { return mdsd::String\(s.text1\); }
       static constexpr const auto __get_ref\(const STRUCT &s\) { return mdsd::String\(s.text1\); }
-    }; // struct text1
+    }; // meta struct text1
     struct n {
       static constexpr bool __has_char_content = false;
-    }; // struct n
+    }; // meta struct n
     struct text2 {
       static constexpr bool __has_char_content = true;
-    }; // struct text2
+    }; // meta struct text2
     struct c {
       static constexpr bool __has_char_content = true;
-    }; // struct c
+    }; // meta struct c
   }; //struct META
 }; //struct Info

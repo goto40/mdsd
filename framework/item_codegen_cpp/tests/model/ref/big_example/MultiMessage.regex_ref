@@ -23,7 +23,7 @@ struct MultiMessage {
       static constexpr bool __is_struct = true;
       static constexpr bool __is_container = false;
       static constexpr bool __is_embedded = false;
-    }; // struct header
+    }; // meta struct header
     struct mycontainer {
     ###...
       static constexpr bool __has_defaultValue = false;
@@ -37,7 +37,7 @@ struct MultiMessage {
       static constexpr bool __is_struct = false;
       static constexpr bool __is_container = true;
       static constexpr bool __is_embedded = false;
-    }; // struct mycontainer
+    }; // meta struct mycontainer
     struct code {
     ###...
       static constexpr bool __has_defaultValue = false;
@@ -54,7 +54,7 @@ struct MultiMessage {
       static constexpr size_t __embedded_bits = 20;
       static constexpr size_t __embedded_start_bit = 31;
       static constexpr size_t __embedded_end_bit = 12;
-    }; // struct code
+    }; // meta struct code
     struct onoff {
     ###...
       static constexpr bool __has_defaultValue = false;
@@ -72,7 +72,7 @@ struct MultiMessage {
       static constexpr size_t __embedded_bits = 1;
       static constexpr size_t __embedded_start_bit = 11;
       static constexpr size_t __embedded_end_bit = 2;
-    }; // struct onoff
+    }; // meta struct onoff
     struct abc {
     ###...
       static constexpr bool __has_defaultValue = false;
@@ -88,7 +88,7 @@ struct MultiMessage {
       static constexpr size_t __embedded_bits = 2;
       static constexpr size_t __embedded_start_bit = 1;
       static constexpr size_t __embedded_end_bit = 0;
-    }; // struct abc
+    }; // meta struct abc
     struct payload {
     ###...
       static constexpr bool __has_description = false;
@@ -100,7 +100,7 @@ struct MultiMessage {
       static constexpr bool __is_variant = true;
       static constexpr bool __is_array = false;
       static constexpr bool __is_struct = true;
-    }; // struct payload
+    }; // meta struct payload
   }; //struct META
 
 }; //struct MultiMessage
