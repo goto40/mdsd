@@ -15,7 +15,7 @@ struct String {
 
   String& operator=(const std::string &x) {
     size_t n = std::min(container.size(), x.size());
-    std::copy(x.begin(), x.end(), container.data());
+    std::copy(x.begin(), x.begin()+n, container.data());
     if (n<container.size()) {
       container[n]='\0';
     }
