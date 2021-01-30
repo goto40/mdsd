@@ -1,2 +1,0 @@
-/usr/bin/ar qc libwxExt.a  CMakeFiles/wxExt.dir/src/wxExt/wxImagesZip.cpp.o
-/usr/bin/ranlib libwxExt.a

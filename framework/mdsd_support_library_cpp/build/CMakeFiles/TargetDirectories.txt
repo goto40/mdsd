@@ -1,8 +1,0 @@
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/install/strip.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/install/local.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/install.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/list_install_components.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/rebuild_cache.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/edit_cache.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/Tester.exe.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/framework/mdsd_support_library_cpp/build/CMakeFiles/mdsd_support_library_cpp_item_code.dir

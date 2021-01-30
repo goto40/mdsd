@@ -1,3 +1,0 @@
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/venv/include/mdsd/item_support.h
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/venv/include/mdsd/virtual_struct.h
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/venv/include/mdsd/item_io.h

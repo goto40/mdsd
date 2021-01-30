@@ -1,3 +1,0 @@
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/executables/bg/build/CMakeFiles/rebuild_cache.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/executables/bg/build/CMakeFiles/MyTest.dir
-/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/executables/bg/build/CMakeFiles/edit_cache.dir

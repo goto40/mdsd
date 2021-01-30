@@ -1,1 +1,0 @@
-/bin/g++-9    -rdynamic CMakeFiles/Tester.exe.dir/tests/basic_tests.cpp.o CMakeFiles/Tester.exe.dir/tests/io_tests.cpp.o CMakeFiles/Tester.exe.dir/tests/main.cpp.o CMakeFiles/Tester.exe.dir/tests/print_tests.cpp.o CMakeFiles/Tester.exe.dir/tests/scan_tests.cpp.o CMakeFiles/Tester.exe.dir/tests/string_tests.cpp.o CMakeFiles/Tester.exe.dir/tests/to_string.cpp.o  -o Tester.exe 
