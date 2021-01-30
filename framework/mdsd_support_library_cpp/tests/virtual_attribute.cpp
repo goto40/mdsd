@@ -1,6 +1,8 @@
 #include "catch.hpp"
 #include "items/ColoredTriangle.h"
+#include "items/VariantExample.h"
 #include "mdsd/virtual_attribute_support.h"
+#include "mdsd/item_support.h"
 
 using namespace items;
 
@@ -37,4 +39,15 @@ TEST_CASE( "attributewrapper1", "[to_string]" ) {
   REQUIRE_THROWS(points->get_attribute_in_struct(1,"not_existent"));
   REQUIRE( point1_x->to_string() == std::string("123"));
   REQUIRE( point1_y->to_string() == std::string("456"));
+}
+
+TEST_CASE( "attributewrapper2", "[virtual access]" ) {
+  VariantExample v1;
+
+  v1.selector = 20; // Polygon
+  mdsd::adjust_array_sizes_and_variants(v1);
+  std::get<Polygon>(v1.payload).header.n = 3;
+
+  auto n = mdsd::get_attribute(v1, "payload")->get_attribute_in_struct("header")->get_attribute_in_struct("n");
+  REQUIRE( n->to_string() == std::string("3"));
 }

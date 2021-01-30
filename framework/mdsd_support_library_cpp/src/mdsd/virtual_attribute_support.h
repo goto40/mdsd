@@ -44,12 +44,19 @@ struct AttributeWrapper : AttributeBase {
       throw std::runtime_error("get_dim called for non-array attribute");
   }
   std::unique_ptr<AttributeBase> get_attribute_in_struct(std::string_view name) override { 
-    if constexpr (!META::__is_array && META::__is_struct) 
+    if constexpr (META::__is_variant) {
+      std::unique_ptr<AttributeBase> ret; 
+      META::__call_function_on_concrete_variant_type(s,[&name, &ret](auto &x){
+        ret = get_attribute(x, name);
+      });
+      return ret;
+    }
+    else if constexpr (!META::__is_array && META::__is_struct) {
       return get_attribute(META::__get_ref(s), name);
-    else if constexpr (META::__is_variant) 
-      throw std::runtime_error("TODO");
-    else
+    }
+    else {
       throw std::runtime_error("get_attribute_in_struct(name) called for array attribute or non-struct");
+    }
   }
   std::unique_ptr<AttributeBase> get_attribute_in_struct(size_t idx, std::string_view name) override { 
     if constexpr (META::__is_array && META::__is_struct) 
