@@ -58,7 +58,7 @@ struct ConstVisitor {
     ConstVisitor(V &&_v) :v(_v){}
     ConstVisitor(V &_v) :v(_v){}
     template<class META, class S> void visit(const S&s) {
-        const auto& x = META::__get_ref(s);
+        decltype(META::__get_ref(s)) x = META::__get_ref(s);
         if constexpr (META::__is_scalar) {
             if constexpr (META::__is_variant) {
                 META::__call_function_on_concrete_variant_type(s, [&v=v](const auto &a){
@@ -86,6 +86,45 @@ struct ConstVisitor {
             }
             else {
                 v.template visit_item_array<META>(x);
+            }
+        }
+        else {
+            throw std::runtime_error(get_message_with_meta_info<META>("unexpected meta information"));
+        }
+    }
+};
+
+/** The basic non-modifying and non-checking visitor
+ * TODO: untested!
+ * can be used to make raw action on struct types, one single 
+ * structs (like the InitVisitor or ConstVisitor) or even on
+ * multiple structs (e.g. to compare or copy). */
+template<class V>
+struct BasicVisitor {
+    V& v;
+    BasicVisitor(V &&_v) :v(_v){}
+    BasicVisitor(V &_v) :v(_v){}
+    template<class META, class ...S> void visit(S&  ...s) {
+        if constexpr (META::__is_scalar) {
+            if constexpr (META::__is_variant) {
+                v.template visit_variant<META>(s...);
+            }
+            else if constexpr (!META::__is_struct) {
+                v.template visit_scalar<META>(s...);
+            }
+            else {
+                v.template visit_item_scalar<META>(s...);
+            }
+        }
+        else if constexpr (META::__is_array) {
+            if constexpr (META::__has_char_content) {
+                v.template visit_string<META>(s...);
+            }
+            else if constexpr (!META::__is_struct) {
+                v.template visit_array<META>(s...);
+            }
+            else {
+                v.template visit_item_array<META>(s...);
             }
         }
         else {

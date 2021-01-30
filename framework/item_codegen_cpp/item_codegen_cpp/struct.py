@@ -98,6 +98,19 @@ def generate_cpp_struct(f, i):
     f.write("  mdsd::StructWrapper<{0}> _GET_WRAPPER() {{ return mdsd::StructWrapper<{0}>{{this}}; }}\n".format(i.name))
     f.write("\n#ifndef SWIG\n")
     f.write("  struct META {\n")
+
+    # ----------------------------------------
+    f.write("    template<class STRUCT,class VISITOR, class ...T> // enable accept for this struct: \n")
+    f.write("    static void __accept_varargs(VISITOR &&v, T&... s) {\n")
+    for a in i.attributes:
+        f.write(
+            "      v.template visit<{}::META::{}>(s...);\n".format(
+                i.name, a.name
+            )
+        )
+    f.write("    }\n")
+    # ----------------------------------------
+
     f.write("    static constexpr const char* __name() ")
     f.write('{{ return "{}"; }}\n'.format(i.name))
     for a in i.attributes:
@@ -295,15 +308,14 @@ def generate_cpp_struct(f, i):
                 f.write("  }\n")
 
     f.write("#ifndef SWIG\n")
-    f.write("template<class VISITOR, class STRUCT>\n")
+
+    # ----------------------------------------
+    f.write("template<class VISITOR, class STRUCT> // enable accept for this struct: \n")
     f.write("std::enable_if_t<std::is_same_v<std::remove_const_t<STRUCT>,{}>> accept(VISITOR &&v, STRUCT &s) {{\n".format(i.name))
-    for a in i.attributes:
-        f.write(
-            "  v.template visit<{}::META::{}>(s);\n".format(
-                i.name, a.name
-            )
-        )
+    f.write("  STRUCT::META::template __accept_varargs<STRUCT>(v, s);\n")
     f.write("}\n")
+    # ----------------------------------------
+
     f.write("#endif // #ifndef SWIG\n")
 
     f.write("} // close namespace\n")
