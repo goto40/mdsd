@@ -34,6 +34,7 @@ TEST_CASE( "attributewrapper1", "[to_string]" ) {
 
   auto point1_x = points->get_attribute_in_struct(1,"x"); 
   auto point1_y = points->get_attribute_in_struct(1,"y");
+  REQUIRE_THROWS(points->get_attribute_in_struct(1,"not_existent"));
   REQUIRE( point1_x->to_string() == std::string("123"));
   REQUIRE( point1_y->to_string() == std::string("456"));
 }

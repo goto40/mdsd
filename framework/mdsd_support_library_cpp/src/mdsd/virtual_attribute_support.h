@@ -24,6 +24,7 @@ struct AttributeBase {
 template<class STRUCT>
 std::unique_ptr<AttributeBase> get_attribute(STRUCT &s, std::string_view path);
 
+/** TODO: getStruct() getStruct(Idx) ... ??? */
 template<class META>
 struct AttributeWrapper : AttributeBase {
   typename META::STRUCT& s;
