@@ -1,6 +1,6 @@
 a.out
 out
-build/*
+build
 .idea
 .~lock*
 src-gen

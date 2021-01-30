@@ -1,7 +1,7 @@
 pytest
 flake8
 coverage
-textx
+-e git+https://github.com/textX/textX.git#egg=textx
 black
 numpy
 click
