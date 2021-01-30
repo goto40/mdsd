@@ -1,0 +1,10 @@
+#ifndef IMAGES_ZIP_H
+#define IMAGES_ZIP_H
+
+namespace zip_data {
+
+@IMAGES_ZIP_HEX@
+
+}
+
+#endif

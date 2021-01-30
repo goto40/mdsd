@@ -1,0 +1,34 @@
+[anywhere] #include "big_example/Point.h"
+
+struct Polygon {
+  uint32_t n = {};
+  std::vector<big_example::Point> p = {};
+
+###...
+
+    struct info {
+      using STRUCT=Polygon;
+      static constexpr const char\* __name\(\) { return "info"; }
+      static constexpr auto __get_ref\(STRUCT &s\) { return mdsd::String\(s.info\); }
+      static constexpr const auto __get_ref\(const STRUCT &s\) { return mdsd::String\(s.info\); }
+      static constexpr bool __has_defaultStringValue = false;
+      static constexpr const char\* defaultStringValue\(\) { return "your favorite polygon";}
+      static constexpr bool __has_defaultValue = false;
+      static constexpr bool __has_description = false;
+      static constexpr bool __has_maxValue = false;
+      static constexpr bool __has_minValue = false;
+      static constexpr bool __is_scalar = false;
+      static constexpr bool __is_variant = false;
+      static constexpr bool __is_array = true;
+      static constexpr bool __is_dynamic_array = false;
+      static constexpr size_t __get_dim\(const Polygon &\) { return 1\*256;}
+      static constexpr bool __is_enumtype = false;
+      static constexpr bool __is_rawtype = true;
+      static constexpr bool __is_struct = false;
+      static constexpr bool __is_container = false;
+      static constexpr bool __is_embedded = false;
+    }; // struct info
+
+###...
+
+}; //struct Polygon

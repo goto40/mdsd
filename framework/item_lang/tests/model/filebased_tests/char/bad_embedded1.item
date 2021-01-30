@@ -1,0 +1,7 @@
+package test
+
+struct Info {
+    scalar x: built_in.uint32
+    embedded scalar r: built_in.uint24
+    embedded scalar c: built_in.char //expected: char may be be used as embedded field
+}

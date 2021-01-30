@@ -1,0 +1,2 @@
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/venv/include/my_image_lib/tools.h
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/venv/include/my_image_lib/image.h

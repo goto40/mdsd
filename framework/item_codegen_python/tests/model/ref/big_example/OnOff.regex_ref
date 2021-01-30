@@ -1,0 +1,4 @@
+enum class OnOff : bool {
+  ON = 1 ,
+  OFF = 0
+}

@@ -1,0 +1,7 @@
+import "b.item"
+
+package a
+
+struct A {
+    scalar b: b.B
+}

@@ -1,0 +1,8 @@
+package test
+
+struct Info {
+    scalar x: built_in.uint32 // expected: embedded elements of container x \(31\) do not sum up to 32
+    embedded scalar r: built_in.uint2
+    embedded array c: built_in.uint3[3]
+    embedded scalar r: built_in.uint20
+}

@@ -1,0 +1,17 @@
+package example (property_set example.Set)
+
+property_set Set {
+    property optional applicable for rawtype(built_in.uint32),scalar is_counter: BOOL
+    (.description="text")
+    { 0 to 1 times per message }
+    property optional applicable for rawtype(built_in.uint32),scalar min1max3: STRING
+    (.description="text")
+    { 1 to 3 times per message }
+}
+
+struct ExampleTimesPerMessage (.description="Hello") { //expected: not more than 1 .*is_counter.*
+    scalar counter: built_in.uint32 (.is_counter=true)
+    scalar x1: built_in.uint32 (.min1max3="x1",.is_counter=true)
+    scalar x2: built_in.uint32 (.min1max3="x2")
+    scalar x3: built_in.uint32 (.min1max3="x3")
+}

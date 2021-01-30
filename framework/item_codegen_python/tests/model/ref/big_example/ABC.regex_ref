@@ -1,0 +1,5 @@
+enum class ABC : uint8_t {
+  A = 0,
+  B = 1,
+  C = 2
+}

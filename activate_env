@@ -1,0 +1,49 @@
+#!/bin/bash
+MY_CMAKE=$(which cmake)
+if [ ! -d venv ] ;
+then
+    virtualenv venv -p python3 || exit 1    
+    source venv/bin/activate || exit 1
+    pip install -r requirements_dev.txt || exit 1 
+else
+    source venv/bin/activate || exit 1
+fi
+
+export CMAKE_INCLUDE_PATH=${VIRTUAL_ENV}/include
+export CMAKE_LIBRARY_PATH=${VIRTUAL_ENV}/lib
+export CPATH=$CPATH:${VIRTUAL_ENV}/include
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${VIRTUAL_ENV}/lib
+export LIBRARY_PATH=$LIBRARY_PATH:${VIRTUAL_ENV}/lib
+
+pip install -e framework/item_lang || exit 1
+pip install -e framework/item_codegen_cpp || exit 1
+pip install -e framework/algo_lang || exit 1
+pip install -e framework/mdsd_support_library_python || exit 1
+pip install -e framework/project_tool || exit 1
+
+shopt -s expand_aliases
+
+# create cmake substitute (cmake with param)
+echo "$MY_CMAKE -DCMAKE_INSTALL_PREFIX:PATH=${VIRTUAL_ENV} \"\$@\"" > ${VIRTUAL_ENV}/bin/mycmake
+chmod a+x ${VIRTUAL_ENV}/bin/mycmake
+
+if [ -d framework/scripts ] ;
+then
+    # create script links
+    for f in $(find framework/scripts -type f); do
+        ln -s $(pwd)/$f ${VIRTUAL_ENV}/bin/$(basename $f)
+    done
+fi
+
+echo "alias cmake=mycmake" > ${VIRTUAL_ENV}/bin/custom_settings.sh
+source ${VIRTUAL_ENV}/bin/custom_settings.sh
+{
+    rm -rf framework/mdsd_support_library_cpp/build
+    mkdir framework/mdsd_support_library_cpp/build
+    cd framework/mdsd_support_library_cpp/build
+    mycmake .. && make install
+    cd -
+}
+
+echo "ok. environment activated. exit shell to exit environment..."
+bash --rcfile <(cat $HOME/.bashrc; echo 'source ${VIRTUAL_ENV}/bin/activate && source ${VIRTUAL_ENV}/bin/custom_settings.sh')

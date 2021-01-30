@@ -1,0 +1,6 @@
+[anywhere] #include "big_example/MyOtherConstants.h"
+
+struct MyConstants {
+  static constexpr uint32_t enum_value_of_Trinagle = big_example::MyOtherConstants::three;
+  static constexpr uint32_t enum_value_of_Polygon = .* [(] big_example::MyOtherConstants::three \+ big_example::MyConstants::enum_value_of_Trinagle [)] .* / .* 2 .* - .* 1 .*;
+}; //MyConstants

@@ -1,0 +1,10 @@
+[anywhere] #include "big_example/TypeSelector.h"
+[anywhere] #include "big_example/MyOtherConstants.h"
+
+struct Header {
+  big_example::TypeSelector id = {};
+  uint32_t length = {};
+
+### etc... (META)
+
+}; //struct Header

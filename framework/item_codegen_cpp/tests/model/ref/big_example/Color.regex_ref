@@ -1,0 +1,3 @@
+struct Color {
+  std::array< float , 3 > rgb = {};
+}; //struct Color

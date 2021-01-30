@@ -1,0 +1,15 @@
+package example (property_set example.Set)
+
+property_set Set {
+    property mybool: BOOL
+    property optional myattr: ATTRTYPE
+    property applicable for scalar myattr2: STRING
+    property applicable for array myattr3: STRING
+    property optional applicable for scalar myattr4: STRING
+}
+
+struct Example (.mybool=true, .description="Hello") {
+  scalar x : built_in.float (.minValue=0.1, .defaultValue=0x1, .maxValue=1e5, .mybool=1, .myattr2="ok", .myattr4="ok")
+  scalar y : built_in.float (.defaultValue=0x0aB, .description="Hello", .myattr=1.2, .mybool=0, .myattr2="ok")
+  array a : built_in.float[2] (.mybool=0,.myattr3="ok")
+}

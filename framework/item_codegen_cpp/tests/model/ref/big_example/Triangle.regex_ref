@@ -1,0 +1,8 @@
+[anywhere] #include "big_example/Header.h"
+[anywhere] #include "big_example/MyOtherConstants.h"
+
+struct Triangle {
+  static constexpr uint32_t three = .* ; $
+  std::vector< big_example::Point > p = {};
+  std::vector< big_example::Color > c = {};
+}; //struct Triangle

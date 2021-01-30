@@ -1,0 +1,9 @@
+###
+### constants test
+### - check type etc.
+### caution: order and circular references have only llimited support (in cpp)
+###
+
+struct MyOtherConstants {
+  static constexpr uint32_t three = 3;
+}; //MyOtherConstants

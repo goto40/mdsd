@@ -1,0 +1,7 @@
+package my_image_lib
+
+struct GrayImage {
+  scalar w: uint32
+  scalar h: uint32
+  array pixel : float[w*h]
+}

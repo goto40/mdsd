@@ -1,0 +1,240 @@
+@startuml
+set namespaceSeparator .
+
+
+class item_lang.Model  {
+}
+
+
+class item_lang.NestedPackage  {
+  name : ID
+  description : STRING
+}
+
+
+class item_lang.Package  {
+  name : ID
+  description : STRING
+}
+
+
+class item_lang.ExtPackage  {
+  name : ID
+  description : STRING
+}
+
+
+class item_lang.Struct  {
+  name : ID
+}
+
+
+class item_lang.RawType  {
+  name : ID
+  internaltype : InternalType
+  bits : INT
+}
+
+
+class item_lang.Enum  {
+  name : ID
+  description : STRING
+}
+
+
+class item_lang.Type <<abstract>> {
+}
+
+
+class item_lang.Attribute <<abstract>> {
+}
+
+
+class item_lang.VariantAttribute  {
+  name : ID
+}
+
+
+class item_lang.ScalarAttribute  {
+  embedded : optional<BOOL>
+  name : ID
+}
+
+
+class item_lang.ArrayAttribute  {
+  embedded : optional<BOOL>
+  name : ID
+}
+
+
+class item_lang.FormulaElement <<abstract>> {
+}
+
+
+class item_lang.EnumEntry  {
+  name : ID
+  description : STRING
+}
+
+
+class item_lang.Dim  {
+}
+
+
+class item_lang.AttrRef  {
+}
+
+
+class item_lang.VariantMapping  {
+}
+
+
+class item_lang.Import  {
+  importURI : STRING
+}
+
+
+class item_lang.Formula <<abstract>> {
+}
+
+
+class item_lang.Sum  {
+}
+
+
+class item_lang.Dif  {
+}
+
+
+class item_lang.Mul  {
+}
+
+
+class item_lang.Div  {
+}
+
+
+class item_lang.Val  {
+  valueClassificator : ValueClassificator
+  value : ExtNumber
+}
+
+
+class item_lang.PropertySet  {
+  name : ID
+}
+
+
+class item_lang.PropertyDefinition  {
+  optional : optional<BOOL>
+  name : ID
+  internaltype : InternalType
+  description : STRING
+}
+
+
+class item_lang.ApplicableFor  {
+  what : ApplicableForType
+}
+
+
+class item_lang.Property  {
+}
+
+
+class item_lang.Constants  {
+  name : ID
+  description : STRING
+}
+
+
+class item_lang.Constant  {
+  name : ID
+  description : STRING
+}
+
+
+class item_lang.TextValue  {
+  x : STRING
+}
+
+
+class item_lang.NumberValue  {
+}
+
+
+item_lang.Model *-- "0..*" item_lang.Import
+item_lang.Model *-- "1..*" item_lang.ExtPackage
+item_lang.Model *-- item_lang.Package
+item_lang.NestedPackage *-- item_lang.NestedPackage
+item_lang.NestedPackage o-- item_lang.PropertySet
+item_lang.NestedPackage *-- "1..*" item_lang.PropertySet
+item_lang.NestedPackage *-- "1..*" item_lang.Type
+item_lang.NestedPackage *-- "1..*" item_lang.Constants
+item_lang.Package *-- item_lang.NestedPackage
+item_lang.Package o-- item_lang.PropertySet
+item_lang.Package *-- "1..*" item_lang.PropertySet
+item_lang.Package *-- "1..*" item_lang.Type
+item_lang.Package *-- "1..*" item_lang.Constants
+item_lang.ExtPackage o-- item_lang.PropertySet
+item_lang.ExtPackage *-- "1..*" item_lang.ExtPackage
+item_lang.ExtPackage *-- "1..*" item_lang.PropertyDefinition
+item_lang.ExtPackage *-- "1..*" item_lang.Type
+item_lang.ExtPackage *-- "1..*" item_lang.Constants
+item_lang.Struct *-- "0..*" item_lang.Constant
+item_lang.Struct *-- "0..*" item_lang.Attribute
+item_lang.Enum o-- item_lang.RawType
+item_lang.Enum *-- "1..*" item_lang.EnumEntry
+item_lang.Type <|-- item_lang.RawType
+item_lang.Type <|-- item_lang.Struct
+item_lang.Type <|-- item_lang.Enum
+item_lang.Attribute <|-- item_lang.ScalarAttribute
+item_lang.Attribute <|-- item_lang.ArrayAttribute
+item_lang.Attribute <|-- item_lang.VariantAttribute
+item_lang.VariantAttribute *-- item_lang.AttrRef
+item_lang.VariantAttribute *-- "1..*" item_lang.VariantMapping
+item_lang.VariantAttribute *-- "0..*" item_lang.Property
+item_lang.ScalarAttribute o-- item_lang.Type
+item_lang.ScalarAttribute *-- "0..*" item_lang.Property
+item_lang.ArrayAttribute o-- item_lang.Type
+item_lang.ArrayAttribute *-- "1..*" item_lang.Dim
+item_lang.ArrayAttribute *-- "0..*" item_lang.Property
+item_lang.FormulaElement <|-- item_lang.ScalarAttribute
+item_lang.FormulaElement <|-- item_lang.Constant
+item_lang.FormulaElement <|-- item_lang.EnumEntry
+item_lang.EnumEntry *-- item_lang.Formula
+item_lang.Dim *-- item_lang.Formula
+item_lang.AttrRef o-- item_lang.FormulaElement
+item_lang.VariantMapping *-- item_lang.Formula
+item_lang.VariantMapping o-- item_lang.Struct
+item_lang.Formula <|-- item_lang.Sum
+item_lang.Sum *-- "1..*" item_lang.Dif
+item_lang.Dif *-- "1..*" item_lang.Mul
+item_lang.Mul *-- "1..*" item_lang.Div
+item_lang.Div *-- "1..*" item_lang.Val
+item_lang.Val *-- item_lang.AttrRef
+item_lang.Val *-- item_lang.Sum
+item_lang.PropertySet o-- item_lang.PropertySet
+item_lang.PropertySet *-- "1..*" item_lang.PropertyDefinition
+item_lang.PropertyDefinition *-- "0..*" item_lang.ApplicableFor
+item_lang.Property o-- item_lang.PropertyDefinition
+item_lang.Property *-- item_lang.TextValue
+item_lang.Property *-- item_lang.NumberValue
+item_lang.Constants *-- "1..*" item_lang.Constant
+item_lang.Constant o-- item_lang.RawType
+item_lang.Constant *-- item_lang.Formula
+item_lang.NumberValue *-- item_lang.Formula
+
+legend
+  Match rules:
+  |= Name  |= Rule details |
+  | ApplicableForType | rawtype\|struct\|enum |
+  | FQN | ID (. ID)* |
+  | ValueClassificator | CONST\|ENUM |
+  | HexNumber | 0x[0-9a-fA-F]+ |
+  | ExtNumber | NUMBER |
+  | InternalType | INT\|UINT\|FLOAT\|STRING\|BOOL\|ATTRTYPE\|ENUM |
+  | Comment | \\/\\/.*$ |
+end legend
+
+@enduml

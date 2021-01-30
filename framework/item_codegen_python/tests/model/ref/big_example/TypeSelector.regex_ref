@@ -1,0 +1,14 @@
+###
+### enum test
+### - check type
+### - check value (e.g. from a constant "enum_value_of_Polygon")
+### - check commas
+###
+
+[anywhere] #include "big_example/MyConstants.h"
+
+enum class TypeSelector : uint32_t {
+  POINT[^,]*,
+  POLY = big_example::MyConstants::enum_value_of_Polygon,
+  TRIANGLE = big_example::MyConstants::enum_value_of_Trinagle
+}

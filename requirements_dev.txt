@@ -1,0 +1,10 @@
+pytest
+flake8
+coverage
+textx
+black
+numpy
+click
+numpy
+scipy
+

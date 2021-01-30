@@ -1,0 +1,11 @@
+namespace big_example{
+struct EmbeddedArrayDim {
+  uint32_t x = {};
+  inline uint8_t r\(\) const;
+  inline void r\(uint8_t val\);
+  inline uint8_t c\(size_t idx\) const;
+  inline void c\(size_t idx, uint8_t val\);
+  inline uint32_t r\(\) const;
+  inline void r\(uint32_t val\);
+  std::vector<float> ok = {};
+}

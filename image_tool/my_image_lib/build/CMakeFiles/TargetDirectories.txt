@@ -1,0 +1,8 @@
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/install/strip.dir
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/install/local.dir
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/install.dir
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/list_install_components.dir
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/rebuild_cache.dir
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/item_code.dir
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/Tester.exe.dir
+/home/pierre/checkouts/cpp_course/slides2.0/addon/mdsd/image_tool/my_image_lib/build/CMakeFiles/edit_cache.dir

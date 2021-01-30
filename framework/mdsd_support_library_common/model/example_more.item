@@ -1,0 +1,7 @@
+package items.more
+
+struct Point3D {
+  scalar x : built_in.float
+  scalar y : built_in.float
+  scalar z : built_in.float
+}

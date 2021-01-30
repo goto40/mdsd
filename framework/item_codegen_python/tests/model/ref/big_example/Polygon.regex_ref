@@ -1,0 +1,6 @@
+[anywhere] #include "big_example/Point.h"
+
+struct Polygon {
+  uint32_t n = {};
+  std::vector<big_example::Point> p = {};
+}; //struct Polygon

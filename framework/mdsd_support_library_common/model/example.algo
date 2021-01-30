@@ -1,0 +1,16 @@
+import "example.item"
+
+package algos
+
+algo VectorAdd {
+    parameters {
+        params: items.Region
+    }
+    inputs {
+        p1: items.Point
+        p2: items.Point
+    }
+    outputs {
+        p: items.Point
+    }
+}

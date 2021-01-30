@@ -1,0 +1,7 @@
+import "props.item"
+
+package example (property_set my.props.Set)
+
+struct X {
+  scalar x: built_in.uint32 ( .myprop1=1, .myprop2="Hello" )
+}

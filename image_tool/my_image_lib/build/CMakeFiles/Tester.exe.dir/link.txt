@@ -1,0 +1,1 @@
+/usr/bin/c++    -rdynamic CMakeFiles/Tester.exe.dir/tests/basic.cpp.o CMakeFiles/Tester.exe.dir/tests/main.cpp.o  -o Tester.exe 

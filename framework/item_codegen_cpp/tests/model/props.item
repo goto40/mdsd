@@ -1,0 +1,6 @@
+package my.props
+property_set Set {
+    property optional myprop1: BOOL
+    property optional myprop2: STRING
+}
+

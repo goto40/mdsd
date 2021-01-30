@@ -1,0 +1,127 @@
+[anywhere] #include "big_example/Polygon.h"
+[anywhere] #include "big_example/Point.h"
+[anywhere] #include "big_example/Triangle.h"
+
+struct MultiMessage {
+  big_example::Header header = {};
+  uint32_t mycontainer = {};
+  std::variant< big_example::Point , big_example::Polygon , big_example::Triangle > payload = {};
+
+  struct META {
+
+    static constexpr const char\* __name\(\) { return "MultiMessage"; }
+    struct header {
+      using STRUCT=MultiMessage;
+      static constexpr const char\* __name\(\) { return "header"; }
+      static constexpr auto& __get_ref\(STRUCT &s\) { return s.header; }
+      static constexpr const auto& __get_ref\(const STRUCT &s\) { return s.header; }
+      static constexpr bool __has_description = false;
+      static constexpr bool __is_scalar = true;
+      static constexpr bool __is_variant = false;
+      static constexpr bool __is_array = false;
+      static constexpr bool __is_rawtype = false;
+      static constexpr bool __is_struct = true;
+      static constexpr bool __is_container = false;
+      static constexpr bool __is_embedded = false;
+    }; // struct header
+    struct mycontainer {
+    ###...
+      static constexpr bool __has_defaultValue = false;
+      static constexpr bool __has_description = false;
+      static constexpr bool __has_maxValue = false;
+      static constexpr bool __has_minValue = false;
+      static constexpr bool __is_scalar = true;
+      static constexpr bool __is_variant = false;
+      static constexpr bool __is_array = false;
+      static constexpr bool __is_rawtype = true;
+      static constexpr bool __is_struct = false;
+      static constexpr bool __is_container = true;
+      static constexpr bool __is_embedded = false;
+    }; // struct mycontainer
+    struct code {
+    ###...
+      static constexpr bool __has_defaultValue = false;
+      static constexpr bool __has_description = false;
+      static constexpr bool __has_maxValue = false;
+      static constexpr bool __has_minValue = false;
+      static constexpr bool __is_scalar = true;
+      static constexpr bool __is_variant = false;
+      static constexpr bool __is_array = false;
+      static constexpr bool __is_rawtype = true;
+      static constexpr bool __is_struct = false;
+      static constexpr bool __is_container = false;
+      static constexpr bool __is_embedded = true;
+      static constexpr size_t __embedded_bits = 20;
+      static constexpr size_t __embedded_start_bit = 31;
+      static constexpr size_t __embedded_end_bit = 12;
+    }; // struct code
+    struct onoff {
+    ###...
+      static constexpr bool __has_defaultValue = false;
+      static constexpr bool __has_description = false;
+      static constexpr bool __is_scalar = false;
+      static constexpr bool __is_variant = false;
+      static constexpr bool __is_array = true;
+      static constexpr bool __is_dynamic_array = false;
+      static constexpr size_t __get_dim\(const MultiMessage &\) { return 1\*10;}
+      static constexpr bool __is_enumtype = true;
+      static constexpr bool __is_rawtype = false;
+      static constexpr bool __is_struct = false;
+      static constexpr bool __is_container = false;
+      static constexpr bool __is_embedded = true;
+      static constexpr size_t __embedded_bits = 1;
+      static constexpr size_t __embedded_start_bit = 11;
+      static constexpr size_t __embedded_end_bit = 2;
+    }; // struct onoff
+    struct abc {
+    ###...
+      static constexpr bool __has_defaultValue = false;
+      static constexpr bool __has_description = false;
+      static constexpr bool __is_scalar = true;
+      static constexpr bool __is_variant = false;
+      static constexpr bool __is_array = false;
+      static constexpr bool __is_enumtype = true;
+      static constexpr bool __is_rawtype = false;
+      static constexpr bool __is_struct = false;
+      static constexpr bool __is_container = false;
+      static constexpr bool __is_embedded = true;
+      static constexpr size_t __embedded_bits = 2;
+      static constexpr size_t __embedded_start_bit = 1;
+      static constexpr size_t __embedded_end_bit = 0;
+    }; // struct abc
+    struct payload {
+    ###...
+      static constexpr bool __has_description = false;
+    ###...
+      static void __call_function_on_concrete_variant_type.*
+      static void __init_variant_type_if_type_is_not_matching.*
+    ###...
+      static constexpr bool __is_scalar = true;
+      static constexpr bool __is_variant = true;
+      static constexpr bool __is_array = false;
+      static constexpr bool __is_struct = true;
+    }; // struct payload
+  }; //struct META
+
+}; //struct MultiMessage
+
+inline int32_t MultiMessage::code\(\) const {
+    return mdsd::read_signed_from_container.*
+}
+inline void MultiMessage::code \(int32_t .* \) {
+    .* = mdsd::write_to_container.*
+}
+
+inline big_example::OnOff MultiMessage::onoff\( size_t idx \) const {
+    return mdsd::read_unsigned_from_container.*
+}
+inline void MultiMessage::onoff\( size_t idx, big_example::OnOff .* \) {
+    .* = mdsd::write_to_container.*
+}
+
+inline big_example::ABC MultiMessage::abc\(\) const {
+    return mdsd::read_signed_from_container.*
+}
+inline void MultiMessage::abc\( big_example::ABC .* \) {
+    .* = mdsd::write_to_container.*
+}

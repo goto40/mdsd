@@ -1,0 +1,5 @@
+package b
+
+struct B {
+    scalar x: built_in.float
+}

@@ -1,0 +1,82 @@
+package big_example
+
+constants MyOtherConstants {
+    constant three: built_in.uint32 = 0x3
+    constant maxlen: built_in.uint32 = 3000
+}
+constants MyConstants {
+    constant enum_value_of_Trinagle: built_in.uint32 = MyOtherConstants.three
+    constant enum_value_of_Polygon: built_in.uint32 = (MyOtherConstants.three+enum_value_of_Trinagle)/2-1
+}
+
+enum TypeSelector : built_in.uint32 {
+    value POINT = 1
+    value POLY = MyConstants.enum_value_of_Polygon
+    value TRIANGLE = big_example.MyConstants.enum_value_of_Trinagle
+}
+
+enum OnOff : built_in.bool {
+    value ON = 1
+    value OFF = 0
+}
+
+enum ABC : built_in.int2 (.description="test") {
+    value A = 0 (.description="test")
+    value B = 1 (.description="test")
+    value C = -1 (.description="test")
+}
+
+struct Header {
+    constant three: built_in.uint32 = 6/2
+    scalar id: TypeSelector
+    scalar length: built_in.uint32 (.maxValue=MyOtherConstants.maxlen)
+}
+
+struct Point {
+    scalar x: built_in.float
+    scalar y: built_in.float
+}
+
+struct Polygon {
+    scalar n: built_in.uint32
+    array p: Point[n]
+    array info: built_in.char[256] (.defaultStringValue="your favorite polygon")
+}
+
+struct Color {
+    array rgb: built_in.float[3]
+}
+
+struct Triangle {
+    constant three: built_in.uint32 = (MyOtherConstants.three+3)/2
+    array p: Point[Header.three]
+    array c: Color[three]
+}
+
+struct MultiMessage {
+    scalar header: Header
+    scalar mycontainer: built_in.uint32
+    embedded scalar code: built_in.int20
+    embedded array onoff: OnOff[10]
+    embedded scalar abc: ABC
+    variant payload: header.id -> {
+        POINT: Point
+        TypeSelector.POLY: Polygon
+        big_example.TypeSelector.TRIANGLE: big_example.Triangle
+   }
+}
+
+struct Info {
+    array text1: built_in.char[100]
+    scalar n: built_in.uint32
+    array text2: built_in.char[n]
+    scalar c: built_in.char
+}
+
+struct EmbeddedArrayDim {
+    scalar x: built_in.uint32
+    embedded scalar r: built_in.uint2
+    embedded array c: built_in.uint3[3]
+    embedded scalar r: built_in.uint21
+    array ok: built_in.float[r]
+}

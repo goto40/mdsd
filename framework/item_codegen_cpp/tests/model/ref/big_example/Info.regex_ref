@@ -1,0 +1,25 @@
+namespace big_example{
+
+struct Info {
+  std::array<char,100> text1 = {};
+  uint32_t n = {};
+  std::vector<char> text2 = {};
+  char c = {};
+
+  struct META {
+    struct text1 {
+      static constexpr bool __has_char_content = true;
+      static constexpr auto __get_ref\(STRUCT &s\) { return mdsd::String\(s.text1\); }
+      static constexpr const auto __get_ref\(const STRUCT &s\) { return mdsd::String\(s.text1\); }
+    }; // struct text1
+    struct n {
+      static constexpr bool __has_char_content = false;
+    }; // struct n
+    struct text2 {
+      static constexpr bool __has_char_content = true;
+    }; // struct text2
+    struct c {
+      static constexpr bool __has_char_content = true;
+    }; // struct c
+  }; //struct META
+}; //struct Info
