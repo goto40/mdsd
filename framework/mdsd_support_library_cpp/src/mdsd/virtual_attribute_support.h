@@ -4,6 +4,7 @@
 #include "mdsd/item/basic_visitors.h"
 #include <memory>
 #include <string_view>
+#include <vector>
 
 
 namespace mdsd {
@@ -19,10 +20,15 @@ struct AttributeBase {
   virtual size_t get_dim()=0;
   virtual std::unique_ptr<AttributeBase> get_attribute_in_struct(std::string_view name)=0;
   virtual std::unique_ptr<AttributeBase> get_attribute_in_struct(size_t idx, std::string_view name)=0;
+  virtual std::vector<std::unique_ptr<AttributeBase>> get_all_attributes_in_struct()=0; 
+  virtual std::vector<std::unique_ptr<AttributeBase>> get_all_attributes_in_struct(size_t idx)=0; 
 };
 
 template<class STRUCT>
 std::unique_ptr<AttributeBase> get_attribute(STRUCT &s, std::string_view path);
+
+template<class STRUCT>
+std::vector<std::unique_ptr<AttributeBase>> get_all_attributes(STRUCT &s);
 
 /** TODO: getStruct() getStruct(Idx) ... ??? */
 template<class META>
@@ -43,6 +49,7 @@ struct AttributeWrapper : AttributeBase {
     else
       throw std::runtime_error("get_dim called for non-array attribute");
   }
+
   std::unique_ptr<AttributeBase> get_attribute_in_struct(std::string_view name) override { 
     if constexpr (META::__is_variant) {
       std::unique_ptr<AttributeBase> ret; 
@@ -61,6 +68,27 @@ struct AttributeWrapper : AttributeBase {
   std::unique_ptr<AttributeBase> get_attribute_in_struct(size_t idx, std::string_view name) override { 
     if constexpr (META::__is_array && META::__is_struct) 
       return get_attribute(META::__get_ref(s)[idx], name); 
+    else
+      throw std::runtime_error("get_attribute_in_struct(idx, name) called for non-array or  non-struct  attribute");
+  }
+  std::vector<std::unique_ptr<AttributeBase>> get_all_attributes_in_struct() override { 
+    if constexpr (META::__is_variant) {
+      std::vector<std::unique_ptr<AttributeBase>> ret; 
+      META::__call_function_on_concrete_variant_type(s,[&ret](auto &x){
+        ret = get_all_attributes(x);
+      });
+      return ret;
+    }
+    else if constexpr (!META::__is_array && META::__is_struct) {
+      return get_all_attributes(META::__get_ref(s));
+    }
+    else {
+      throw std::runtime_error("get_all_attributes_in_struct() called for array attribute or non-struct");
+    }
+  }
+  std::vector<std::unique_ptr<AttributeBase>> get_all_attributes_in_struct(size_t idx) override { 
+    if constexpr (META::__is_array && META::__is_struct) 
+      return get_all_attributes(META::__get_ref(s)[idx]); 
     else
       throw std::runtime_error("get_attribute_in_struct(idx, name) called for non-array or  non-struct  attribute");
   }
@@ -90,6 +118,23 @@ std::unique_ptr<AttributeBase> get_attribute(STRUCT &s, std::string_view path) {
     if (v.result==nullptr) {
       throw std::runtime_error(std::string(path)+" not found.");
     }
+    return std::move(v.result);
+}
+
+template<class STRUCT>
+struct CreateAllAttributesWrapperVisitor {
+  STRUCT &s;
+  std::vector<std::unique_ptr<AttributeBase>> result = {};
+  CreateAllAttributesWrapperVisitor(STRUCT&_s) : s(_s) {}
+  template<class META> void visit() {
+    result.push_back( std::make_unique<AttributeWrapper<META>>(s) );
+  }
+};
+
+template<class STRUCT>
+std::vector<std::unique_ptr<AttributeBase>> get_all_attributes(STRUCT &s) {
+    CreateAllAttributesWrapperVisitor v{s};
+    STRUCT::META::template __accept_varargs<STRUCT>(v);
     return std::move(v.result);
 }
 

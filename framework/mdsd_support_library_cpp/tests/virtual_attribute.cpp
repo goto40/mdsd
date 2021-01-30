@@ -39,6 +39,16 @@ TEST_CASE( "attributewrapper1", "[to_string]" ) {
   REQUIRE_THROWS(points->get_attribute_in_struct(1,"not_existent"));
   REQUIRE( point1_x->to_string() == std::string("123"));
   REQUIRE( point1_y->to_string() == std::string("456"));
+
+  auto attrs_in_color_triangle = mdsd::get_all_attributes(t);
+  REQUIRE( attrs_in_color_triangle.size()==2 );
+  REQUIRE( attrs_in_color_triangle[0]->get_name() == "color" );
+  REQUIRE( attrs_in_color_triangle[1]->get_name() == "points" );
+  REQUIRE_THROWS( attrs_in_color_triangle[1]->get_all_attributes_in_struct());
+  auto attrs_in_point1 = attrs_in_color_triangle[1]->get_all_attributes_in_struct(1);
+  REQUIRE( attrs_in_point1[0]->get_name() == "x" );
+  REQUIRE( attrs_in_point1[1]->get_name() == "y" );  
+  REQUIRE( attrs_in_point1[1]->to_string() == std::string("456"));
 }
 
 TEST_CASE( "attributewrapper2", "[virtual access]" ) {
@@ -48,6 +58,15 @@ TEST_CASE( "attributewrapper2", "[virtual access]" ) {
   mdsd::adjust_array_sizes_and_variants(v1);
   std::get<Polygon>(v1.payload).header.n = 3;
 
-  auto n = mdsd::get_attribute(v1, "payload")->get_attribute_in_struct("header")->get_attribute_in_struct("n");
+  auto n = mdsd::get_attribute(v1, "payload")
+              ->get_attribute_in_struct("header")
+              ->get_attribute_in_struct("n");
   REQUIRE( n->to_string() == std::string("3"));
+
+  auto attrs_in_v1 = mdsd::get_all_attributes(v1);
+  REQUIRE( attrs_in_v1.size()==2 );
+  REQUIRE_THROWS( attrs_in_v1[1]->get_all_attributes_in_struct(1));
+  auto attrs_in_payload = attrs_in_v1[1]->get_all_attributes_in_struct();
+  REQUIRE( attrs_in_payload[0]->get_name() == "header" );
+  REQUIRE( attrs_in_payload[1]->get_name() == "points" );
 }
