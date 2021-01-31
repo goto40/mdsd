@@ -49,6 +49,8 @@ def check_Attribute(a):
     for d in mandatory_prop_defs.values():
         textx_assert(d in attr_prop_defs, a, f"missing mandatory property '{d.name}'")
 
+    # TODO: check containers/embedded attributes and "IfAttribute"...
+    # Note: maybe do not allow this...
 
 def check_Struct(s):
     mm = get_metamodel(s)
