@@ -100,5 +100,4 @@ Syntax example:
 ```
 
 Fixed sized arrays and scalar attributes can be embedded in bitfields.
-
-TODO: if restructions and embedded attributes
+"if restrictions" may not bed used for embedded attributes or containers.

@@ -49,8 +49,12 @@ def check_Attribute(a):
     for d in mandatory_prop_defs.values():
         textx_assert(d in attr_prop_defs, a, f"missing mandatory property '{d.name}'")
 
-    # TODO: check containers/embedded attributes and "IfAttribute"...
-    # Note: maybe do not allow this...
+    if a.is_container():
+        textx_assert(a.if_attr is None, a, f"restricted attributes may not be used as container (put them into a separate substruct)")
+
+    if a.is_embedded():
+        textx_assert(a.if_attr is None, a, f"restricted attributes may not be embedded (put them into a separate substruct)")
+
 
 def check_Struct(s):
     mm = get_metamodel(s)

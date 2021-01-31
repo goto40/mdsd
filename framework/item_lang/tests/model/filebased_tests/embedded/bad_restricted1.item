@@ -1,0 +1,10 @@
+package test
+
+struct Info {
+    scalar version: built_in.uint32
+    scalar x: built_in.uint32
+    if (version>1) embedded scalar r: built_in.uint2 // expected: restricted attributes may not be embedded
+    embedded array c: built_in.uint3[3]
+    embedded scalar r: built_in.uint21
+    array ok: built_in.float[r]
+}
