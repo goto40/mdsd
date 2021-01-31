@@ -1,0 +1,14 @@
+package test
+
+struct Header {
+    scalar version: built_in.uint32
+    if (version==1) scalar m: built_in.uint32
+
+}
+
+// not allowed: array dimensions must be completely w/o if (also if they are in a header)
+// solution: create a struct attribute restricted by an if (with arrays+dimensions inside)
+struct Data {
+    scalar header : Header
+    array data1: built_in.uint32[header.m] // expected: restricted attribute m may not be used in dimension
+}

@@ -167,11 +167,19 @@ def _assert_attr_defined_before_beeing_used_in_formula(a,f,d):
     for r in all_refs:
         textx_assert(is_attribute_before_other_attribute(r,a), d, f"{r.name} must be defined before {a.name}")
 
+def _assert_restricted_attr_may_not_be_used_in_formula(f, d, info_where="dimension"):
+    all_refs = list(map(lambda x: x.ref._tx_path, get_children_of_type("AttrRef", f)))
+    if len(all_refs)>0:
+        all_refs = reduce(lambda a,b: a+b, all_refs)
+    for r in all_refs:
+        textx_assert(r.if_attr is None, d, f"restricted attribute {r.name} may not be used in {info_where}")
+
 def check_Dim(d):
     a = d.parent
-    _assert_attr_defined_before_beeing_used_in_formula(a,d.dim,d)
+    _assert_attr_defined_before_beeing_used_in_formula(a, d.dim, d)
+    _assert_restricted_attr_may_not_be_used_in_formula(d.dim, d)
 
 def check_IfAttribute(i):
     a = i.parent
-    _assert_attr_defined_before_beeing_used_in_formula(a,i.predicate,i)
-
+    _assert_attr_defined_before_beeing_used_in_formula(a, i.predicate, i)
+    _assert_restricted_attr_may_not_be_used_in_formula(i.predicate, i, "predicate")

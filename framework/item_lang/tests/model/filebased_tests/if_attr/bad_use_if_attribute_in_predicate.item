@@ -1,0 +1,10 @@
+package test
+
+// not allowed: array dimensions must be completely w/o if (also if they are in a header)
+// solution: create a struct attribute restricted by an if (with arrays+dimensions inside)
+struct Data {
+    scalar version: built_in.uint32
+    if (version==1) scalar version2: built_in.uint32
+     scalar n: built_in.uint32
+    if (version2==1) array data1: built_in.uint32[n] // expected: restricted attribute version2 may not be used in predicate
+}
