@@ -12,7 +12,7 @@ The goal is to generate 100% code for item specififcations
 provide a homogeneous algorithm skeleton.
 
 The idea is that the algorithm is implemented in a reference
-language (e.g. Python with numpy) and a target language. We
+language (e.g., in Python with numpy) and a target language. We
 then provide means to run tests in order to compare these
 implementations.
 
@@ -37,11 +37,11 @@ clear specification language and single source.
 
 ## How to use
 
-TODO
+See [framework/Readme.md](framework/Readme.md).
 
 ## Features
 
-TODO
+See [framework/Readme.md](framework/Readme.md).
 
 ## How to run tests / develop
 
