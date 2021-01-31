@@ -124,6 +124,14 @@ def generate_cpp_struct(f, i):
         else:
             f.write("      static constexpr bool __has_char_content = false;\n")
 
+        if a.if_attr is None:
+            f.write("      static constexpr bool __has_if_restriction = false;\n\n")
+        else:
+            f.write("      static constexpr bool __has_if_restriction = true;\n")
+            f.write("      static constexpr bool __if_restriction(const STRUCT &s) {{ return {}; }}\n\n".format(
+                a.if_attr.predicate.render_formula(prefix="s.")
+            ))
+
         if not(a.is_embedded()):
             if textx.textx_isinstance(a, mm["ArrayAttribute"]) and a.type.name=="char":
                 f.write("      static constexpr auto __get_ref(STRUCT &s) {{ return mdsd::String(s.{}); }}\n".format(a.name))

@@ -1,0 +1,27 @@
+struct VersionedData {
+  uint32_t version = {};
+  uint32_t n = {};
+  std::vector<uint32_t> data = {};
+  std::vector<uint32_t> data0 = {};
+  std::vector<uint32_t> data1 = {};
+
+  struct META {
+    struct version {
+      static constexpr bool __has_if_restriction = false;
+    }; // meta struct version
+    struct n {
+      static constexpr bool __has_if_restriction = false;
+    }; // meta struct n
+    struct data {
+      static constexpr bool __has_if_restriction = false;
+    }; // meta struct data
+    struct data0 {
+      static constexpr bool __has_if_restriction = true;
+      static constexpr bool __if_restriction\(const STRUCT &s\) { return \(s.version==0\); }
+    }; // meta struct data0
+    struct data1 {
+      static constexpr bool __has_if_restriction = true;
+      static constexpr bool __if_restriction\(const STRUCT &s\) { return \(s.version==1\); }
+    }; // meta struct data1
+  }; //struct META
+}; //struct VersionedData

@@ -84,14 +84,14 @@ struct EmbeddedArrayDim {
 struct NDPoint {
     scalar dim: built_in.uint32 (.maxValue=3)
     scalar x: built_in.int32
-    if dim>1 scalar y: built_in.int32
-    if dim>2 scalar z: built_in.int32
+    if (dim>1) scalar y: built_in.int32
+    if (dim>2) scalar z: built_in.int32
 }
 
 struct VersionedData {
     scalar version: built_in.uint32 (.maxValue=1)
     scalar n: built_in.uint32
     array data: built_in.uint32[n]
-    if version==0 array data0: built_in.uint32[n]
-    if version==1 array data1: built_in.uint32[n]
+    if (version==0) array data0: built_in.uint32[n]
+    if (version==1) array data1: built_in.uint32[n]
 }

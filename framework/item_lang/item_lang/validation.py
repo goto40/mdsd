@@ -163,16 +163,20 @@ def check_Val(val_object):
 
 
 def _assert_attr_defined_before_beeing_used_in_formula(a,f,d):
+    mm = get_metamodel(d)
     # only the first element of a reference path has to be checked
     all_refs = map(lambda x: x.ref._tx_path[0], get_children_of_type("AttrRef", f))
+    all_refs = filter( lambda x: textx_isinstance(x, mm["ScalarAttribute"] ), all_refs)
     for r in all_refs:
         textx_assert(is_attribute_before_other_attribute(r,a), d, f"{r.name} must be defined before {a.name}")
 
 
 def _assert_restricted_attr_may_not_be_used_in_formula(f, d, info_where="dimension"):
+    mm = get_metamodel(d)
     all_refs = list(map(lambda x: x.ref._tx_path, get_children_of_type("AttrRef", f)))
     if len(all_refs)>0:
         all_refs = reduce(lambda a,b: a+b, all_refs)
+    all_refs = filter( lambda x: textx_isinstance(x, mm["ScalarAttribute"] ), all_refs)
     for r in all_refs:
         textx_assert(r.if_attr is None, d, f"restricted attribute {r.name} may not be used in {info_where}")
 

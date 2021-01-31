@@ -1,0 +1,24 @@
+struct NDPoint {
+  uint32_t dim = {};
+  int32_t x = {};
+  int32_t y = {};
+  int32_t z = {};
+
+  struct META {
+
+    struct dim {
+      static constexpr bool __has_if_restriction = false;
+    }; // meta struct dim
+    struct x {
+      static constexpr bool __has_if_restriction = false;
+    }; // meta struct x
+    struct y {
+      static constexpr bool __has_if_restriction = true;
+      static constexpr bool __if_restriction\(const STRUCT &s\) { return \(s.dim>1\); }
+    }; // meta struct y
+    struct z {
+      static constexpr bool __has_if_restriction = true;
+      static constexpr bool __if_restriction\(const STRUCT &s\) { return \(s.dim>2\); }
+    }; // meta struct z
+  }; //struct META
+}; //struct NDPoint
