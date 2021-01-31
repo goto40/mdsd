@@ -11,6 +11,7 @@ struct NDPoint {
     }; // meta struct dim
     struct x {
       static constexpr bool __has_if_restriction = false;
+      static constexpr bool __if_restriction\(const STRUCT &\) { return true; }
     }; // meta struct x
     struct y {
       static constexpr bool __has_if_restriction = true;

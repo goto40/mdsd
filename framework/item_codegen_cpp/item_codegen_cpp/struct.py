@@ -125,7 +125,8 @@ def generate_cpp_struct(f, i):
             f.write("      static constexpr bool __has_char_content = false;\n")
 
         if a.if_attr is None:
-            f.write("      static constexpr bool __has_if_restriction = false;\n\n")
+            f.write("      static constexpr bool __has_if_restriction = false;\n")
+            f.write("      static constexpr bool __if_restriction(const STRUCT &) { return true; }\n\n")
         else:
             f.write("      static constexpr bool __has_if_restriction = true;\n")
             f.write("      static constexpr bool __if_restriction(const STRUCT &s) {{ return {}; }}\n\n".format(
