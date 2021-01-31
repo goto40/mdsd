@@ -1,0 +1,6 @@
+package test
+
+struct Data {
+    scalar n: built_in.uint32
+    array data: built_in.uint32[n]
+}

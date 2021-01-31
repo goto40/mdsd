@@ -72,7 +72,11 @@ def lang():
         'HexNumber': lambda x: int(x, 16),
         'BoolNumber': text2bool
     }
-    object_processors.update( v.get_all_checks_as_map() )
+    checks = v.get_all_checks_as_map()
+    for c in checks:
+        if c not in mm:
+            raise Exception(f"unexpected check found for unknown class {c}")
+    object_processors.update( checks )
 
     mm.register_obj_processors( object_processors )
     return mm

@@ -1,0 +1,6 @@
+package test
+
+struct Data {
+    array data: built_in.uint32[n] // expected: n must be defined before data
+    scalar n: built_in.uint32
+}

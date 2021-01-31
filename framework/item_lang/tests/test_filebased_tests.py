@@ -4,7 +4,7 @@ from codegen_test_support import get_expected_error_regex
 import pytest
 
 
-def test_filebased_test():
+def test_filebased_tests():
     mm = metamodel_for_language("item")
     assert mm is not None
 

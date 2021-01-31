@@ -1,5 +1,5 @@
 from textx import (get_location, textx_isinstance, get_metamodel,
-                   textxerror_wrap)
+                   textxerror_wrap, get_children_of_type)
 from textx.exceptions import TextXSemanticError
 from item_lang.common import (get_bits, compute_formula_for_internaltype, get_fixed_dimension,
                               textx_assert)
@@ -8,6 +8,7 @@ from item_lang.properties import (get_property, is_applicable,
                                   get_all_possible_mandatory_properties,
                                   get_all_possible_properties,
                                   has_property)
+from item_lang.attributes import (is_attribute_before_other_attribute)
 from functools import reduce
 import sys, inspect
 
@@ -159,3 +160,18 @@ def check_Val(val_object):
         textx_assert(False,
                      val_object,
                      "unexpected classificator '{}'".format(val_object.valueClassificator))
+
+def _assert_attr_defined_before_beeing_used_in_formula(a,f,d):
+    # only the first element of a reference path has to be checked
+    all_refs = map(lambda x: x.ref._tx_path[0], get_children_of_type("AttrRef", f))
+    for r in all_refs:
+        textx_assert(is_attribute_before_other_attribute(r,a), d, f"{r.name} must be defined before {a.name}")
+
+def check_Dim(d):
+    a = d.parent
+    _assert_attr_defined_before_beeing_used_in_formula(a,d.dim,d)
+
+def check_IfAttribute(i):
+    a = i.parent
+    _assert_attr_defined_before_beeing_used_in_formula(a,i.predicate,i)
+
