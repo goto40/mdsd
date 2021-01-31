@@ -67,10 +67,10 @@ struct MultiMessage {
 }
 
 struct Info {
-    array text1: built_in.char[100] (.defaultStringValue="This is text1")
-    scalar n: built_in.uint32 (.defaultValue=16)
-    array text2: built_in.char[n] (.defaultStringValue="This is text2 ABCDEFGHIJKL")
-    scalar c: built_in.char (.defaultStringValue="P")
+    array text1: built_in.char[100]
+    scalar n: built_in.uint32
+    array text2: built_in.char[n]
+    scalar c: built_in.char
 }
 
 struct EmbeddedArrayDim {
@@ -79,4 +79,19 @@ struct EmbeddedArrayDim {
     embedded array c: built_in.uint3[3]
     embedded scalar r: built_in.uint21
     array ok: built_in.float[r]
+}
+
+struct NDPoint {
+    scalar dim: built_in.uint32 (.maxValue=3)
+    scalar x: built_in.int32
+    if (dim>1) scalar y: built_in.int32
+    if (dim>2) scalar z: built_in.int32
+}
+
+struct VersionedData {
+    scalar version: built_in.uint32 (.maxValue=1)
+    scalar n: built_in.uint32
+    array data: built_in.uint32[n]
+    if (version==0) array data0: built_in.uint32[n]
+    if (version==1) array data1: built_in.uint32[n]
 }

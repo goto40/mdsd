@@ -20,10 +20,10 @@ enum OnOff : built_in.bool {
     value OFF = 0
 }
 
-enum ABC : built_in.uint2 (.description="test") {
+enum ABC : built_in.int2 (.description="test") {
     value A = 0 (.description="test")
     value B = 1 (.description="test")
-    value C = 2 (.description="test")
+    value C = -1 (.description="test")
 }
 
 struct Header {
@@ -40,6 +40,7 @@ struct Point {
 struct Polygon {
     scalar n: built_in.uint32
     array p: Point[n]
+    array info: built_in.char[256] (.defaultStringValue="your favorite polygon")
 }
 
 struct Color {
@@ -55,7 +56,7 @@ struct Triangle {
 struct MultiMessage {
     scalar header: Header
     scalar mycontainer: built_in.uint32
-    embedded scalar code: built_in.uint20
+    embedded scalar code: built_in.int20
     embedded array onoff: OnOff[10]
     embedded scalar abc: ABC
     variant payload: header.id -> {
@@ -63,4 +64,34 @@ struct MultiMessage {
         TypeSelector.POLY: Polygon
         big_example.TypeSelector.TRIANGLE: big_example.Triangle
    }
+}
+
+struct Info {
+    array text1: built_in.char[100]
+    scalar n: built_in.uint32
+    array text2: built_in.char[n]
+    scalar c: built_in.char
+}
+
+struct EmbeddedArrayDim {
+    scalar x: built_in.uint32
+    embedded scalar r: built_in.uint2
+    embedded array c: built_in.uint3[3]
+    embedded scalar r: built_in.uint21
+    array ok: built_in.float[r]
+}
+
+struct NDPoint {
+    scalar dim: built_in.uint32 (.maxValue=3)
+    scalar x: built_in.int32
+    if (dim>1) scalar y: built_in.int32
+    if (dim>2) scalar z: built_in.int32
+}
+
+struct VersionedData {
+    scalar version: built_in.uint32 (.maxValue=1)
+    scalar n: built_in.uint32
+    array data: built_in.uint32[n]
+    if (version==0) array data0: built_in.uint32[n]
+    if (version==1) array data1: built_in.uint32[n]
 }
