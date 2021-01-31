@@ -46,6 +46,12 @@ source ${VIRTUAL_ENV}/bin/custom_settings.sh
     mycmake .. && make install
     cd -
 }
-
 echo "ok. environment activated. exit shell to exit environment..."
-bash --rcfile <(cat $HOME/.bashrc; echo 'source ${VIRTUAL_ENV}/bin/activate && source ${VIRTUAL_ENV}/bin/custom_settings.sh')
+if [[ ! -z "$1" ]];
+then
+echo "$1 source ${VIRTUAL_ENV}/bin/activate && source ${VIRTUAL_ENV}/bin/custom_settings.sh $2"
+eval "$1 source ${VIRTUAL_ENV}/bin/activate && source ${VIRTUAL_ENV}/bin/custom_settings.sh $2"
+else
+bash --rcfile <(cat $HOME/.bashrc; echo "source ${VIRTUAL_ENV}/bin/activate && source ${VIRTUAL_ENV}/bin/custom_settings.sh")
+fi 
+
