@@ -3,7 +3,7 @@
 from setuptools import setup #, find_packages
 import os
 
-package_name = 'mdsd_support_library'
+package_name = 'mdsd'
 
 my_packages = [package_name] #find_packages(where='src-gen/swig', exclude=[])
 

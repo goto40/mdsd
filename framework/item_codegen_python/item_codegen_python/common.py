@@ -42,6 +42,7 @@ _m = {
     "float": "np.float32",
     "double": "np.float64"
 }
+
 for i in range(1,65):
     i32 = 8
     if i>64:

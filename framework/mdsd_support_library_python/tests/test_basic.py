@@ -1,4 +1,4 @@
-import mdsd_support_library.item_support as support
+import mdsd.item_support as support
 from items.Point import *
 from items.Polygon import *
 from items.Line import *

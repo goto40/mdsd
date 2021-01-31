@@ -1,5 +1,5 @@
 import numpy as np
-from mdsd_support_library.item_support import init_visitor, const_visitor, accept
+from mdsd.item_support import init_visitor, const_visitor, accept
 
 @init_visitor
 class copy_from_mem_visitor:

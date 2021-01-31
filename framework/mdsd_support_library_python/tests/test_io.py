@@ -1,5 +1,5 @@
-import mdsd_support_library.item_support as support
-import mdsd_support_library.item_io as io
+import mdsd.item_support as support
+import mdsd.item_io as io
 from items.Point import *
 import numpy as np
 import pytest
