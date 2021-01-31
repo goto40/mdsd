@@ -14,39 +14,41 @@ struct InitVisitor {
     InitVisitor(V &&_v) :v(_v){}
     InitVisitor(V &_v) :v(_v){}
     template<class META, class S> void visit(S& s) {
-        decltype(META::__get_ref(s)) x = META::__get_ref(s);
-        if constexpr (META::__is_scalar) {
-            if constexpr (META::__is_variant) {
-                META::__init_variant_type_if_type_is_not_matching(s);
-                META::__call_function_on_concrete_variant_type(s, [&v=v](auto &a){
-                    v.template visit_item_scalar<META>(a);
-                });
-            }
-            else if constexpr (!META::__is_struct) {
-                v.template visit_scalar<META>(x);
-            }
-            else {
-                v.template visit_item_scalar<META>(x);
-            }
-        }
-        else if constexpr (META::__is_array) {
-            if constexpr (META::__is_dynamic_array) {
-                if (x.size()!=META::__get_dim(s)) {
-                    x.resize(META::__get_dim(s));
+        if (META::__if_restriction(s)) {
+            decltype(META::__get_ref(s)) x = META::__get_ref(s);
+            if constexpr (META::__is_scalar) {
+                if constexpr (META::__is_variant) {
+                    META::__init_variant_type_if_type_is_not_matching(s);
+                    META::__call_function_on_concrete_variant_type(s, [&v=v](auto &a){
+                        v.template visit_item_scalar<META>(a);
+                    });
+                }
+                else if constexpr (!META::__is_struct) {
+                    v.template visit_scalar<META>(x);
+                }
+                else {
+                    v.template visit_item_scalar<META>(x);
                 }
             }
-            if constexpr (META::__has_char_content) {
-                v.template visit_string<META>(x);
-            }
-            else if constexpr (!META::__is_struct) {
-                v.template visit_array<META>(x);
+            else if constexpr (META::__is_array) {
+                if constexpr (META::__is_dynamic_array) {
+                    if (x.size()!=META::__get_dim(s)) {
+                        x.resize(META::__get_dim(s));
+                    }
+                }
+                if constexpr (META::__has_char_content) {
+                    v.template visit_string<META>(x);
+                }
+                else if constexpr (!META::__is_struct) {
+                    v.template visit_array<META>(x);
+                }
+                else {
+                    v.template visit_item_array<META>(x);
+                }
             }
             else {
-                v.template visit_item_array<META>(x);
+                throw std::runtime_error(get_message_with_meta_info<META>("unexpected meta information"));
             }
-        }
-        else {
-            throw std::runtime_error(get_message_with_meta_info<META>("unexpected meta information"));
         }
     }
 };
@@ -58,38 +60,40 @@ struct ConstVisitor {
     ConstVisitor(V &&_v) :v(_v){}
     ConstVisitor(V &_v) :v(_v){}
     template<class META, class S> void visit(const S&s) {
-        decltype(META::__get_ref(s)) x = META::__get_ref(s);
-        if constexpr (META::__is_scalar) {
-            if constexpr (META::__is_variant) {
-                META::__call_function_on_concrete_variant_type(s, [&v=v](const auto &a){
-                    v.template visit_item_scalar<META>(a);
-                });
-            }
-            else if constexpr (!META::__is_struct) {
-                v.template visit_scalar<META>(x);
-            }
-            else {
-                v.template visit_item_scalar<META>(x);
-            }
-        }
-        else if constexpr (META::__is_array) {
-            if constexpr (META::__is_dynamic_array) {
-                if (x.size()!=META::__get_dim(s)) {
-                    throw std::runtime_error(get_message_with_meta_info<META>("size does not match, is=",x.size()," should be=",META::__get_dim(s)," (hint: call adjust_array_sizes_and_variants)"));
+        if (META::__if_restriction(s)) {
+            decltype(META::__get_ref(s)) x = META::__get_ref(s);
+            if constexpr (META::__is_scalar) {
+                if constexpr (META::__is_variant) {
+                    META::__call_function_on_concrete_variant_type(s, [&v=v](const auto &a){
+                        v.template visit_item_scalar<META>(a);
+                    });
+                }
+                else if constexpr (!META::__is_struct) {
+                    v.template visit_scalar<META>(x);
+                }
+                else {
+                    v.template visit_item_scalar<META>(x);
                 }
             }
-            if constexpr (META::__has_char_content) {
-                v.template visit_string<META>(x);
-            }
-            else if constexpr (!META::__is_struct) {
-                v.template visit_array<META>(x);
+            else if constexpr (META::__is_array) {
+                if constexpr (META::__is_dynamic_array) {
+                    if (x.size()!=META::__get_dim(s)) {
+                        throw std::runtime_error(get_message_with_meta_info<META>("size does not match, is=",x.size()," should be=",META::__get_dim(s)," (hint: call adjust_array_sizes_and_variants)"));
+                    }
+                }
+                if constexpr (META::__has_char_content) {
+                    v.template visit_string<META>(x);
+                }
+                else if constexpr (!META::__is_struct) {
+                    v.template visit_array<META>(x);
+                }
+                else {
+                    v.template visit_item_array<META>(x);
+                }
             }
             else {
-                v.template visit_item_array<META>(x);
+                throw std::runtime_error(get_message_with_meta_info<META>("unexpected meta information"));
             }
-        }
-        else {
-            throw std::runtime_error(get_message_with_meta_info<META>("unexpected meta information"));
         }
     }
 };
