@@ -70,6 +70,34 @@ class FormulaBase(CustomIdlBase):
         return self.render_formula()
 
 
+class Predicate_Or(FormulaBase):
+    def __init__(self, **kwargs):
+        super(Predicate_Or, self).__init__()
+        self._init_xtextobj(**kwargs)
+        self.operator = "or"
+
+
+class Predicate_And(FormulaBase):
+    def __init__(self, **kwargs):
+        super(Predicate_And, self).__init__()
+        self._init_xtextobj(**kwargs)
+        self.operator = "and"
+
+
+class Predicate_Cmp(FormulaBase):
+    def __init__(self, **kwargs):
+        super(Predicate_Cmp, self).__init__()
+        self._init_xtextobj(**kwargs)
+
+    def render_formula(self, **p):
+        if len(self.other_parts) == 0:
+            raise Exception("unexpected: comparison with at least two elements required.")
+        else:
+            res0 = self.part0.render_formula(**p)
+            return "(" + res0 + "".join(map(
+                lambda x: x.cmp_op + x.part.render_formula(**p), self.other_parts)) + ")"
+
+
 class Sum(FormulaBase):
     def __init__(self, **kwargs):
         super(Sum, self).__init__()

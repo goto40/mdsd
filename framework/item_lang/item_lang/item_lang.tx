@@ -35,13 +35,14 @@ Enum: 'enum' name=ID ':' type=[RawType|FQN] ('(' '.' 'description' '=' descripti
 Type: RawType|Struct|Enum;
 
 Attribute: ScalarAttribute|ArrayAttribute|VariantAttribute;
-VariantAttribute: 'variant' name=ID ':' variant_selector=AttrRef '->' '{' // TODO variant_selector --> only scalarattr allowed!
+VariantAttribute: (if_attr=IfAttribute)? 'variant' name=ID ':' variant_selector=AttrRef '->' '{' // TODO variant_selector --> only scalarattr allowed!
 mappings+=VariantMapping
 '}' ( '(' properties*=Property[','] ')' )?;
-ScalarAttribute: embedded?='embedded' 'scalar' name=ID ':' type=[Type|FQN]
+ScalarAttribute: (if_attr=IfAttribute)? embedded?='embedded' 'scalar' name=ID ':' type=[Type|FQN]
     ( '(' properties*=Property[','] ')' )?;
-ArrayAttribute: embedded?='embedded' 'array' name=ID ':' type=[Type|FQN] dims+=Dim
+ArrayAttribute: (if_attr=IfAttribute)? embedded?='embedded' 'array' name=ID ':' type=[Type|FQN] dims+=Dim
     ( '(' properties*=Property[','] ')' )?;
+IfAttribute: 'if' predicate=Predicate;
 
 FormulaElement: ScalarAttribute|Constant|EnumEntry;
 EnumEntry: 'value' name=ID '=' value=Formula ('(' '.' 'description' '=' description=STRING ')')?;
@@ -61,6 +62,13 @@ AttrRef: ref=
 VariantMapping: id=Formula ':' type=[Struct|FQN];
 
 Import: 'import' importURI=STRING;
+
+Predicate: '(' Predicate_Or ')';
+Predicate_Or: parts+=Predicate_And['or'];
+Predicate_And: parts+=Predicate_Cmp['and'];
+Predicate_Cmp: part0=Sum other_parts+=Predicate_CmpPart;
+Predicate_CmpPart: cmp_op=CmpOp part=Sum;
+CmpOp: '=='|'!='|'>'|'<'|'>='|'<=';
 
 Formula: Sum;
 Sum: parts+=Dif['+'];
