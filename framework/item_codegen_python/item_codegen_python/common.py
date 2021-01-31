@@ -38,7 +38,9 @@ def create_folder_and_return_output_filename(obj, base_dir, overwrite):
 
 
 _m = {
-    "uint1": "bool"
+    "uint1": "bool",
+    "float": "np.float32",
+    "double": "np.float64"
 }
 for i in range(1,65):
     i32 = 8
@@ -85,7 +87,7 @@ def fqn(t):
         else:
             return t.name
     else:
-        return ".".join(get_package_names_of_obj(t)) + "." + t.name
+        return ".".join(get_package_names_of_obj(t)) + "." + t.name + "." + t.name
 
 
 def get_signed_or_unsigned(t):

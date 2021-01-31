@@ -1,7 +1,9 @@
 #!/bin/bash
 
-rm -rf src_gen
-textx generate ../mdsd_support_library_common/model/*.item --overwrite --target python  --output-path src_gen || exit 1
+rm -rf src-gen
+textx generate ../mdsd_support_library_common/model/*.item --overwrite --target python  --output-path src-gen || exit 1
+export PYTHONPATH=$(pwd)/src-gen
+ls $PYTHONPATH
 coverage run --omit tests --omit venv --source mdsd_support_library -m py.test tests || exit 1
 coverage report --fail-under 90 # || exit 1
 

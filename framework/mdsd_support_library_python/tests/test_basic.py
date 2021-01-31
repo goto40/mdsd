@@ -1,5 +1,10 @@
 import mdsd_support_library.item_support as support
-from src_gen.items.example import *
+from items.Point import *
+from items.Polygon import *
+from items.Line import *
+from items.ColoredTriangle import *
+from items.VariantExample import *
+from items.Image import *
 import pytest
 
 

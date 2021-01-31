@@ -22,7 +22,7 @@ from typing import Sequence, Union
             f.write("\n")
             items = get_children_of_type("Struct", struct_obj)
             for i in items:
-                f.write("ll\n@dataclass(eq=False)\n")
+                f.write("\n@dataclass(eq=False)\n")
                 f.write("class {}:\n".format(i.name))
                 for a in i.attributes:
                     if textx_isinstance(a, mm["ScalarAttribute"]):

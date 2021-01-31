@@ -40,7 +40,7 @@ class copy_to_mem_visitor:
         n = np.dtype(t).itemsize
         if self.pos+n>len(self.mem):
             raise Exception("out of mem")
-        value = np.array(getattr(struct,attr))
+        value = np.array(getattr(struct,attr))  # , dtype=meta['get_type']()
         b = value.tobytes()
         assert len(b) == n
         self.mem[self.pos:self.pos+n] = b
