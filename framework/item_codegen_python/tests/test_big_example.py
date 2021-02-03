@@ -3,9 +3,18 @@ from os.path import join, abspath, dirname, exists
 from os import mkdir
 from shutil import rmtree
 from codegen_test_support import check_file
-
+from item_codegen_python.struct import get_mask
+import numpy as np
 
 this_folder = abspath(dirname(__file__))
+
+def test_get_mask():
+    assert get_mask(np.uint32,0,0) == 1
+    assert get_mask(np.uint32,31,0) == 0xffffffff
+    assert get_mask(np.uint16,15,0) == 0xffff
+    assert get_mask(np.uint16,15,8) == 0xff00
+    assert get_mask(np.uint16,11,8) == 0x0f00
+
 
 def test_big_example():
     mm = metamodel_for_language("item")
