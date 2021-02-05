@@ -11,13 +11,6 @@ from item_lang.common import (obj_is_new_than_file,
 import numpy as np  # used via "eval" (see below, get_mask...)
 
 
-def get_mask(thetype, bfrom, bto):
-    return ((thetype(1) << (bfrom-bto+1)) - 1) << bto
-
-def get_imask(thetype, bfrom, bto):
-    return np.bitwise_not(get_mask(thetype, bfrom, bto))
-
-
 def generate_py_for_struct(struct_obj, output_file):
     mm = get_metamodel(struct_obj)
     if obj_is_new_than_file(struct_obj, output_file):
@@ -45,7 +38,7 @@ from typing import Sequence, Union
 f'''
     @property
     def {a.name}(self):
-        return ({fqn(a.type)}(self.{get_container(a).name} & {bin(get_mask(eval(fqn(rawtype)),start_end_bit[0], start_end_bit[1]))}) >> {start_end_bit[1]})
+        return TPDP
     
     @{a.name}.setter
     def {a.name}(self, v):
@@ -58,7 +51,7 @@ f'''
 ''')
                         f.write(
 f'''
-        self.{get_container(a).name} = (self.{get_container(a).name} & {bin(get_imask(eval(fqn(rawtype)),start_end_bit[0], start_end_bit[1]))}) | (( v << {start_end_bit[1]})& {bin(get_mask(eval(fqn(rawtype)),start_end_bit[0], start_end_bit[1]))});
+        self.{get_container(a).name} = (self.{get_container(a).name} ... TODO
 
 ''')
                     elif textx_isinstance(a, mm["ArrayAttribute"]):
