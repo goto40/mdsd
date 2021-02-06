@@ -1,4 +1,5 @@
 import numpy as np
+from functools import reduce
 
 
 def get_mask(thetype, bfrom, bto):
@@ -10,18 +11,34 @@ def get_imask(thetype, bfrom, bto):
 
 
 class ArrayLike:
+    @property
+    def flat(self):
+        return self
+
     def __init__(self, getter, setter, mytype = bool, shape=None):
         self.getter = getter
         self.setter = setter
         self.mytype = mytype
         self.shape = shape
 
-    def __getitem__(self, idx):
-        return self.getter(idx)
+    def __getitem__(self, *idx):
+        idx0=reduce(lambda a,b: a*b, idx) #error
+        return self.getter(idx0)
 
-    def __setitem__(self, idx, value):
+    def __setitem__(self, *args):
+        assert len(args) >= 2
+        value = args[-1]
+        idx = args[0:-1]
         assert isinstance(value, self.mytype)
-        self.setter(idx, value)
+        idx0=reduce(lambda a,b: a*b, idx) # error
+        self.setter(idx0, value)
+
+    def copy_from(self, a):
+        assert self.shape == a.shape
+        n=reduce(lambda a,b: a*b, self.shape)
+        for i in range(n):
+            self.flat[i] = a.flat[i]
+
 
 _unsigned2signed={
     np.uint64: np.int64,

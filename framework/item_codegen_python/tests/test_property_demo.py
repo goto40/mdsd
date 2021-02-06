@@ -15,8 +15,8 @@ class Season(Enum):
 
 @dataclass(eq=False)
 class Point:
-    x: np.float = 0
-    y: np.float = 0
+    x: np.float32 = 0
+    y: np.float32 = 0
     flags: np.uint32 = 0
 
     @property
