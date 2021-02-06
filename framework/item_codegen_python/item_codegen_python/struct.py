@@ -65,7 +65,7 @@ from typing import Sequence, Union
                         f.write(f"        def getter(idx):\n")
                         f.write(f"            ret = get_embedded_from_uint({fqn(rawtype)}, self.{c.name},[{start_end_bit[0]}-idx*{rawtype.bits},{start_end_bit[0]}+1-(idx+1)*{rawtype.bits}])\n")
                         if textx_isinstance(a.type, mm["Enum"]):
-                            f.write(f"            v = {fqn(a.type)}(v)\n")
+                            f.write(f"            ret = {fqn(a.type)}(ret)\n")
                         f.write(f"            return ret\n")
                         f.write(f"        def setter(idx, v):\n")
                         f.write(f"            assert isinstance(v, {fqn(a.type)})\n")

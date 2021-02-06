@@ -28,7 +28,7 @@ def init_visitor(c):
                     self.visit_scalar(struct,attr,meta)
             elif meta["is_array"]:
                 if meta["is_struct"]: 
-                    if getattr(struct, attr) is None or len(getattr(struct, attr))!=meta["get_dim"](struct):
+                    if getattr(struct, attr) is None or len(getattr(struct, attr).flat)!=meta["get_dim"](struct):
                         setattr(struct,attr,[get_type(struct,attr, meta)()]*meta["get_dim"](struct))
                 else: 
                     if getattr(struct, attr) is None or getattr(struct, attr).shape!=meta["get_dim_nd"](struct):

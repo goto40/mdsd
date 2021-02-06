@@ -91,6 +91,9 @@ struct EmbeddedArrayDim2 {
     embedded scalar s2_2: built_in.sint2
     embedded array a3_2: built_in.sint3[16]
     embedded scalar s14_2: built_in.sint14
+    scalar container2: built_in.uint32
+    embedded scalar s_onoff: OnOff
+    embedded array s_onoff: OnOff[31]
 }
 
 struct NDPoint {

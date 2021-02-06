@@ -30,6 +30,9 @@ class ArrayLike:
             f *= self.shape[-1 - k]
         return idx0
 
+    def __len__(self):
+        return reduce(lambda a,b: a*b, self.shape)
+
     def __getitem__(self, *idx):
         if len(idx)==1:
             idx0 = idx[0]
@@ -75,7 +78,7 @@ def _check_embedded_params(vtype, ctype, start_end_bit):
     assert start_end_bit[0]-start_end_bit[1] < np.dtype(vtype).itemsize*8
     assert np.dtype(vtype).itemsize <= np.dtype(ctype).itemsize
     assert np.issubdtype(ctype, np.unsignedinteger)
-    assert np.issubdtype(vtype, np.integer)
+    assert np.issubdtype(vtype, np.integer) or vtype == bool
     assert np.issubdtype(vtype, np.unsignedinteger) or start_end_bit[0] >= start_end_bit[1]
     assert np.issubdtype(ctype, np.unsignedinteger)
 
