@@ -11,7 +11,7 @@ def pytest_configure(config):
     assert mm is not None
     inpath = join(this_folder, "../mdsd_support_library_common/model/**/*.item")
 
-    outpath = join(this_folder, "./src-gen")
+    outpath = join(this_folder, "../mdsd_support_library_common/src-gen")
     if exists(outpath):
         rmtree(outpath)
     mkdir(outpath)

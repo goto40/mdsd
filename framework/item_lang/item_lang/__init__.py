@@ -37,6 +37,7 @@ def lang():
         modeltext += "rawtype uint{} UINT {}\n".format(b,b)
     for b in range(2, 65):
         modeltext += "rawtype int{} INT {}\n".format(b,b)
+        modeltext += "rawtype sint{} INT {}\n".format(b,b)
 
     mm.builtin_models.add_model(
         mm.model_from_str(modeltext))

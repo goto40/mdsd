@@ -55,6 +55,7 @@ for i in range(1,65):
         i32=16
     _m["uint{}".format(i)] = "np.uint{}".format(i32)
     _m["int{}".format(i)] = "np.int{}".format(i32)
+    _m["sint{}".format(i)] = "np.int{}".format(i32)
 
 
 def get_variant_types(a):
