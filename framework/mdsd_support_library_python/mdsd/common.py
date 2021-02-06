@@ -2,7 +2,7 @@ import numpy as np
 
 
 def get_mask(thetype, bfrom, bto):
-    return thetype(((thetype(1) << (bfrom-bto+1)) - 1) << bto)
+    return np.left_shift(thetype(np.left_shift(thetype(1) , thetype(bfrom-bto+1)) - 1), thetype(bto))
 
 
 def get_imask(thetype, bfrom, bto):
@@ -29,8 +29,7 @@ _unsigned2signed={
     np.uint8: np.int8
 }
 
-def get_embedded_from_uint(vtype, cvalue, start_end_bit):
-    ctype = type(cvalue)
+def _check_embedded_params(vtype, ctype, start_end_bit):
     assert len(start_end_bit) == 2
     assert start_end_bit[0] >= start_end_bit[1]
     assert start_end_bit[1] >= 0
@@ -40,13 +39,26 @@ def get_embedded_from_uint(vtype, cvalue, start_end_bit):
     assert np.issubdtype(ctype, np.unsignedinteger)
     assert np.issubdtype(vtype, np.integer)
     assert np.issubdtype(vtype, np.unsignedinteger) or start_end_bit[0] >= start_end_bit[1]
-    assert isinstance(cvalue, np.unsignedinteger)
+    assert np.issubdtype(ctype, np.unsignedinteger)
+
+
+def get_embedded_from_uint(vtype, cvalue, start_end_bit):
+    ctype = type(cvalue)
+    _check_embedded_params(vtype,ctype,start_end_bit)
     if np.issubdtype(vtype, np.signedinteger):
-        uintvalue = (cvalue & get_mask(ctype, start_end_bit[0], start_end_bit[1])) >> start_end_bit[1]
-        if uintvalue >> (start_end_bit[0]-start_end_bit[1]-1) == 0:
+        uintvalue = np.right_shift((cvalue & get_mask(ctype, start_end_bit[0], start_end_bit[1])), ctype(start_end_bit[1]))
+        if np.right_shift(uintvalue, ctype(start_end_bit[0]-start_end_bit[1]-1)) == 0:
             return vtype(uintvalue)
         else:
             uintvalue = uintvalue | get_imask(ctype, start_end_bit[0]-start_end_bit[1],0)
             return vtype(uintvalue)
     else:
-        return vtype((cvalue & get_mask(ctype, start_end_bit[0], start_end_bit[1])) >> start_end_bit[1])
+        return vtype(np.right_shift((cvalue & get_mask(ctype, start_end_bit[0], start_end_bit[1])), ctype(start_end_bit[1])))
+
+
+def set_embedded_in_uint(vvalue, cvalue, start_end_bit):
+    ctype = type(cvalue)
+    vtype = type(vvalue)
+    _check_embedded_params(vtype,ctype,start_end_bit)
+    uintvalue = np.left_shift(ctype(ctype(vvalue) & get_mask(ctype, start_end_bit[0]-start_end_bit[1],0)), ctype(start_end_bit[1]))
+    return ctype((cvalue & get_imask(ctype, start_end_bit[0], start_end_bit[1])) | uintvalue)
