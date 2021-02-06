@@ -19,7 +19,9 @@ def generate_py_for_struct(struct_obj, output_file):
 from dataclasses import dataclass
 import numpy as np
 import mdsd.item_support as support
-from mdsd.common import get_embedded_from_uint
+from mdsd.common import get_embedded_from_uint, ArrayLike
+from mdsd.common import set_embedded_in_uint
+from mdsd.common import ArrayLike
 from typing import Sequence, Union
 """)
             for r in get_referenced_elements_of_struct(struct_obj):
@@ -40,7 +42,7 @@ from typing import Sequence, Union
                         c = get_container(a)
                         f.write(f"    @property\n")
                         f.write(f"    def {a.name}(self):\n")
-                        f.write(f"        ret = get_embedded_from_uint({fqn(rawtype)}, {c.name},[{start_end_bit[0]},{start_end_bit[0]}])\n")
+                        f.write(f"        ret = get_embedded_from_uint({fqn(rawtype)}, self.{c.name},[{start_end_bit[0]},{start_end_bit[1]}])\n")
                         if textx_isinstance(a.type, mm["Enum"]):
                             f.write(f"        v = {fqn(a.type)}(v)\n")
                         f.write(f"        return ret\n")
@@ -50,13 +52,28 @@ from typing import Sequence, Union
                         if textx_isinstance(a.type, mm["Enum"]):
                             f.write(f"        v = v.value\n")
                         f.write(f"        assert isinstance(v, {fqn(rawtype)})\n")
-                        f.write(f"        self.{c.name} = set_embedded_in_uint(v, {c.name},[{start_end_bit[0]},{start_end_bit[0]}])\n")
+                        f.write(f"        self.{c.name} = set_embedded_in_uint(v, self.{c.name},[{start_end_bit[0]},{start_end_bit[1]}])\n")
                         f.write(f"\n")
                         # --------------------------------------------------------------
                     elif textx_isinstance(a, mm["ArrayAttribute"]):
                         # ARRAY EMBEDDED
                         # --------------------------------------------------------------
-                        f.write(f"# TODO {a.name}\n")
+                        start_end_bit = get_start_end_bit(a)
+                        c = get_container(a)
+                        f.write(f"    @property\n")
+                        f.write(f"    def {a.name}(self):\n")
+                        f.write(f"        def getter(idx):\n")
+                        f.write(f"            ret = get_embedded_from_uint({fqn(rawtype)}, self.{c.name},[{start_end_bit[0]},{start_end_bit[0]}+1-idx*{rawtype.bits}])\n")
+                        if textx_isinstance(a.type, mm["Enum"]):
+                            f.write(f"            v = {fqn(a.type)}(v)\n")
+                        f.write(f"            return ret\n")
+                        f.write(f"        def setter(idx, val):\n")
+                        if textx_isinstance(a.type, mm["Enum"]):
+                            f.write(f"            v = v.value\n")
+                        f.write(f"            assert isinstance(v, {fqn(rawtype)})\n")
+                        f.write(f"            self.{c.name} = set_embedded_in_uint(v, self.{c.name},[{start_end_bit[0]},{start_end_bit[0]}+1-idx*{rawtype.bits}])\n")
+                        f.write(f"        return ArrayLike( getter, setter, {i.name}._meta['{a.name}']['get_dim_nd'] )\n")
+                        f.write(f"\n")
                         # --------------------------------------------------------------
                         pass
                     else:

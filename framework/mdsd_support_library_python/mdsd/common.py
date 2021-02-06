@@ -10,10 +10,11 @@ def get_imask(thetype, bfrom, bto):
 
 
 class ArrayLike:
-    def __init__(self, getter, setter, mytype = bool):
+    def __init__(self, getter, setter, mytype = bool, shape=None):
         self.getter = getter
         self.setter = setter
         self.mytype = mytype
+        self.shape = shape
 
     def __getitem__(self, idx):
         return self.getter(idx)
