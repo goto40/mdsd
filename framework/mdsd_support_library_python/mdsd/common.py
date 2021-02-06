@@ -34,10 +34,15 @@ class ArrayLike:
         self.setter(idx0, value)
 
     def copy_from(self, a):
-        assert self.shape == a.shape
         n=reduce(lambda a,b: a*b, self.shape)
+        if isinstance(a, list):
+            assert len(a) == n
+            data = a
+        else:
+            assert self.shape == a.shape
+            data = a.flat
         for i in range(n):
-            self.flat[i] = a.flat[i]
+            self.flat[i] = data[i]
 
 
 _unsigned2signed={
@@ -65,7 +70,7 @@ def get_embedded_from_uint(vtype, cvalue, start_end_bit):
     _check_embedded_params(vtype,ctype,start_end_bit)
     if np.issubdtype(vtype, np.signedinteger):
         uintvalue = np.right_shift((cvalue & get_mask(ctype, start_end_bit[0], start_end_bit[1])), ctype(start_end_bit[1]))
-        if np.right_shift(uintvalue, ctype(start_end_bit[0]-start_end_bit[1]-1)) == 0:
+        if np.right_shift(uintvalue, ctype(start_end_bit[0]-start_end_bit[1])) == 0:
             return vtype(uintvalue)
         else:
             uintvalue = uintvalue | get_imask(ctype, start_end_bit[0]-start_end_bit[1],0)
