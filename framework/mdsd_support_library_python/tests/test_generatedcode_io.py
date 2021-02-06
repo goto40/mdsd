@@ -1,8 +1,6 @@
-import mdsd.item_support as support
 import mdsd.item_io as io
 from items.Point import *
 import numpy as np
-import pytest
 
 
 def test_basic():

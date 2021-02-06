@@ -30,24 +30,33 @@ from typing import Sequence, Union
             f.write("class {}:\n".format(i.name))
             for a in i.attributes:
                 if a.is_embedded():
+                    rawtype = a.type
+                    if textx_isinstance(a.type, mm["Enum"]):
+                        rawtype = a.type.type
                     if textx_isinstance(a, mm["ScalarAttribute"]):
-                        rawtype = a.type
-                        if textx_isinstance(a.type, mm["Enum"]):
-                            rawtype = a.type.type
+                        # SCALAR EMBEDDED
+                        # --------------------------------------------------------------
                         start_end_bit = get_start_end_bit(a)
                         c = get_container(a)
                         f.write(f"    @property\n")
                         f.write(f"    def {a.name}(self):\n")
-                        f.write(f"        return get_embedded_from_uint({fqn(a.type)}, {c.name},[{start_end_bit[0]},{start_end_bit[0]}])\n")
+                        f.write(f"        ret = get_embedded_from_uint({fqn(rawtype)}, {c.name},[{start_end_bit[0]},{start_end_bit[0]}])\n")
+                        if textx_isinstance(a.type, mm["Enum"]):
+                            f.write(f"        v = {fqn(a.type)}(v)\n")
+                        f.write(f"        return ret\n")
                         f.write(f"\n")
                         f.write(f"    @{a.name}.setter\n")
                         f.write(f"    def {a.name}(self, v):\n")
-                        f.write(f"        assert isinstance(v, {fqn(a.type)})\n")
                         if textx_isinstance(a.type, mm["Enum"]):
                             f.write(f"        v = v.value\n")
-                        f.write(f"        self.{c.name} = (self.{c.name} ... TODO\n")
+                        f.write(f"        assert isinstance(v, {fqn(rawtype)})\n")
+                        f.write(f"        self.{c.name} = set_embedded_in_uint(v, {c.name},[{start_end_bit[0]},{start_end_bit[0]}])\n")
                         f.write(f"\n")
+                        # --------------------------------------------------------------
                     elif textx_isinstance(a, mm["ArrayAttribute"]):
+                        # ARRAY EMBEDDED
+                        # --------------------------------------------------------------
+                        # --------------------------------------------------------------
                         pass
                     else:
                         raise Exception("unexpected type")

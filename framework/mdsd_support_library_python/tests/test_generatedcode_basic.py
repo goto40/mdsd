@@ -1,4 +1,3 @@
-import mdsd.item_support as support
 from items.Point import *
 from items.Polygon import *
 from items.Line import *
@@ -27,6 +26,7 @@ def test_basic_illegal_field():
     p.x=3
     with pytest.raises(Exception,match=".*Illegal.*new_field.*"):
         p.new_field=4
+
 
 def test_basic_typecheck_for_arrays():
     t=ColoredTriangle()
@@ -71,6 +71,7 @@ def test_basic_variant():
     m.payload.header.n=2
     support.adjust_array_sizes_and_variants(m.payload)
     assert len(m.payload.points)==2
+
 
 def test_arrays():
     i = Image()

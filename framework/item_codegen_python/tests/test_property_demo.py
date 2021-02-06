@@ -82,6 +82,8 @@ def test_property_demo():
     p.flags = 0
     p.mySeason = Season.WINTER
     assert p.mySeason == Season.WINTER
+    p.mySeason = Season(2)
+    assert p.mySeason == Season.SUMMER
     p.flags = 4
 
     with pytest.raises(Exception):
