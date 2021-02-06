@@ -18,7 +18,8 @@ def generate_py_for_struct(struct_obj, output_file):
             f.write("""# generated code
 from dataclasses import dataclass
 import numpy as np
-import mdsd_support_library.item_support as support
+import mdsd.item_support as support
+from mdsd.common import get_embedded_from_uint
 from typing import Sequence, Union
 """)
             for r in get_referenced_elements_of_struct(struct_obj):
@@ -34,26 +35,18 @@ from typing import Sequence, Union
                         if textx_isinstance(a.type, mm["Enum"]):
                             rawtype = a.type.type
                         start_end_bit = get_start_end_bit(a)
-                        f.write(
-f'''
-    @property
-    def {a.name}(self):
-        return TPDP
-    
-    @{a.name}.setter
-    def {a.name}(self, v):
-        assert isinstance(v, {fqn(a.type)})
-''')
+                        c = get_container(a)
+                        f.write(f"    @property\n")
+                        f.write(f"    def {a.name}(self):\n")
+                        f.write(f"        return get_embedded_from_uint({fqn(a.type)}, {c.name},[{start_end_bit[0]},{start_end_bit[0]}])\n")
+                        f.write(f"\n")
+                        f.write(f"    @{a.name}.setter\n")
+                        f.write(f"    def {a.name}(self, v):\n")
+                        f.write(f"        assert isinstance(v, {fqn(a.type)})\n")
                         if textx_isinstance(a.type, mm["Enum"]):
-                            f.write(
-'''
-        v = v.value
-''')
-                        f.write(
-f'''
-        self.{get_container(a).name} = (self.{get_container(a).name} ... TODO
-
-''')
+                            f.write(f"        v = v.value\n")
+                        f.write(f"        self.{c.name} = (self.{c.name} ... TODO\n")
+                        f.write(f"\n")
                     elif textx_isinstance(a, mm["ArrayAttribute"]):
                         pass
                     else:
