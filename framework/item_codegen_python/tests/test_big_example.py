@@ -12,24 +12,17 @@ def test_big_example():
     mm = metamodel_for_language("item")
     assert mm is not None
 
-    inpath = join(this_folder, "model")
+    inpath = join(this_folder, "../../mdsd_support_library_common/model")
 
     model = mm.model_from_file(join(inpath, "big_example.item"))
     assert model is not None
-
-    outpath = join(this_folder, "src-gen")
-    gen = generator_for_language_target("item", "python")
-
-    if exists(outpath):
-        rmtree(outpath)
-    mkdir(outpath)
-    gen(mm, model, output_path=outpath, overwrite=True, debug=False)
-
-    refpath = join(inpath, "ref")
+    refpath = join(this_folder, "model","ref")
 
     structs = get_children_of_type("Struct", model)
     enums = get_children_of_type("Enum", model)
     constants = get_children_of_type("Constants", model)
+
+    outpath = join(this_folder, "../src-gen")
 
 #    for s in structs + enums + constants:
 #        check_file(
