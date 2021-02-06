@@ -56,7 +56,7 @@ from typing import Sequence, Union
                     elif textx_isinstance(a, mm["ArrayAttribute"]):
                         # ARRAY EMBEDDED
                         # --------------------------------------------------------------
-                        f.write(f"# TODO {a.name}")
+                        f.write(f"# TODO {a.name}\n")
                         # --------------------------------------------------------------
                         pass
                     else:
