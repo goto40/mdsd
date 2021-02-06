@@ -21,8 +21,20 @@ class ArrayLike:
         self.mytype = mytype
         self.shape = shape
 
+    def _flatten_index(self, idx):
+        assert len(idx) == len(self.shape)
+        idx0 = 0
+        f = 1
+        for k in range(len(idx)):
+            idx0 += idx[-1 - k] * f
+            f *= self.shape[-1 - k]
+        return idx0
+
     def __getitem__(self, *idx):
-        idx0=reduce(lambda a,b: a*b, idx) #error
+        if len(idx)==1:
+            idx0 = idx[0]
+        else:
+            idx0 = self._flatten_index(idx)
         return self.getter(idx0)
 
     def __setitem__(self, *args):
@@ -30,7 +42,10 @@ class ArrayLike:
         value = args[-1]
         idx = args[0:-1]
         assert isinstance(value, self.mytype)
-        idx0=reduce(lambda a,b: a*b, idx) # error
+        if len(idx)==1:
+            idx0 = idx[0]
+        else:
+            idx0 = self._flatten_index(idx)
         self.setter(idx0, value)
 
     def copy_from(self, a):

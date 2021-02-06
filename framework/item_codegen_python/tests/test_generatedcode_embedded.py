@@ -12,13 +12,11 @@ def test_embedded1():
         assert s.a3_1[k] == (k%8)
 
     x = [np.int8((a%8)-4) for a in range(16)]
-    x.reverse()
-    print(x)
+    #print(x)
     s.a3_2 = x
     for k in range(16):
-        print(s.a3_2[k])
+        #print(s.a3_2[k])
         assert s.a3_2[k] == x[k]
-
 
     assert s.s2_1 == np.uint8(1)
     assert s.s2_2 == np.int8(-1)
