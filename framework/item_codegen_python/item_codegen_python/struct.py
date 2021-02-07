@@ -93,6 +93,15 @@ from functools import reduce
                             f.write("    {} : {}={}()\n".format(a.name, fqn(a.type), fqn(a.type)))
                         else:
                             f.write("    {} : {}={}()\n".format(a.name, fqn(a.type), fqn(a.type)))
+                        if hasattr(a, 'type') and a.type.name == 'char':
+                            f.write(f"    @property\n")
+                            f.write(f"    def {a.name}_as_str(self):\n")
+                            f.write(f"        return chr(self.{a.name})\n")
+                            f.write(f"\n")
+                            f.write(f"    @{a.name}_as_str.setter\n")
+                            f.write(f"    def {a.name}_as_str(self, v):\n")
+                            f.write(f"        self.{a.name} = np.uint8(ord(v))\n")
+                            f.write(f"\n")
                     elif textx_isinstance(a, mm["ArrayAttribute"]):
                         if textx_isinstance(a.type, mm["RawType"]):
                             f.write(
