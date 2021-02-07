@@ -5,6 +5,6 @@ struct Info {
     if (version>1) scalar x: built_in.uint32 // expected: restricted attributes may not be used as container
     embedded scalar r: built_in.uint2
     embedded array c: built_in.uint3[3]
-    embedded scalar r: built_in.uint21
+    embedded scalar d: built_in.uint21
     array ok: built_in.float[r]
 }

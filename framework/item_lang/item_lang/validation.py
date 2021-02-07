@@ -91,6 +91,17 @@ def check_Struct(s):
             textx_assert(n<=d.numberOfPropRestriction.max,s,
                          f'not more than {d.numberOfPropRestriction.max} of property "{d.name}" allowed')
 
+    # unique names:
+    all_attribute_names = list(map(lambda x:x.name, s.attributes))
+    all_attribute_names_unique = set(all_attribute_names)
+    if len(all_attribute_names) != len(all_attribute_names_unique):
+        idx = 0
+        while len(all_attribute_names)>0:
+            first = all_attribute_names[0]
+            del all_attribute_names[0]
+            textx_assert(first in all_attribute_names_unique, s.attributes[idx], f'attribute name {first} is not unique')
+            all_attribute_names_unique.remove(first)
+            idx += 1
 
 
 def check_Property(p):

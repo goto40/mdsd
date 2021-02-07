@@ -5,5 +5,5 @@ struct Info {
     scalar x: built_in.uint32 // expected: unexpected: no fixed dimension available for c
     embedded scalar r: built_in.uint2
     embedded array c: built_in.uint3[n]
-    embedded scalar r: built_in.uint20
+    embedded scalar d: built_in.uint20
 }
