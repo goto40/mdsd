@@ -30,11 +30,11 @@ cd framework/mdsd_support_library_cpp
 cd -
 }
 
-#{
-#cd framework/mdsd_support_library_python
-#./run_tests.sh || exit 1
-#cd -
-#}
+{
+cd framework/mdsd_support_library_python
+./run_tests.sh || exit 1
+cd -
+}
 
 #{
 #cd framework/project_tool
