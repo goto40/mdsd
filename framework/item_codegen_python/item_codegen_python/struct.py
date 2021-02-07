@@ -21,7 +21,7 @@ import numpy as np
 import mdsd.item_support as support
 from mdsd.common import get_embedded_from_uint, ArrayLike
 from mdsd.common import set_embedded_in_uint
-from mdsd.common import ArrayLike
+from mdsd.common import ArrayLike, str2array, array2str
 from typing import Sequence, Union
 from functools import reduce
 """)
@@ -87,7 +87,7 @@ from functools import reduce
                         pass
                     else:
                         raise Exception("unexpected type")
-                else:
+                else:  # not embedded
                     if textx_isinstance(a, mm["ScalarAttribute"]):
                         if textx_isinstance(a.type, mm["RawType"]):
                             f.write("    {} : {}={}()\n".format(a.name, fqn(a.type), fqn(a.type)))
@@ -106,6 +106,16 @@ from functools import reduce
                                     a.name, fqn(a.type)
                                 )
                             )
+                        if hasattr(a, 'type') and a.type.name == 'char':
+                            f.write(f"    @property\n")
+                            f.write(f"    def {a.name}_as_str(self):\n")
+                            f.write(f"        return array2str(self.{a.name})\n")
+                            f.write(f"\n")
+                            f.write(f"    @{a.name}_as_str.setter\n")
+                            f.write(f"    def {a.name}_as_str(self, v):\n")
+                            f.write(f"        self.{a.name} = str2array(v, len(self.{a.name}))\n")
+                            f.write(f"\n")
+
                     elif textx_isinstance(a, mm["VariantAttribute"]):
                         f.write(
                             "    {} : Union[{}]=None\n".format(
@@ -118,7 +128,8 @@ from functools import reduce
             f.write("        support.adjust_array_sizes_and_variants(self)\n")
             f.write(f'''    def __setattr__(self, attribute, value):
         if not attribute in self._meta:
-            raise Exception("Illegal field {{}} in {{}}".format(attribute,self.__class__.__name__))
+            super({i.name}, self).__setattr__(attribute, value)
+            # raise Exception("Illegal field {{}} in {{}}".format(attribute,self.__class__.__name__))
         else:
             if self._meta[attribute]["is_embedded"]:
                 super({i.name}, self).__setattr__(attribute, value)
@@ -165,6 +176,10 @@ from functools import reduce
                         f.write('"is_struct":True,')
                     f.write(f'"is_embedded":{tf(a.is_embedded())},')
                     f.write('"get_type": lambda: {}, '.format(fqn(a.type)))
+                    if hasattr(a, 'type') and a.type.name == "char":
+                        f.write('"has_char_content":True,')
+                    else:
+                        f.write('"has_char_content":False,')
                 elif textx_isinstance(a, mm["ArrayAttribute"]):
                     f.write('"is_scalar":False,')
                     f.write('"is_variant":False,')
@@ -183,6 +198,10 @@ from functools import reduce
                         f.write('"is_struct":True,')
                     f.write(f'"is_embedded":{tf(a.is_embedded())},')
                     f.write('"get_type": lambda: {}, '.format(fqn(a.type)))
+                    if hasattr(a, 'type') and a.type.name == "char":
+                        f.write('"has_char_content":True,')
+                    else:
+                        f.write('"has_char_content":False,')
                 else:
                     raise Exception("unexpected type constellation")
                 f.write("},\n")

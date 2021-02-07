@@ -132,6 +132,11 @@ def check_ScalarAttribute(a):
                 a.name,num_bits,get_bits(a.type)), **get_location(a))
 
 
+def check_ArrayAttribute(a):
+    if a.type.name == 'char':
+        textx_assert( len(a.dims) == 1, a, "no multidimensional strings allowed")
+
+
 def check_VariantMapping(mapping):
     mm = get_metamodel(mapping)
     selector_type = mapping.parent.variant_selector.ref.type

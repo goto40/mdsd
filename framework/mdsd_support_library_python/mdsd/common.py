@@ -2,6 +2,24 @@ import numpy as np
 from functools import reduce
 
 
+def array2str(a):
+    idx = np.where(a==np.uint8(0))
+    idx = idx[0]
+    if len(idx)>0:
+        return a[0:idx[0]].tobytes().decode('utf-8')
+    else:
+        return a.tobytes().decode('utf-8')
+
+
+def str2array(t, n):
+    x = np.frombuffer(t.encode('utf-8'), dtype=np.uint8)
+    if len(x)>n:
+        return x[0:n]
+    elif len(x<n):
+        return np.concatenate((x,np.zeros((n-len(x)))))
+    else:
+        return x
+
 def get_mask(thetype, bfrom, bto):
     return np.left_shift(thetype(np.left_shift(thetype(1) , thetype(bfrom-bto+1)) - 1), thetype(bto))
 

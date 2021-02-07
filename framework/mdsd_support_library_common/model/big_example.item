@@ -77,7 +77,7 @@ struct EmbeddedArrayDim {
     scalar x: built_in.uint32
     embedded scalar r: built_in.uint2
     embedded array c: built_in.uint3[3]
-    embedded scalar r: built_in.uint21
+    embedded scalar d: built_in.uint21
     array ok: built_in.float[r]
 }
 
@@ -93,7 +93,7 @@ struct EmbeddedArrayDim2 {
     embedded scalar s14_2: built_in.sint14
     scalar container3: built_in.uint32
     embedded scalar s_onoff: OnOff
-    embedded array s_onoff: OnOff[31]
+    embedded array a_onoff: OnOff[31]
 }
 
 struct NDPoint {

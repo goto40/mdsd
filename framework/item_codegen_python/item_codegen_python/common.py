@@ -39,6 +39,7 @@ def create_folder_and_return_output_filename(obj, base_dir, overwrite):
 
 _m = {
     "uint1": "bool",
+    "char": "np.uint8",
     "float": "np.float32",
     "double": "np.float64"
 }

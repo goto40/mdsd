@@ -1,0 +1,8 @@
+package test
+
+struct Info {
+    array text1: built_in.char[100] (.defaultStringValue="This is text1")
+    scalar n: built_in.uint32 (.defaultValue=16)
+    array text2: built_in.char[n][3] (.defaultStringValue="This is text2 ABCDEFGHIJKL") // expected: .*no multidimensional strings allowed.*
+    scalar c: built_in.char (.defaultStringValue="P")
+}
