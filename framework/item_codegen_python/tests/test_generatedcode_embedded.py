@@ -1,4 +1,4 @@
-import mdsd.item_io as io
+import mdsd.item.io as io
 from big_example.EmbeddedArrayDim2 import *
 import numpy as np
 

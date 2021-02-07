@@ -13,4 +13,4 @@ def test_string1():
     assert i.text2_as_str == "ABC"
 
     i.c_as_str = 'X'
-    assert i.text2_as_str == 'X'
+    assert i.c_as_str == 'X'
