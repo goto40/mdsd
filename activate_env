@@ -5,8 +5,10 @@ then
     virtualenv venv -p python3 || exit 1    
     source venv/bin/activate || exit 1
     pip install -r requirements_dev.txt || exit 1 
+    my_firsttime=true
 else
     source venv/bin/activate || exit 1
+    my_firsttime=false
 fi
 
 export CMAKE_INCLUDE_PATH=${VIRTUAL_ENV}/include
@@ -15,13 +17,15 @@ export CPATH=$CPATH:${VIRTUAL_ENV}/include
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${VIRTUAL_ENV}/lib
 export LIBRARY_PATH=$LIBRARY_PATH:${VIRTUAL_ENV}/lib
 
-pip install -e framework/codegen_test_support || exit 1
-pip install -e framework/item_lang || exit 1
-pip install -e framework/item_codegen_cpp || exit 1
-pip install -e framework/item_codegen_python || exit 1
-pip install -e framework/algo_lang || exit 1
-pip install -e framework/mdsd_support_library_python || exit 1
-pip install -e framework/project_tool || exit 1
+if $my_firsttime ; then
+	pip install -e framework/codegen_test_support || exit 1
+	pip install -e framework/item_lang || exit 1
+	pip install -e framework/item_codegen_cpp || exit 1
+	pip install -e framework/item_codegen_python || exit 1
+	pip install -e framework/algo_lang || exit 1
+	pip install -e framework/mdsd_support_library_python || exit 1
+	pip install -e framework/project_tool || exit 1
+fi
 
 shopt -s expand_aliases
 
@@ -39,6 +43,9 @@ fi
 
 echo "alias cmake=mycmake" > ${VIRTUAL_ENV}/bin/custom_settings.sh
 source ${VIRTUAL_ENV}/bin/custom_settings.sh
+
+if $my_firsttime ;
+then
 {
     rm -rf framework/mdsd_support_library_cpp/build
     mkdir framework/mdsd_support_library_cpp/build
@@ -46,6 +53,7 @@ source ${VIRTUAL_ENV}/bin/custom_settings.sh
     mycmake .. && make install
     cd -
 }
+fi
 echo "ok. environment activated. exit shell to exit environment..."
 if [[ ! -z "$1" ]];
 then
