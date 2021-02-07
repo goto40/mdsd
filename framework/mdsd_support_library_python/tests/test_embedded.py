@@ -25,6 +25,10 @@ def test_uint_from():
     assert get_embedded_from_uint(np.uint8, np.uint32(0xf0ffffff),[31-4,31-4]) == np.uint8(0x0);
     assert get_embedded_from_uint(np.uint8, np.uint32(0xf0ffffff),[31-3,31-3]) == np.uint8(0x1);
 
+    assert get_embedded_from_uint(bool, np.uint32(0xffffffff),[31,31])
+    assert not get_embedded_from_uint(bool, np.uint32(0x0fffffff),[31,31])
+    assert isinstance(get_embedded_from_uint(bool, np.uint32(0xffffffff),[31,31]), bool)
+
     assert get_embedded_from_uint(np.int8, np.uint32(0xffffffff),[12,10]) == np.int8(-1);
 
     c = set_embedded_in_uint(np.int8(-3), np.uint64(0),[15,10])

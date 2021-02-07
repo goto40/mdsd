@@ -23,6 +23,7 @@ from mdsd.common import get_embedded_from_uint, ArrayLike
 from mdsd.common import set_embedded_in_uint
 from mdsd.common import ArrayLike
 from typing import Sequence, Union
+from functools import reduce
 """)
             for r in get_referenced_elements_of_struct(struct_obj):
                 f.write('import {}\n'.format(module_name(r)))
@@ -63,11 +64,15 @@ from typing import Sequence, Union
                         f.write(f"    @property\n")
                         f.write(f"    def {a.name}(self):\n")
                         f.write(f"        def getter(idx):\n")
+                        f.write(f"            assert idx >= 0\n")
+                        f.write(f"            assert idx < reduce(lambda a, b: a * b, {i.name}._meta['{a.name}']['get_dim_nd'](self))\n")
                         f.write(f"            ret = get_embedded_from_uint({fqn(rawtype)}, self.{c.name},[{start_end_bit[0]}-idx*{rawtype.bits},{start_end_bit[0]}+1-(idx+1)*{rawtype.bits}])\n")
                         if textx_isinstance(a.type, mm["Enum"]):
                             f.write(f"            ret = {fqn(a.type)}(ret)\n")
                         f.write(f"            return ret\n")
                         f.write(f"        def setter(idx, v):\n")
+                        f.write(f"            assert idx >= 0\n")
+                        f.write(f"            assert idx < reduce(lambda a, b: a * b, {i.name}._meta['{a.name}']['get_dim_nd'](self))\n")
                         f.write(f"            assert isinstance(v, {fqn(a.type)})\n")
                         if textx_isinstance(a.type, mm["Enum"]):
                             f.write(f"            v = v.value\n")
@@ -152,7 +157,7 @@ from typing import Sequence, Union
                     f.write('"is_scalar":True,')
                     f.write('"is_variant":False,')
                     f.write('"is_array":False,')
-                    if textx_isinstance(a.type, mm["RawType"]):
+                    if textx_isinstance(a.type, mm["RawType"]) or textx_isinstance(a.type, mm["Enum"]):
                         f.write('"is_rawtype":True,')
                         f.write('"is_struct":False,')
                     else:
@@ -170,7 +175,7 @@ from typing import Sequence, Union
                         f.write('"is_dynamic_array":True,')
                     f.write('"get_dim":lambda x:({}),'.format(a.render_formula(prefix="x.",**fp(struct_obj))))
                     f.write('"get_dim_nd":lambda x:({},),'.format(a.render_formula_comma_separated(prefix="x.", **fp(struct_obj))))
-                    if textx_isinstance(a.type, mm["RawType"]):
+                    if textx_isinstance(a.type, mm["RawType"]) or textx_isinstance(a.type, mm["Enum"]):
                         f.write('"is_rawtype":True,')
                         f.write('"is_struct":False,')
                     else:
