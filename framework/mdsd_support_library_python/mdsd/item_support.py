@@ -27,7 +27,7 @@ def init_visitor(c):
                 else: 
                     self.visit_scalar(struct,attr,meta)
             elif meta["is_array"]:
-                if meta["is_struct"]: 
+                if meta["is_struct"]:
                     if getattr(struct, attr) is None or len(getattr(struct, attr).flat)!=meta["get_dim"](struct):
                         setattr(struct,attr,[get_type(struct,attr, meta)()]*meta["get_dim"](struct))
                 else: 
@@ -40,7 +40,9 @@ def init_visitor(c):
                                 str(type(x)), attr, str(type(struct))
                             ))
                     self.visit_array_struct(struct,attr,meta)
-                else: 
+                elif meta["has_char_content"] and hasattr(self, "visit_string"):
+                    self.visit_string(struct, attr+"_as_str",attr, meta)
+                else:
                     self.visit_array(struct,attr,meta)
             else:
                 raise Error("unexpected: not a scalar and not an array.")
@@ -78,7 +80,9 @@ def const_visitor(c):
                                 str(type(x)), attr, str(type(struct))
                             ))
                     self.visit_array_struct(struct,attr,meta)
-                else: 
+                elif meta["has_char_content"] and hasattr(self, "visit_string"):
+                    self.visit_string(struct, attr + "_as_str", attr, meta)
+                else:
                     self.visit_array(struct,attr,meta)
             else:
                 raise Exception("unexpected: not a scalar and not an array.")
@@ -88,7 +92,7 @@ def const_visitor(c):
 
 
 def accept(struct,v):
-    for k in struct._meta:
+    for k in struct._meta_order:
         v.visit(struct,k,struct._meta[k])
 
 

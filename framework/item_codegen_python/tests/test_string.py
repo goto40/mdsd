@@ -1,6 +1,7 @@
 from big_example.Info import Info
 from mdsd.item_support import adjust_array_sizes_and_variants
 
+
 def test_string1():
     i = Info()
     i.text1_as_str = "Hello"
@@ -13,4 +14,3 @@ def test_string1():
 
     i.c_as_str = 'X'
     assert i.text2_as_str == 'X'
-

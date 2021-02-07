@@ -137,10 +137,11 @@ from functools import reduce
             f.write("        support.adjust_array_sizes_and_variants(self)\n")
             f.write(f'''    def __setattr__(self, attribute, value):
         if not attribute in self._meta:
-            super({i.name}, self).__setattr__(attribute, value)
-            # raise Exception("Illegal field {{}} in {{}}".format(attribute,self.__class__.__name__))
+            raise Exception("Illegal field {{}} in {{}}".format(attribute,self.__class__.__name__))
         else:
-            if self._meta[attribute]["is_embedded"]:
+            if len(self._meta[attribute])==0:
+                super({i.name}, self).__setattr__(attribute, value)
+            elif self._meta[attribute]["is_embedded"]:
                 super({i.name}, self).__setattr__(attribute, value)
             elif value is None:
                 self.__dict__[attribute] = value
@@ -160,8 +161,15 @@ from functools import reduce
                 self.__dict__[attribute] = np.array(value, dtype=self._meta[attribute]["get_type"]())
 ''')
 
+            f.write("\n    _meta_order = [\n")
+            for a in i.attributes:
+                f.write(f"        '{a.name}',\n")
+            f.write("\n    ]\n")
             f.write("\n    _meta = {\n")
             for a in i.attributes:
+                if hasattr(a, 'type') and a.type.name == 'char':
+                    f.write(f'        "{a.name}_as_str": {{}},\n')
+
                 f.write('        "{}": {{ '.format(a.name))
                 f.write('"name":"{}",'.format(a.name))
                 if textx_isinstance(a, mm["VariantAttribute"]):
