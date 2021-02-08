@@ -1,13 +1,14 @@
-from _tracemalloc import start
-
 from textx import (get_metamodel, get_children_of_type,
                    textx_isinstance)
 from item_codegen_python.common import (fqn, get_variant_types,
                                         get_variant_type_map,
-                                        module_name, fp, tf)
+                                        module_name, fp, tf,
+                                        get_property_constexpr)
 from item_lang.common import (obj_is_new_than_file,
                               get_referenced_elements_of_struct,
                               get_container, get_start_end_bit)
+from item_lang.properties import (get_all_possible_properties, has_property,
+                                  get_property_type)
 import numpy as np  # used via "eval" (see below, get_mask...)
 
 
@@ -229,5 +230,19 @@ from functools import reduce
                         f.write('"has_char_content":False,')
                 else:
                     raise Exception("unexpected type constellation")
+
+                pdefs = get_all_possible_properties(a)
+                pdefs = sorted(pdefs.keys())
+
+                for pname in pdefs:
+                    if has_property(a, pname):
+                        f.write(f'"_has_{pname}":True,')
+                        f.write('"{}":lambda:{}({}),'.format(pname,
+                            fqn(get_property_type(a, pname)),
+                            get_property_constexpr(a, pname)
+                        ))
+                    else:
+                        f.write(f'"_has_{pname}":False,')
+
                 f.write("},\n")
             f.write("    } # end of _meta\n")

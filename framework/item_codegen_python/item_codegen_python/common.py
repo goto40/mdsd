@@ -83,6 +83,8 @@ def get_property_constexpr(a, pname):
 
 
 def fqn(t):
+    if t is str:
+        return "str"
     mm = get_metamodel(t)
     if textx_isinstance(t, mm["RawType"]):
         if t.name in _m:
@@ -115,3 +117,12 @@ def tf(v):
         return "True"
     else:
         return "False"
+
+
+def get_property_constexpr(a, pname):
+    t = get_property_type(a, pname)
+    v = get_property(a, pname)
+    if t is str:
+        return "\"{}\"".format(v)
+    else:
+        return "{}".format(v)
