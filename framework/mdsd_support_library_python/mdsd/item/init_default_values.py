@@ -9,7 +9,9 @@ class init_default_values_visitor:
         pass
 
     def visit_scalar(self, struct, attr, meta):
-        if meta["__has_defaultValue"]:
+        if meta["_has_char_content"] and meta["__has_defaultStringValue"]:
+            setattr(struct,attr+"_as_str",meta["defaultStringValue"]())
+        elif meta["__has_defaultValue"]:
             setattr(struct, attr, meta["defaultValue"]())
 
     def visit_scalar_struct(self, struct, attr, meta):

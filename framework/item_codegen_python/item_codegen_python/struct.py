@@ -20,6 +20,7 @@ def generate_py_for_struct(struct_obj, output_file):
 from dataclasses import dataclass
 import numpy as np
 import mdsd.item_support as support
+from mdsd.item.init_default_values import init_default_values
 from mdsd.common import get_embedded_from_uint, ArrayLike
 from mdsd.common import set_embedded_in_uint
 from mdsd.common import ArrayLike, str2array, array2str
@@ -135,7 +136,7 @@ from functools import reduce
                     else:
                         raise Exception("unexpected type")
             f.write("\n    def __post_init__(self):\n")
-            f.write("        support.adjust_array_sizes_and_variants(self)\n")
+            f.write("        init_default_values(self)\n")
             f.write(f'''    def __setattr__(self, attribute, value):
         if not attribute in self._meta:
             raise Exception("Illegal field {{}} in {{}}".format(attribute,self.__class__.__name__))
