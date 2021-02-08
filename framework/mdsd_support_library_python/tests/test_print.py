@@ -14,9 +14,9 @@ def test_string_with_print():
 
     out = io.StringIO()
     printto(i,out)
-    print(out.getvalue())
-    assert out.getvalue().index(r'"Hello \"Test\""')>0
-    assert out.getvalue().count('\n') == 1+len(i._meta_order)
+    text=out.getvalue()
+    assert text.index(r'"Hello \"Test\""')>0
+    assert text.count('\n') == 1+len(i._meta_order)
 
 
 def test_versioned_type_with_print():

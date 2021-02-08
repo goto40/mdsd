@@ -9,19 +9,19 @@ class init_default_values_visitor:
         pass
 
     def visit_scalar(self, struct, attr, meta):
-        if meta["_has_defaultValue"]:
+        if meta["__has_defaultValue"]:
             setattr(struct, attr, meta["defaultValue"]())
 
     def visit_scalar_struct(self, struct, attr, meta):
         accept(getattr(struct,attr), self)
 
     def visit_array(self, struct, attr, meta):
-        if meta["_has_defaultValue"]:
-            v = np.fill(getattr(struct, attr).shape, dtype=meta["get_type"]())
+        if meta["__has_defaultValue"]:
+            v = np.fill(getattr(struct, attr).shape, dtype=meta["_get_type"]())
             setattr(struct, attr, v)
 
     def visit_string(self, struct, attr, rawattr, meta):
-        if meta["_has_defaultStringValue"]:
+        if meta["__has_defaultStringValue"]:
             setattr(struct,attr,meta["defaultStringValue"]())
         else:
             self.visit_array(struct, rawattr, meta)

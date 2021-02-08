@@ -7,7 +7,7 @@ class copy_from_mem_visitor:
         self.mem = mem
         self.pos = 0
     def visit_scalar(self,struct,attr,meta):
-        t = meta['get_type']()
+        t = meta['_get_type']()
         n = np.dtype(t).itemsize
         if self.pos+n>len(self.mem):
             raise Exception("out of mem")
@@ -17,8 +17,8 @@ class copy_from_mem_visitor:
     def visit_scalar_struct(self,struct,attr,meta):
         accept(getattr(struct,attr), self)
     def visit_array(self,struct,attr,meta):
-        t = meta['get_type']()
-        d = meta['get_dim'](struct)
+        t = meta['_get_type']()
+        d = meta['_get_dim'](struct)
         n = np.dtype(t).itemsize
         if self.pos+d*n>len(self.mem):
             raise Exception("out of mem")
@@ -36,7 +36,7 @@ class copy_to_mem_visitor:
         self.mem = mem
         self.pos = 0
     def visit_scalar(self,struct,attr,meta):
-        t = meta['get_type']()
+        t = meta['_get_type']()
         n = np.dtype(t).itemsize
         if self.pos+n>len(self.mem):
             raise Exception("out of mem")
@@ -48,8 +48,8 @@ class copy_to_mem_visitor:
     def visit_scalar_struct(self,struct,attr,meta):
         accept(getattr(struct,attr), self)
     def visit_array(self,struct,attr,meta):
-        t = meta['get_type']()
-        d = meta['get_dim'](struct)
+        t = meta['_get_type']()
+        d = meta['_get_dim'](struct)
         n = np.dtype(t).itemsize
         if self.pos+d*n>len(self.mem):
             raise Exception("out of mem")
@@ -77,14 +77,14 @@ class count_bytes_visitor:
     def __init__(self):
         self.count = 0
     def visit_scalar(self,struct,attr,meta):
-        t = meta['get_type']()
+        t = meta['_get_type']()
         n = np.dtype(t).itemsize
         self.count += n
     def visit_scalar_struct(self,struct,attr,meta):
         accept(getattr(struct,attr), self)
     def visit_array(self,struct,attr,meta):
-        t = meta['get_type']()
-        d = meta['get_dim'](struct)
+        t = meta['_get_type']()
+        d = meta['_get_dim'](struct)
         n = np.dtype(t).itemsize
         self.count += d*n
     def visit_array_struct(self,struct,attr,meta):

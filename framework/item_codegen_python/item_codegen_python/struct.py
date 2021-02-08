@@ -142,24 +142,24 @@ from functools import reduce
         else:
             if len(self._meta[attribute])==0:
                 super({i.name}, self).__setattr__(attribute, value)
-            elif self._meta[attribute]["is_embedded"]:
+            elif self._meta[attribute]["_is_embedded"]:
                 super({i.name}, self).__setattr__(attribute, value)
             elif value is None:
                 self.__dict__[attribute] = value
-            elif self._meta[attribute]["is_variant"]:
-                if isinstance(value, self._meta[attribute]["get_type"]()):
+            elif self._meta[attribute]["_is_variant"]:
+                if isinstance(value, self._meta[attribute]["_get_type"]()):
                     self.__dict__[attribute] = value
                 else:
                     raise Exception("Illegal value of type {{}} for field {{}}".format(value.__class__.__name__,attribute))
-            elif self._meta[attribute]["is_scalar"]:
-                if isinstance(value, self._meta[attribute]["get_type"]()):
+            elif self._meta[attribute]["_is_scalar"]:
+                if isinstance(value, self._meta[attribute]["_get_type"]()):
                     self.__dict__[attribute] = value
-                elif self._meta[attribute]["is_rawtype"]:
-                    self.__dict__[attribute] = self._meta[attribute]["get_type"]()(value)
+                elif self._meta[attribute]["_is_rawtype"]:
+                    self.__dict__[attribute] = self._meta[attribute]["_get_type"]()(value)
                 else:
                     raise Exception("Illegal value of type {{}} for field {{}}".format(value.__class__.__name__,attribute))
             else:
-                self.__dict__[attribute] = np.array(value, dtype=self._meta[attribute]["get_type"]())
+                self.__dict__[attribute] = np.array(value, dtype=self._meta[attribute]["_get_type"]())
 ''')
 
             f.write("\n    _meta_order = [\n")
@@ -172,62 +172,62 @@ from functools import reduce
                     f.write(f'        "{a.name}_as_str": {{}},\n')
 
                 f.write('        "{}": {{ '.format(a.name))
-                f.write('"name":"{}",'.format(a.name))
+                f.write('"_name":"{}",'.format(a.name))
                 if a.if_attr is None:
-                    f.write('"has_if_restriction":False,')
-                    f.write('"if_restriction":lambda _: True,')
+                    f.write('"_has_if_restriction":False,')
+                    f.write('"_if_restriction":lambda _: True,')
                 else:
-                    f.write('"has_if_restriction":True,')
-                    f.write('"if_restriction":lambda s:{},'.format(
+                    f.write('"_has_if_restriction":True,')
+                    f.write('"_if_restriction":lambda s:{},'.format(
                         a.if_attr.predicate.render_formula(prefix="s.")
                     ))
                 if textx_isinstance(a, mm["VariantAttribute"]):
-                    f.write('"get_type_for": lambda s: {}[s.{}], '.format(get_variant_type_map(a),a.variant_selector.render_formula(**fp(struct_obj))))
-                    f.write('"is_scalar":True,')
-                    f.write('"is_variant":True,')
-                    f.write('"is_array":False,')
-                    f.write('"is_rawtype":False,')
-                    f.write('"is_struct":True,')
-                    f.write('"is_embedded":False,')
-                    f.write('"get_type": lambda: ({}), '.format(get_variant_types(a)))
+                    f.write('"_get_type_for": lambda s: {}[s.{}], '.format(get_variant_type_map(a),a.variant_selector.render_formula(**fp(struct_obj))))
+                    f.write('"_is_scalar":True,')
+                    f.write('"_is_variant":True,')
+                    f.write('"_is_array":False,')
+                    f.write('"_is_rawtype":False,')
+                    f.write('"_is_struct":True,')
+                    f.write('"_is_embedded":False,')
+                    f.write('"_get_type": lambda: ({}), '.format(get_variant_types(a)))
                 elif textx_isinstance(a, mm["ScalarAttribute"]):
-                    f.write('"is_scalar":True,')
-                    f.write('"is_variant":False,')
-                    f.write('"is_array":False,')
+                    f.write('"_is_scalar":True,')
+                    f.write('"_is_variant":False,')
+                    f.write('"_is_array":False,')
                     if textx_isinstance(a.type, mm["RawType"]) or textx_isinstance(a.type, mm["Enum"]):
-                        f.write('"is_rawtype":True,')
-                        f.write('"is_struct":False,')
+                        f.write('"_is_rawtype":True,')
+                        f.write('"_is_struct":False,')
                     else:
-                        f.write('"is_rawtype":False,')
-                        f.write('"is_struct":True,')
-                    f.write(f'"is_embedded":{tf(a.is_embedded())},')
-                    f.write('"get_type": lambda: {}, '.format(fqn(a.type)))
+                        f.write('"_is_rawtype":False,')
+                        f.write('"_is_struct":True,')
+                    f.write(f'"_is_embedded":{tf(a.is_embedded())},')
+                    f.write('"_get_type": lambda: {}, '.format(fqn(a.type)))
                     if hasattr(a, 'type') and a.type.name == "char":
-                        f.write('"has_char_content":True,')
+                        f.write('"_has_char_content":True,')
                     else:
-                        f.write('"has_char_content":False,')
+                        f.write('"_has_char_content":False,')
                 elif textx_isinstance(a, mm["ArrayAttribute"]):
-                    f.write('"is_scalar":False,')
-                    f.write('"is_variant":False,')
-                    f.write('"is_array":True,')
+                    f.write('"_is_scalar":False,')
+                    f.write('"_is_variant":False,')
+                    f.write('"_is_array":True,')
                     if a.has_fixed_size():
-                        f.write('"is_dynamic_array":False,')
+                        f.write('"_is_dynamic_array":False,')
                     else:
-                        f.write('"is_dynamic_array":True,')
-                    f.write('"get_dim":lambda x:({}),'.format(a.render_formula(prefix="x.",**fp(struct_obj))))
-                    f.write('"get_dim_nd":lambda x:({},),'.format(a.render_formula_comma_separated(prefix="x.", **fp(struct_obj))))
+                        f.write('"_is_dynamic_array":True,')
+                    f.write('"_get_dim":lambda x:({}),'.format(a.render_formula(prefix="x.",**fp(struct_obj))))
+                    f.write('"_get_dim_nd":lambda x:({},),'.format(a.render_formula_comma_separated(prefix="x.", **fp(struct_obj))))
                     if textx_isinstance(a.type, mm["RawType"]) or textx_isinstance(a.type, mm["Enum"]):
-                        f.write('"is_rawtype":True,')
-                        f.write('"is_struct":False,')
+                        f.write('"_is_rawtype":True,')
+                        f.write('"_is_struct":False,')
                     else:
-                        f.write('"is_rawtype":False,')
-                        f.write('"is_struct":True,')
-                    f.write(f'"is_embedded":{tf(a.is_embedded())},')
-                    f.write('"get_type": lambda: {}, '.format(fqn(a.type)))
+                        f.write('"_is_rawtype":False,')
+                        f.write('"_is_struct":True,')
+                    f.write(f'"_is_embedded":{tf(a.is_embedded())},')
+                    f.write('"_get_type": lambda: {}, '.format(fqn(a.type)))
                     if hasattr(a, 'type') and a.type.name == "char":
-                        f.write('"has_char_content":True,')
+                        f.write('"_has_char_content":True,')
                     else:
-                        f.write('"has_char_content":False,')
+                        f.write('"_has_char_content":False,')
                 else:
                     raise Exception("unexpected type constellation")
 
@@ -236,13 +236,13 @@ from functools import reduce
 
                 for pname in pdefs:
                     if has_property(a, pname):
-                        f.write(f'"_has_{pname}":True,')
+                        f.write(f'"__has_{pname}":True,')
                         f.write('"{}":lambda:{}({}),'.format(pname,
                             fqn(get_property_type(a, pname)),
                             get_property_constexpr(a, pname)
                         ))
                     else:
-                        f.write(f'"_has_{pname}":False,')
+                        f.write(f'"__has_{pname}":False,')
 
                 f.write("},\n")
             f.write("    } # end of _meta\n")
