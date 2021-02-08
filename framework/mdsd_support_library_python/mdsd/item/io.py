@@ -22,7 +22,7 @@ class copy_from_mem_visitor:
         n = np.dtype(t).itemsize
         if self.pos+d*n>len(self.mem):
             raise Exception("out of mem")
-        value = np.reshape(np.frombuffer(self.mem, t, d, self.pos),meta['get_dim_nd'](struct))
+        value = np.reshape(np.frombuffer(self.mem, t, d, self.pos),meta['_get_dim_nd'](struct))
         setattr(struct,attr,value)
         self.pos += d*n
     def visit_array_struct(self,struct,attr,meta):
@@ -40,7 +40,7 @@ class copy_to_mem_visitor:
         n = np.dtype(t).itemsize
         if self.pos+n>len(self.mem):
             raise Exception("out of mem")
-        value = np.array(getattr(struct,attr))  # , dtype=meta['get_type']()
+        value = np.array(getattr(struct,attr))  # , dtype=meta['_get_type']()
         b = value.tobytes()
         assert len(b) == n
         self.mem[self.pos:self.pos+n] = b
