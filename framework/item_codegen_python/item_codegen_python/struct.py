@@ -172,6 +172,14 @@ from functools import reduce
 
                 f.write('        "{}": {{ '.format(a.name))
                 f.write('"name":"{}",'.format(a.name))
+                if a.if_attr is None:
+                    f.write('"has_if_restriction":False,')
+                    f.write('"if_restriction":lambda _: True,')
+                else:
+                    f.write('"has_if_restriction":True,')
+                    f.write('"if_restriction":lambda s:{},'.format(
+                        a.if_attr.predicate.render_formula(prefix="s.")
+                    ))
                 if textx_isinstance(a, mm["VariantAttribute"]):
                     f.write('"get_type_for": lambda s: {}[s.{}], '.format(get_variant_type_map(a),a.variant_selector.render_formula(**fp(struct_obj))))
                     f.write('"is_scalar":True,')

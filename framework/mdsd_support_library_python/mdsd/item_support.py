@@ -19,6 +19,8 @@ def init_visitor(c):
             super().__init__(*args, **kwargs)
             
         def visit(self,struct,attr,meta):
+            if meta["has_if_restriction"] and not meta["if_restriction"](struct):
+                return
             if meta["is_scalar"]:
                 if meta["is_struct"]:
                     if meta["is_variant"] and getattr(struct,attr).__class__ is not get_type(struct,attr, meta):
@@ -57,6 +59,8 @@ def const_visitor(c):
             super().__init__(*args, **kwargs)
             
         def visit(self,struct,attr,meta):
+            if meta["has_if_restriction"] and not meta["if_restriction"](struct):
+                return
             if meta["is_scalar"]:
                 if meta["is_struct"]: 
                     if meta["is_variant"] and getattr(struct,attr).__class__ is not get_type(struct,attr, meta):
