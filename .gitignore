@@ -19,4 +19,4 @@ trace*.dat
 html
 .vscode
 htmlcov
-
+coverage
