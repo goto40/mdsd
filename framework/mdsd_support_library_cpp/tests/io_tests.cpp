@@ -52,6 +52,23 @@ TEST_CASE( "Simple.io2", "[io_tests]" ) {
 
   REQUIRE(std::get<Polygon>(v1.payload).points[2].x == std::get<Polygon>(v2.payload).points[2].x);
   REQUIRE(std::get<Polygon>(v1.payload).points[2].y == std::get<Polygon>(v2.payload).points[2].y);
+
+  v1.selector = 0; // ColoredTriangle (with rawtype array)
+  adjust_array_sizes_and_variants(v1);
+
+  REQUIRE( v1.selector == 0 );
+
+  size_t n2 = mdsd::copy_to_mem(v1,mem.data(), mem.size());
+
+  REQUIRE( n2>0 );
+
+  REQUIRE( v2.selector == 20 );
+  size_t m2 = copy_from_mem(mem.data(), n2, v2);
+  REQUIRE( v2.selector == 0 );
+
+  REQUIRE( m2 == n2 );
+  REQUIRE_NOTHROW(check_array_sizes_and_variants(v2));
+
 }
 
 TEST_CASE( "virtual struct io", "[io_tests]" ) {
@@ -91,3 +108,4 @@ TEST_CASE( "file io", "[io_tests]" ) {
   print(p.data,std::cout);
   std::cout << "-----IO-----------\n";
 }
+
