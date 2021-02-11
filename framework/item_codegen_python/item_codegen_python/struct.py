@@ -1,4 +1,4 @@
-from textx import (get_metamodel, get_children_of_type,
+from textx import (get_metamodel,
                    textx_isinstance)
 from item_codegen_python.common import (fqn, get_variant_types,
                                         get_variant_type_map,
@@ -9,7 +9,6 @@ from item_lang.common import (obj_is_new_than_file,
                               get_container, get_start_end_bit)
 from item_lang.properties import (get_all_possible_properties, has_property,
                                   get_property_type)
-import numpy as np  # used via "eval" (see below, get_mask...)
 
 
 def generate_py_for_struct(struct_obj, output_file):
