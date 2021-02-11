@@ -18,11 +18,11 @@ cd framework/item_codegen_python
 cd -
 }
 
-#{
-#cd framework/algo_lang
-#./run_tests.sh || exit 1
-#cd -
-#}
+{
+cd framework/algo_lang
+./run_tests.sh || exit 1
+cd -
+}
 
 {
 cd framework/mdsd_support_library_cpp
