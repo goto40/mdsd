@@ -41,7 +41,9 @@ struct StructWrapper : StructFunctions<S> {
   S *data;
   StructWrapper(S* __data) : data(__data) {}
   StructWrapper(const StructWrapper&) = default; // needed by SWIG code...
+#ifndef SWIG
   StructWrapper& operator=(const StructWrapper&) = default;
+#endif
   virtual S& get_data() { return *data; }
   virtual const S& get_data() const { return *data; }
 };
