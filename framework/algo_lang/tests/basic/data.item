@@ -1,13 +1,13 @@
 package Items
 
 struct MeanAlgoParameters {
-    scalar alpha: float
+    scalar alpha: built_in.float
 }
 
 struct MeanAlgoInput {
-    scalar value: float
+    scalar value: built_in.float
 }
 
 struct MeanAlgoOutput {
-    scalar value: float
+    scalar value: built_in.float
 }
