@@ -111,7 +111,7 @@ def copy(a,b):
 #        setattr(b, f, getattr(a, f))
     mem = None
 
-    if "__swig_getmethods__" in dir(a.__class__):
+    if "__swig_destroy__" in dir(a.__class__):
         if "_GET_WRAPPER" in dir(a):
             mya = a._GET_WRAPPER()
         else:
@@ -124,7 +124,7 @@ def copy(a,b):
         mem = bytearray(n)
         copy_to_mem(a,mem)
 
-    if "__swig_getmethods__" in dir(b.__class__):
+    if "__swig_destroy__" in dir(b.__class__):
         if "_GET_WRAPPER" in dir(b):
             myb = b._GET_WRAPPER()
         else:

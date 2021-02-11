@@ -1,8 +1,8 @@
 import swig_firsttest as e0
-import items.example as e1
+from items.Point import Point
 import pytest
-from mdsd_support_library.item_support import *
-from mdsd_support_library.item_io import *
+from mdsd.item_support import *
+from mdsd.item.io import *
 
 def test_1():
     p = e0.MDSD_Struct_Point()
@@ -12,7 +12,7 @@ def test_1():
     p.copy_to_mem(mem)
     print(mem)
     print("--------------")
-    q = e1.Point()
+    q = Point()
     copy_from_mem(mem,q)
     print("q=",q)
     print("--------------")
@@ -27,7 +27,7 @@ def test_2():
     print(p0.y)
     print(p0.__dict__)
 
-    p1 = e1.Point()
+    p1 = Point()
     print(p1.__dict__)
 
     p0.x=9
@@ -42,8 +42,8 @@ def test_2():
     print(n)
     print(n.__class__)
 
-    a = copy(e1.Point(10,12), e0.Point.item_create())
-    b = copy(e1.Point(-4,18.1), e0.Point.item_create())
+    a = copy(Point(10,12), e0.Point.item_create())
+    b = copy(Point(-4,18.1), e0.Point.item_create())
     c = e0.Point.item_create()
     algo.compute(a,b,c)
     copy(c,p1)
@@ -54,15 +54,15 @@ def test_2():
 
 def test_2_as_it_is_intended_to_be_used():
     algo = e0.VectorAdd.create()
-    p0 = e1.Point(11.11,22.22)
-    p1 = e1.Point(33.33,44.44)
+    p0 = Point(11.11,22.22)
+    p1 = Point(33.33,44.44)
 
     a = copy(p0, e0.Point.item_create())
     b = copy(p1, e0.Point.item_create())
     c = e0.Point.item_create()
     algo.compute(a,b,c)
     
-    res = copy(c,e1.Point())
+    res = copy(c,Point())
 
     assert res.x==pytest.approx(p0.x+p1.x)
     assert res.y==pytest.approx(p0.y+p1.y)
@@ -92,7 +92,7 @@ def test_3():
 
     print(vari.data.payload)
 
-    p1 = e1.Point()
+    p1 = Point()
     p1.x = 11
 
     copy(p1,e0.MDSD_get_Line_from_VariantExample_payload(vari.data).p1)

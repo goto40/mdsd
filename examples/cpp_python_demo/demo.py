@@ -1,8 +1,8 @@
 import swig_firsttest as e0
-import items.example as e1
+from items.Point import Point
 import pytest
-from mdsd_support_library.item_support import *
-from mdsd_support_library.item_io import *
+from mdsd.item_support import *
+from mdsd.item.io import *
 
 p = e0.MDSD_Struct_Point()
 p.data.x=12.34
@@ -11,7 +11,7 @@ mem = bytearray(100)
 p.copy_to_mem(mem)
 print(mem)
 print("--------------")
-q = e1.Point()
+q = Point()
 copy_from_mem(mem,q)
 print("q=",q)
 print("--------------")
@@ -22,7 +22,7 @@ print(p0.x)
 print(p0.y)
 print(p0.__dict__)
 
-p1 = e1.Point()
+p1 = Point()
 print(p1.__dict__)
 
 p0.x=9
@@ -37,8 +37,8 @@ n = algo.get_classname()
 print(n)
 print(n.__class__)
 
-a = copy(e1.Point(10,12), e0.Point.item_create())
-b = copy(e1.Point(-4,18.1), e0.Point.item_create())
+a = copy(Point(10,12), e0.Point.item_create())
+b = copy(Point(-4,18.1), e0.Point.item_create())
 c = e0.Point.item_create()
 algo.compute(a,b,c)
 copy(c,p1)

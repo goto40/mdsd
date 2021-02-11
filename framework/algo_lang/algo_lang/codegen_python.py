@@ -1,6 +1,7 @@
 import textx, os, click
-from .codegen_common import get_package_names
+from algo_lang.codegen_common import get_package_names
 from textx import get_children_of_type, get_model
+from item_codegen_python.common import module_name
 
 
 @textx.generator("algo", "python")
@@ -40,15 +41,21 @@ def generate_python_from_model(model, base_name, output_file):
         for p in a.parameters:
             item_models.append(get_model(p.type))
     item_models = set(item_models)
-    item_headers =[]
-    for i in item_models:
-        base_name, _ = os.path.splitext(os.path.basename(i._tx_filename))
-        item_headers.append("{}.{}".format(".".join(get_package_names(i)), base_name))
+    required_mdoules =[]
+    for m in item_models:
+        for element in get_children_of_type("Struct", m):
+            required_mdoules.append(module_name(element))
+        for element in get_children_of_type("Enum", m):
+            required_mdoules.append(module_name(element))
+        for element in get_children_of_type("Consants", m):
+            required_mdoules.append(module_name(element))
+    required_mdoules = list(set(required_mdoules))
+    required_mdoules.sort()
 
     with open(output_file, "w") as f:
         f.write('from abc import ABC, abstractmethod\n')
         f.write('todo: problem with "base"-package... encoded in output path.\n')
-        for h in item_headers:
+        for h in required_mdoules:
             f.write('import {}\n'.format(h))
         for a in algos:
             f.write("class {}(ABC):\n".format(a.name))

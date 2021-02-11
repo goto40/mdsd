@@ -2,6 +2,7 @@
 #define MDSD_ITEM_VIRTUAL_ATTRIBUTE_SUPPORT
 
 #include "mdsd/item/basic_visitors.h"
+#include "mdsd/item/print.h"
 #include <memory>
 #include <string_view>
 #include <vector>
