@@ -5,8 +5,8 @@ SWIG_PACKAGE_NAME=swig_${PACKAGE_NAME}
 
 ./clean.sh
 
-textx generate ../../framework/mdsd_support_library_common/model/*.item --overwrite --target cpp --output-path src-gen/cpp || exit 1
-textx generate ../../framework/mdsd_support_library_common/model/*.item --overwrite --target python --output-path src-gen/python || exit 1
+textx generate ../../framework/mdsd_support_library_common/model/example*.item --overwrite --target cpp --output-path src-gen/cpp || exit 1
+textx generate ../../framework/mdsd_support_library_common/model/example*.item --overwrite --target python --output-path src-gen/python || exit 1
 textx generate ../../framework/mdsd_support_library_common/model/*.algo --overwrite --target cpp --output-path src-gen/cpp || exit 1
 
 projecttool generic-setup-file ${PACKAGE_NAME} src-gen/python

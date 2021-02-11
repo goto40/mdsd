@@ -1,6 +1,8 @@
 import textx, os, click
-from .codegen_common import get_package_names
-from textx import get_children_of_type, get_model
+from algo_lang.codegen_common import get_package_names
+from item_codegen_cpp.common import output_filename
+from textx import (get_children_of_type, get_model,
+                   TextXSemanticError,  get_location)
 
 
 @textx.generator("algo", "cpp")
@@ -54,9 +56,15 @@ def generate_cpp_from_model(model, base_name, output_file):
             item_models.append(get_model(p.type))
     item_models = set(item_models)
     item_headers =[]
-    for i in item_models:
-        base_name, _ = os.path.splitext(os.path.basename(i._tx_filename))
-        item_headers.append("{}/{}.{}".format("/".join(get_package_names(i)), base_name, "h"))
+    for m in item_models:
+        for element in get_children_of_type("Struct", m):
+            item_headers.append(output_filename(None, element))
+        for element in get_children_of_type("Enum", m):
+            item_headers.append(output_filename(None, element))
+        for element in get_children_of_type("Consants", m):
+            item_headers.append(output_filename(None, element))
+    item_headers = list(set(item_headers))
+    item_headers.sort()
 
     with open(output_file, "w") as f:
         f.write("#ifndef __{}_{}_H\n".format("_".join(get_package_names(model)), base_name.upper()))

@@ -3,6 +3,8 @@
 
 #ifndef SWIG
 
+#include "mdsd/item/basic_visitors.h"
+
 namespace mdsd {
 inline namespace item {
 
