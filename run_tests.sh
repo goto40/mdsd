@@ -36,14 +36,14 @@ cd framework/mdsd_support_library_python
 cd -
 }
 
-#{
-#cd framework/project_tool
-#./run_tests.sh || exit 1
-#cd -
-#}
+{
+cd framework/project_tool
+./run_tests.sh || exit 1
+cd -
+}
 
-#{
-#cd framework/cpp_python_demo
+{
+#cd examples/cpp_python_demo
 #./run_tests.sh || exit 1
 #cd -
 #}
