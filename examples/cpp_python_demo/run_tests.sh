@@ -5,9 +5,9 @@ SWIG_PACKAGE_NAME=swig_${PACKAGE_NAME}
 
 ./clean.sh
 
-textx generate ../../framework/mdsd_support_library_common/model/example*.item --overwrite --target cpp --output-path src-gen/cpp || exit 1
-textx generate ../../framework/mdsd_support_library_common/model/example*.item --overwrite --target python --output-path src-gen/python || exit 1
-textx generate ../../framework/mdsd_support_library_common/model/*.algo --overwrite --target cpp --output-path src-gen/cpp || exit 1
+textx generate model/*.item --overwrite --target cpp --output-path src-gen/cpp || exit 1
+textx generate model/*.item --overwrite --target python --output-path src-gen/python || exit 1
+textx generate model/*.algo --overwrite --target cpp --output-path src-gen/cpp || exit 1
 
 projecttool generic-setup-file ${PACKAGE_NAME} src-gen/python
 projecttool python-i-file --require-pattern="ACTIVATE FOR SWIG" ${SWIG_PACKAGE_NAME} src-gen/swig src/cpp src-gen/cpp/ ../../framework/mdsd_support_library_cpp/src/
