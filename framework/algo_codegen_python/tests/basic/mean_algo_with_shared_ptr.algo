@@ -1,0 +1,15 @@
+import "data.item"
+
+package P1
+
+algo MeanAlgo {
+    parameters {
+        params: Items.MeanAlgoParameters
+    }
+    inputs {
+        i: Items.MeanAlgoInput (shared_ptr)
+    }
+    outputs {
+        o: Items.MeanAlgoOutput (shared_ptr)
+    }
+}

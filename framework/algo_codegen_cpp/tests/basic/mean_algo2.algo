@@ -1,0 +1,16 @@
+import "data.item"
+import "mean_algo.algo" // no code generated for imported algos...
+
+package P1.P2
+
+algo MeanAlgo {
+    parameters {
+        params: Items.MeanAlgoParameters
+    }
+    inputs {
+        params: Items.MeanAlgoInput
+    }
+    outputs {
+        params: Items.MeanAlgoOutput
+    }
+}

@@ -29,7 +29,9 @@ def lang():
         property optional description : STRING
     }
     rawtype double FLOAT 64
+    rawtype float64 FLOAT 64
     rawtype float FLOAT 32
+    rawtype float32 FLOAT 32
     rawtype bool BOOL 1
     rawtype char INT 8
     '''
