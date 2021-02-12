@@ -55,13 +55,14 @@ cd -
 }
 
 {
-#cd examples/cpp_python_demo
-#./run_tests.sh || exit 1
-#cd -
-#}
+cd examples/cpp_python_demo
+./run_tests.sh || exit 1
+cd -
+}
 
 #{
 #cd framework/motion_model_m4
 #./run_tests.sh || exit 1
 #cd -
 #}
+

@@ -101,5 +101,8 @@ def test_3():
     assert e0.MDSD_get_Line_from_VariantExample_payload(vari.data).p1.x == pytest.approx(p1.x)
     
     p1.x = 10
+
+    assert e0.MDSD_get_Line_from_VariantExample_payload(vari.data).p1.x != pytest.approx(p1.x)
+
     copy(p1,e0.MDSD_get_Line_from_VariantExample_payload(vari.data).p1)
     assert e0.MDSD_get_Line_from_VariantExample_payload(vari.data).p1.x == pytest.approx(p1.x)
