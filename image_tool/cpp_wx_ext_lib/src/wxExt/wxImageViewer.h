@@ -6,9 +6,9 @@
 #include "wxExt/wxMyMenu.h"
 #include "wxExt/wxMouseHelper.h"
 
-#include <my_image_lib/image.h>
+#include <my_image_lib/GrayImage.h>
 #include <my_image_lib/tools.h>
-#include <mdsd_item_support.h>
+#include <mdsd/item_support.h>
 
 #include <wx/wx.h>
 #include <wx/clipbrd.h>

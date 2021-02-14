@@ -12,7 +12,7 @@ using namespace items;
 using namespace mdsd;
 
 TEST_CASE( "Simple.pprint", "[print_tests]" ) {
-  items::more::Point3D p3{ 12.3,45.6 };
+  items::more::Point3D p3{ 12.3,45.6,0 };
   Point p{ 12.3,45.6 };
   Line l{ Point{1,2}, Point{3,4} };
   Circle c{ Point{6,7}, 9.2 };
@@ -37,10 +37,16 @@ TEST_CASE( "Simple.pprint", "[print_tests]" ) {
   adjust_array_sizes_and_variants(poly);
   print(poly);
 
-  Polygon poly2{ Header{2}, { Point{1,2}, Point{3,4} } };
+  Polygon poly2;
+  poly2.header = Header{2};
+  adjust_array_sizes_and_variants(poly2);
+  poly2.points = { Point{1,2}, Point{3,4} };
   print(poly2);
 
-  Polygon poly3err{ Header{3}, { Point{1,2}, Point{3,4} } };
+  Polygon poly3err;
+  poly3err.header = Header{3};
+  adjust_array_sizes_and_variants(poly3err);
+  poly3err.points = { Point{1,2}, Point{3,4} };
   try {
     print(poly3err);
   }
@@ -90,10 +96,14 @@ TEST_CASE( "Simple.pprint", "[print_tests]" ) {
   v.selector=99;
   REQUIRE_THROWS(adjust_array_sizes_and_variants(v));
 
-  VariantExample vp{10, Point{1,2}};
+  VariantExample vp;
+  vp.selector = 10;
+  vp.payload = Point{1,2};
   print(vp);
 
-  VariantExample vp_err{10, Line{Point{1,2}, Point{2,3}}}; // wrong id
+  VariantExample vp_err;
+  vp_err.selector = 10;
+  vp_err.payload = Line{Point{1,2}, Point{2,3}}; // wrong id
   REQUIRE_THROWS(print(vp_err));
 }
 

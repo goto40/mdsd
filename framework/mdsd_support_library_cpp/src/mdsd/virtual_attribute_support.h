@@ -66,7 +66,7 @@ struct AttributeWrapper : AttributeBase {
       throw std::runtime_error("get_attribute_in_struct(name) called for array attribute or non-struct");
     }
   }
-  std::unique_ptr<AttributeBase> get_attribute_in_struct(size_t idx, std::string_view name) override { 
+  std::unique_ptr<AttributeBase> get_attribute_in_struct([[ maybe_unused ]] size_t idx, std::string_view name) override { 
     if constexpr (META::__is_array && META::__is_struct) 
       return get_attribute(META::__get_ref(s)[idx], name); 
     else

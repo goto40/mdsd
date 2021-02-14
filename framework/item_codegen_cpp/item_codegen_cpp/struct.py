@@ -3,6 +3,7 @@ from item_lang.properties import (get_all_possible_properties,
 from item_lang.common import (get_referenced_elements_of_struct,
                               get_start_end_bit, get_bits, get_container,
                               obj_is_new_than_file)
+from item_lang.attributes import is_dynamic
 from item_codegen_cpp.common import *
 from os.path import exists
 
@@ -23,6 +24,7 @@ def generate_cpp_for_struct(struct_obj, output_file, overwrite):
             f.write("\n")
             f.write('#include "mdsd/item_support.h"\n')
             f.write('#include "mdsd/virtual_struct.h"\n')
+            f.write('#include "mdsd/item/init_default_values.h"\n')
             f.write("\n")
 
             for r in get_referenced_elements_of_struct(struct_obj):
@@ -32,6 +34,48 @@ def generate_cpp_for_struct(struct_obj, output_file, overwrite):
             generate_cpp_struct(f, struct_obj)
 
             f.write("#endif // __{}_{}_H\n".format("_".join(get_package_names_of_obj(struct_obj)), struct_obj.name.upper()))
+
+
+def _extra_init_required(i):
+    return not is_dynamic(i)
+
+
+def _get_ctor_param_type(a):
+    mm = get_metamodel(a)
+    if a.is_embedded():
+        if textx.textx_isinstance(a, mm["ScalarAttribute"]):
+            return get_cpp_return_type(a.type)
+        elif textx.textx_isinstance(a, mm["ArrayAttribute"]):
+            return f"std::array<{get_cpp_return_type(a.type)},{a.compute_formula()}>"
+    if textx.textx_isinstance(a, mm["ScalarAttribute"]):
+        return fqn(a.type)
+    elif textx.textx_isinstance(a, mm["ArrayAttribute"]):
+        if a.has_fixed_size():
+            return f"std::array<{fqn(a.type)},{a.compute_formula()}>"
+        else:
+            return f"std::vector<{fqn(a.type)}>"
+    elif textx.textx_isinstance(a, mm["VariantAttribute"]):
+        return f"std::variant<{get_variant_types(a)}>"
+    else:
+        raise Exception("unexpected type")
+
+
+def _get_ctor_params(i):
+    res=""
+    comma=""
+    for a in i.attributes:
+        if not a.is_container():
+            res += comma + f"const {_get_ctor_param_type(a)} &_p_{a.name}"
+            comma = ","
+    return res
+
+
+def _get_ctor_body(i):
+    res=""
+    for a in i.attributes:
+        if not a.is_container():
+            res += f"{a.name} = _p_{a.name}; "
+    return res
 
 
 def generate_cpp_struct(f, i):
@@ -113,11 +157,13 @@ def generate_cpp_struct(f, i):
 
     f.write("    static constexpr const char* __name() ")
     f.write('{{ return "{}"; }}\n'.format(i.name))
+    f.write(f"    static constexpr bool __is_dynamic = {tf(is_dynamic(i))};\n")
     for a in i.attributes:
         f.write("    struct {} {{\n".format(a.name))
         f.write("      using STRUCT={};\n".format(i.name))
         f.write("      static constexpr const char* __name() ")
         f.write('{{ return "{}"; }}\n'.format(a.name))
+        f.write(f"      static constexpr bool __is_dynamic = {tf(is_dynamic(a))};\n")
 
         if hasattr(a, 'type') and a.type.name == "char":
             f.write("      static constexpr bool __has_char_content = true;\n")
@@ -285,11 +331,20 @@ def generate_cpp_struct(f, i):
             raise Exception("unexpected type constellation")
 
         f.write("    }}; // meta struct {}\n".format(a.name))
-    f.write("  }; //struct META\n")
-    f.write("#endif // #ifndef SWIG\n")
+    f.write("  }; //struct META\n\n")
+
+    f.write("#endif // #ifndef SWIG\n\n")
+
+    f.write(f"  {i.name}() {{\n")
+    f.write(f"    mdsd::init_default_values(*this);\n")
+    f.write(f"  }}\n")
+
+    if _extra_init_required(i):
+        f.write(f"  {i.name}({_get_ctor_params(i)}) {{\n")
+        f.write(f"    {_get_ctor_body(i)};\n")
+        f.write(f"  }}\n")
 
     f.write("  static std::shared_ptr<{}> item_create() {{ return std::make_shared<{}>(); }}\n".format(i.name, i.name))
-    f.write("  //{}() {{ mdsd::init_default_values(*this); }}\n".format(i.name))
     f.write("}}; //struct {}\n".format(i.name))
 
     for a in i.attributes:

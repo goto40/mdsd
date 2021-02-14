@@ -1,17 +1,17 @@
 package algo
 
 struct Median {
-  scalar x: uint32
-  scalar y: uint32
-  scalar full : bool
+  scalar x: built_in.uint32
+  scalar y: built_in.uint32
+  scalar full : built_in.bool
 }
 struct PseudoMedian {
-  scalar n: uint32
-  array filter_size: uint32[n]
-  scalar t: float
+  scalar n: built_in.uint32
+  array filter_size: built_in.uint32[n]
+  scalar t: built_in.float
 }
 struct BackgroundDetectionParameter {
-  scalar selector: uint32
+  scalar selector: built_in.uint32
   variant parameter : selector -> {
     0: Median
     1: PseudoMedian

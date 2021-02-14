@@ -68,7 +68,7 @@ def get_property_constexpr(a, pname):
     if t is str:
         return "\"{}\"".format(v)
     else:
-        return "{}".format(v)
+        return f"{get_cpp_return_type(t)}{{ {v} }}"
 
 
 def fqn(t):

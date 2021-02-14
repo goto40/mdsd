@@ -1,8 +1,8 @@
 #include "catch.hpp"
-#include "my_image_lib/image.h"
+#include "my_image_lib/GrayImage.h"
 #include "my_image_lib/tools.h"
 #include "my_image_lib/Tictoc.h"
-#include "mdsd_item_support.h"
+#include "mdsd/item_support.h"
 
 #include <algorithm>
 

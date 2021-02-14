@@ -1,4 +1,4 @@
-Model:
+IfAttributeModel:
     imports*=Import
     (packages+=ExtPackage | package=Package);
 

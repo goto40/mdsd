@@ -28,11 +28,12 @@ int main() {
 #include <my_image_lib/tools.h>
 #include <my_image_lib/Tictoc.h>
 
-#include <mdsd_item_support.h>
-#include <mdsd_virtual_struct.h>
+#include <mdsd/item_support.h>
+#include <mdsd/virtual_struct.h>
+#include <mdsd/virtual_attribute_support.h>
 
 #include <wx/propgrid/propgrid.h>
-#include "algo/parameters.h"
+#include "algo/BackgroundDetectionParameter.h"
 
 namespace {
     struct InitThingsForWxExt {

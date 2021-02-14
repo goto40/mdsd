@@ -28,7 +28,7 @@ enum ABC : built_in.int2 (.description="test") {
 
 struct Header {
     constant three: built_in.uint32 = 6/2
-    scalar id: TypeSelector
+    scalar id: TypeSelector (.defaultValue=TRIANGLE)
     scalar length: built_in.uint32 (.maxValue=MyOtherConstants.maxlen)
 }
 

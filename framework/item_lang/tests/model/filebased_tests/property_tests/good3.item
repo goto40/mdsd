@@ -1,0 +1,10 @@
+package example
+
+enum AB : built_in.uint32 {
+ value A=1
+ value B=2
+}
+
+struct Example {
+  scalar x : AB (.defaultValue=A)
+}

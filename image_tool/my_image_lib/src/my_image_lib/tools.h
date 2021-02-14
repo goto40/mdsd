@@ -1,8 +1,8 @@
 #ifndef MY_IMAGE_LIB_TOOLS_H
 #define MY_IMAGE_LIB_TOOLS_H
 
-#include "my_image_lib/image.h"
-#include "mdsd_item_support.h"
+#include "my_image_lib/GrayImage.h"
+#include "mdsd/item_support.h"
 
 #include <algorithm>
 #include <future>

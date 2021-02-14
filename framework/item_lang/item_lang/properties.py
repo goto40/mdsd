@@ -125,8 +125,8 @@ def get_property_type(attr, prop_name):
         if internaltype == 'ATTRTYPE':
             textx_assert(not textx_isinstance(attr, mm['VariantAttribute']), attr,
                          prop_name + " not supported for variants")
-            textx_assert(textx_isinstance(attr.type, mm['RawType']), attr,
-                         prop_name + " only applicable for rawtypes")
+            textx_assert(textx_isinstance(attr.type, mm['RawType']) or textx_isinstance(attr.type, mm['Enum']), attr,
+                         prop_name + " only applicable for rawtypes/enums")
             return attr.type
         else:
             return get_type(internaltype)

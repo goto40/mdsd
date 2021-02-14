@@ -11,7 +11,7 @@ using namespace items;
 using namespace mdsd;
 
 TEST_CASE( "Simple.scan", "[scan_tests]" ) {
-  items::more::Point3D p3{ 12.3,45.6 };
+  items::more::Point3D p3{ 12.3,45.6, 0 };
   Point p{ 12.3,45.6 };
   Line l{ Point{1,2}, Point{3,4} };
   Circle c{ Point{6,7}, 9.2 };
