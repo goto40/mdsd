@@ -68,6 +68,8 @@ def get_property_constexpr(a, pname):
     if t is str:
         return "\"{}\"".format(v)
     else:
+        if isinstance(v, bool):
+            v = int(v)
         return f"{get_cpp_return_type(t)}{{ {v} }}"  # TODO, better: return enum-value directly (same for python code)
 
 
