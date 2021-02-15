@@ -59,8 +59,15 @@ def lang():
                 ps = ps.extends
         return None
 
+    search_path = os.getenv('ITEM_LANG_SEARCH_PATH', None)
+    if search_path is not None:
+        search_path = search_path.split(os.pathsep)
+        search_path = list(filter(lambda x:len(x)>0, search_path))
+        if len(search_path) == 0:
+            search_path = None
+
     mm.register_scope_providers({
-        "*.*": scoping_providers.FQNImportURI(),
+        "*.*": scoping_providers.FQNImportURI(search_path=search_path),
         "Property.definition": prop_scope
     })
 

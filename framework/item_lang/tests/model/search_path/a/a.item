@@ -1,0 +1,5 @@
+package test {
+    struct A {
+        scalar x: built_in.uint32
+    }
+}

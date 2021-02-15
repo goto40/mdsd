@@ -1,0 +1,7 @@
+import "a.item"
+
+package test {
+    struct TestA {
+        scalar a : test.A
+    }
+}
