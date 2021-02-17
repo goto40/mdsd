@@ -1,0 +1,27 @@
+site_name: mdsd
+
+site_description: A collection of demos on how MDSD can be applied to SW development.
+site_author: Pierre Bayerl
+
+repo_url: https://github.com/goto40/mdsd
+theme: readthedocs
+
+nav:
+- Home: index.md
+- User Guide:
+  - Item Language: item_lang.md
+  - Algo Language: algo_lang.md
+- Architecture Details:
+  - Item Lang Architectural details: item_lang/architecture.md
+- Development Details:
+  - Item Lang Maintenance: item_lang/develop.md
+- About:
+  - License: https://github.com/goto40/mdsd/blob/master/LICENSE.txt
+
+markdown_extensions:
+- admonition:
+- toc:
+    permalink: true
+
+copyright: Copyright &copy; Pierre Bayerl.
+
