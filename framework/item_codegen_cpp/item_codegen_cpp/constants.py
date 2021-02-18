@@ -1,11 +1,11 @@
 from item_lang.common import (get_referenced_elements_of_constants,
-                              obj_is_new_than_file)
+                              obj_is_newer_than_file)
 from item_codegen_cpp.common import *
 from os.path import exists
 
 
 def generate_cpp_for_constants(constants_obj, output_file, overwrite):
-    if not exists(output_file) or (overwrite and obj_is_new_than_file(constants_obj, output_file)):
+    if not exists(output_file) or (overwrite and obj_is_newer_than_file(constants_obj, output_file)):
         with open(output_file, "w") as f:
             f.write("#ifndef __{}_{}_H\n".format("_".join(get_package_names_of_obj(constants_obj)), constants_obj.name.upper()))
             f.write("#define __{}_{}_H\n".format("_".join(get_package_names_of_obj(constants_obj)), constants_obj.name.upper()))

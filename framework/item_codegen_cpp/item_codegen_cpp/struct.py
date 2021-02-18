@@ -2,14 +2,14 @@ from item_lang.properties import (get_all_possible_properties,
                                   has_property)
 from item_lang.common import (get_referenced_elements_of_struct,
                               get_start_end_bit, get_bits, get_container,
-                              obj_is_new_than_file)
+                              obj_is_newer_than_file)
 from item_lang.attributes import is_dynamic
 from item_codegen_cpp.common import *
 from os.path import exists
 
 
 def generate_cpp_for_struct(struct_obj, output_file, overwrite):
-    if not exists(output_file) or (overwrite and obj_is_new_than_file(struct_obj, output_file)):
+    if not exists(output_file) or (overwrite and obj_is_newer_than_file(struct_obj, output_file)):
         with open(output_file, "w") as f:
             f.write("#ifndef __{}_{}_H\n".format("_".join(get_package_names_of_obj(struct_obj)), struct_obj.name.upper()))
             f.write("#define __{}_{}_H\n".format("_".join(get_package_names_of_obj(struct_obj)), struct_obj.name.upper()))

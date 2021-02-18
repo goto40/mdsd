@@ -242,7 +242,7 @@ def get_all_filenames_referenced_by_obj(obj):
     return file_names
 
 
-def obj_is_new_than_date(obj, date):
+def obj_is_newer_than_date(obj, date):
     file_names = get_all_filenames_referenced_by_obj(obj)
     if len(file_names)==0:
         return True
@@ -252,8 +252,8 @@ def obj_is_new_than_date(obj, date):
     return False
 
 
-def obj_is_new_than_file(obj, filename):
+def obj_is_newer_than_file(obj, filename):
     if not exists(filename):
         return True
     date = getmtime(filename)
-    return obj_is_new_than_date(get_model(obj), date)
+    return obj_is_newer_than_date(get_model(obj), date)

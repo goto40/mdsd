@@ -4,7 +4,7 @@ from item_codegen_python.common import (fqn, get_variant_types,
                                         get_variant_type_map,
                                         module_name, fp, tf,
                                         get_property_constexpr)
-from item_lang.common import (obj_is_new_than_file,
+from item_lang.common import (obj_is_newer_than_file,
                               get_referenced_elements_of_struct,
                               get_container, get_start_end_bit)
 from item_lang.properties import (get_all_possible_properties, has_property,
@@ -13,7 +13,7 @@ from item_lang.properties import (get_all_possible_properties, has_property,
 
 def generate_py_for_struct(struct_obj, output_file):
     mm = get_metamodel(struct_obj)
-    if obj_is_new_than_file(struct_obj, output_file):
+    if obj_is_newer_than_file(struct_obj, output_file):
         with open(output_file, "w") as f:
             f.write("""# generated code
 from dataclasses import dataclass
