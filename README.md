@@ -24,10 +24,9 @@ implementations.
 but not the algorithm code?
 **Answer**: We think that algorithm development deserves much
 creativiy. This makes it important to have two independent
-implementations (together with some docu, e.g. as python
+implementations (together with some documentation, e.g. as python
 notebook). A single source for such an algorithm would
-hinder a free development of that algorithm and would **not**
-make it clearer **what** the algothm does. This is part of the
+obscure how the algorithm works. This is part of the
 documentation, provided manually.
 
 The **item code is stereotypical**. Here, we take full advantage of a 
