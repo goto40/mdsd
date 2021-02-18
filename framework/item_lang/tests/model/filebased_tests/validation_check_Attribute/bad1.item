@@ -1,0 +1,7 @@
+package test
+
+// attribute names shall not start with "item_" or "_"
+
+struct AttrNotOk {
+    scalar item_x: built_in.uint32 // expected: attribute may not start with 'item_'
+}

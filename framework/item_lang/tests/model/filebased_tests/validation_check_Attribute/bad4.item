@@ -1,0 +1,12 @@
+package test
+
+// - char attributes may not be used as embedded attributres
+
+struct AttrNotOk {
+    scalar x: built_in.uint32
+    scalar b: built_in.bool // ok: takes 8 bit in this case
+    scalar mycontainer: built_in.uint32
+    embedded scalar e1: built_in.uint23
+    embedded scalar c: built_in.char // expected: char may be be used as embedded field for AttrNotOk
+    embedded scalar e2: built_in.bool
+}

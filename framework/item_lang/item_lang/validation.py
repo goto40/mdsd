@@ -23,9 +23,9 @@ def get_all_checks_as_map():
 
 def check_Attribute(a):
     if a.name.startswith("item_"):
-        raise TextXSemanticError("attribute may not start with 'item_'"+a.name, **get_location(a))
+        raise TextXSemanticError("attribute may not start with 'item_' "+a.name, **get_location(a))
     if a.name.startswith("_"):
-        raise TextXSemanticError("attribute may not start with '_'"+a.name, **get_location(a))
+        raise TextXSemanticError("attribute may not start with '_' "+a.name, **get_location(a))
 
     if hasattr(a,'type'):
         if a.embedded:
@@ -36,7 +36,7 @@ def check_Attribute(a):
             if a.type.internaltype in ['INT', 'UINT'] and not a.embedded:
                 if get_bits(a.type) not in [8,16,32,64,128]:
                     raise TextXSemanticError("attribute {} must have a bit size of a power of two.".format(a.name), **get_location(a))
-            if a.type.internaltype not in ['INT', 'UINT'] and a.embedded:
+            if a.type.internaltype not in ['INT', 'UINT', 'BOOL'] and a.embedded:
                 raise TextXSemanticError("attribute {} must be an integral type.".format(a.name), **get_location(a))
         elif textx_isinstance(a.type, get_metamodel(a)['Enum']):
             if get_bits(a.type) not in [8, 16, 32, 64, 128] and not a.embedded:

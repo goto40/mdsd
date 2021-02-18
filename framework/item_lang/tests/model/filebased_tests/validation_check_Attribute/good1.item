@@ -1,0 +1,16 @@
+package test
+
+// - attribute names shall not start with "item_" or "_"
+// - char attributes may not be used as embedded attributres
+// - non embedded fields must have a "conventional size" (8, 16, 32, 64 bit)
+// - if_attr may not be used for containers or embedded fields (see folder `if_attr`)
+// - mandatory properties must be defined (see folder `property_tests`)
+
+struct AttrOk {
+    scalar x: built_in.uint32
+    scalar c: built_in.char
+    scalar b: built_in.bool // ok: takes 8 bit in this case
+    scalar mycontainer: built_in.uint32
+    embedded scalar e1: built_in.uint31 // ok: 31 bit (embedded)
+    embedded scalar e2: built_in.bool // ok: 1 bit (embedded)
+}

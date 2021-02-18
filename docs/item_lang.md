@@ -183,3 +183,10 @@ package example.one (property_set example.one.ProjExt)
         scalar x: built_in.int32 (.description="a", .myprop2=1)
     }
 ```
+
+## Model Validation
+
+The easiest way to get an overvire of validation rules is to look at the
+filebased tests. For each validator there is a folder `valdation_*`
+in the filebased tests folder illustrating the good case (with explanation)
+and the bad cases (with the expected error output).
