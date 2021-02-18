@@ -3,6 +3,9 @@
 This site contains a collection of demos on **M**odel **D**riven **S**oftware **D**esign (MDSD). MDSD implies that code is derived (generated) from model data.
 MDSD fosters **single source** (the model) and **consistency** (in the generated artifacts).
 
+This collection is a **proof of concept**. Many aspects are experimental
+and not meant to be used for production.
+
 We focus on 
 
  * Modeling **data formats** (like C-structs).
