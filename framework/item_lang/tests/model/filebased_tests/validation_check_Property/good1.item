@@ -1,0 +1,16 @@
+package example
+
+// - properties must be applicable
+// - properties must have the correct type
+// - defaultStringValue is only applicable to chat attributes (see folder `char`)
+
+struct Point {
+    scalar x: built_in.float
+    scalar y: built_in.float
+}
+struct Example {
+    scalar u: built_in.uint32 (.defaultValue=1)
+    scalar i: built_in.sint32 (.defaultValue=-1)
+    scalar f: built_in.float (.defaultValue=0.001)
+    scalar p: Point
+}

@@ -1,0 +1,14 @@
+package example
+
+// - properties must have the correct type
+
+struct Point {
+    scalar x: built_in.float
+    scalar y: built_in.float
+}
+struct Example {
+    scalar u: built_in.uint32 (.defaultValue=-1) // expected: .*defaultValue must be an UINT.*
+    scalar i: built_in.sint32 (.defaultValue=-1)
+    scalar f: built_in.float (.defaultValue=0.001)
+    scalar p: Point
+}
