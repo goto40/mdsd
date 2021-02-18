@@ -3,16 +3,16 @@
 Here, we describe how to develop and maintain the software.
 Also have a look at the [architecture](architecture.md).
 
-## Setup/Install for maintainance
+## Setup/Install for maintenance
 
 We provide a script `activate_env` to setup a virtual
 environment for python and CMake projects (C++). All
 software is installed in the `venv` directoroy created by
-the script. use `mycmake` instead of cmake to install
+the script. use `mycmake` instead of `cmake` to install
 any cmake project into the local environment.
 
 You can alternatively also install any of the 
-projects in your system (not recommended for development).
+projects directly into your system (not recommended for development).
 
 ## Unittests
 

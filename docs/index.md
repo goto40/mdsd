@@ -29,26 +29,29 @@ We think that algorithms shall be implemented manually and
 
 ## Employed Tools
 
-We employ the **language workbench [textX](http://textx.github.io/textX/stable/)** to implement the **modeling and code generation toolset** for our
+We employ the **language workbench [textX](http://textx.github.io/textX/stable/)** to implement 
+the **modeling and code generation toolset** for our
 approach. A minimal set of dependencies is a major driver for this decision. Moreover, the high test coverage of
-[textX](https://github.com/textX/textX) makes a possible patch in future times faisible (even for small teams).
+[textX](https://github.com/textX/textX) makes a possible patch in future times feasible (even for small teams).
 
 
 We also show **how to execute operative C++ code in environments like Python or MATLAB**.
-For this, we employ **[SWIG](http://www.swig.org/)** and the serializaion/deserialization
-capabilities of the generated code. This aspect is in principal indepenent of
+For this, we employ **[SWIG](http://www.swig.org/)** and the serialization/deserialization
+capabilities of the generated code. This aspect is in principal independent of
 the generated code. The generated code is optimized to allow an easy processing 
 with the SWIG tool. We also provide a configuration generator to make the
 use of SWIG simpler.
 
 ### Modelling tools
 
-All textx languages are defined as individual python projects, as well as all code generators. This makes it easy to add new code generators or new languages using the existing ones.
+All textx languages are defined as individual python projects, as well as all code generators. 
+This makes it easy to add new code generators or new languages using the existing ones.
 
-Also you can define search paths to allow models to include models from other locations. This allows to easily create depdendent modules with item models (using environemt variables):
+Also you can define search paths to allow models to include models from other locations. 
+This allows to easily create depdendent modules with item models (using environemt variables):
 
  - `ITEM_LANG_SEARCH_PATH`: additional search directories
- - `ITEM_LANG_FILE_SUFFIX`: model file suffix (default: `*.item`)
+ - `ITEM_LANG_FILE_SUFFIX`: model file suffix (default: `item`)
 
 ```
 $ textx list-languages
