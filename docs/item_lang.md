@@ -31,7 +31,7 @@ You can see many examples in [framework/item_lang/tests/model/filebased_tests](h
 ## Model Structure
 
  * The model consists of objects of the following types.
-   Grammar: see our [rough arhitecture](item_lang/architecture.md) description.
+   Grammar: see our [rough arhitecture](architecture.md) description.
    * `Struct` (like C-structs), with data members (`Attribute`).
       Each `Attribute` can have properties (`Property`) to 
       add meta information (like `minValue`, `maxValue`,
