@@ -1,0 +1,12 @@
+// - attribute names must be unique
+
+package example {
+
+    struct Example {
+        constant C1: built_in.uint32 = 1
+        constant C2: built_in.uint32 = 2
+        scalar x: built_in.uint32
+        array x: built_in.uint32[10] // expected: attribute name x is not unique
+    }
+
+}

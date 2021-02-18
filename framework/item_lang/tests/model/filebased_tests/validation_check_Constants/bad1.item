@@ -1,0 +1,12 @@
+// - constant names must be unique
+
+package example {
+
+    struct Example {
+        constant C1: built_in.uint32 = 1
+        constant C1: built_in.uint32 = 2 // expected: constant name C1 is not unique for
+        scalar x: built_in.uint32
+        array a: built_in.uint32[10]
+    }
+
+}

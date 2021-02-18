@@ -1,0 +1,15 @@
+// - mandatory properties must be defined (see folder `property_tests`)
+// - the minimum/maximum number of properties must be fullfilled (see folder `property_tests`)
+// - attribute names must be unique
+// - constant names must be unique
+
+package example {
+
+    struct Example {
+        constant C1: built_in.uint32 = 1
+        constant C2: built_in.uint32 = 2
+        scalar x: built_in.uint32
+        array a: built_in.uint32[10]
+    }
+
+}

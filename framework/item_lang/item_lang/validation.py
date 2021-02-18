@@ -103,6 +103,22 @@ def check_Struct(s):
             all_attribute_names_unique.remove(first)
             idx += 1
 
+    check_Constants(s)
+
+
+def check_Constants(c):
+    # unique constant names:
+    all_attribute_names = list(map(lambda x:x.name, c.constant_entries))
+    all_attribute_names_unique = set(all_attribute_names)
+    if len(all_attribute_names) != len(all_attribute_names_unique):
+        idx = 0
+        while len(all_attribute_names)>0:
+            first = all_attribute_names[0]
+            del all_attribute_names[0]
+            textx_assert(first in all_attribute_names_unique, c.constant_entries[idx], f'constant name {first} is not unique')
+            all_attribute_names_unique.remove(first)
+            idx += 1
+
 
 def check_Property(p):
     mm = get_metamodel(p)
