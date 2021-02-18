@@ -11,10 +11,9 @@ nav:
 - User Guide:
   - Item Language: item_lang.md
   - Algo Language: algo_lang.md
-- Architecture Details:
-  - Item Lang Architectural details: item_lang/architecture.md
 - Development Details:
-  - Item Lang Maintenance: item_lang/develop.md
+  - Architectural Details: architecture.md
+  - Maintenance: develop.md
 - About:
   - License: https://github.com/goto40/mdsd/blob/master/LICENSE.txt
 

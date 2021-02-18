@@ -2,12 +2,7 @@
 
 ## Example
 
-  * Install the [item language](https://github.com/goto40/mdsd/blob/master/framework/item_lang):
-    * ```virtualenv venv -p python3``` (first time)
-    * ```source venv/bin/activate```
-    * ```pip install -e .```
-
-  * Input is a `*.item` model file, e.g. `example.item`:
+Models are stored in `*.item` files, e.g. `example.item`:
 ```
 package example
 
