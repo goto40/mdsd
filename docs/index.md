@@ -40,3 +40,26 @@ capabilities of the generated code. This aspect is in principal indepenent of
 the generated code. The generated code is optimized to allow an easy processing 
 with the SWIG tool. We also provide a configuration generator to make the
 use of SWIG simpler.
+
+### Modelling tools
+
+All textx languages are defined as individual python projects, as well as all code generators. This makes it easy to add new code generators or new languages using the existing ones.
+
+Also you can define search paths to allow models to include models from other locations. This allows to easily create depdendent modules with item models (using environemt variables):
+ - `ITEM_LANG_SEARCH_PATH`: additional search directories
+ - `ITEM_LANG_FILE_SUFFIX`: model file suffix (default: `*.item`)
+
+```
+$ textx list-languages
+textX (*.tx)                  textX[2.4.0.dev0]                       A meta-language for language definition
+algo (*.algo)                 algo-lang[0.0.2]                        
+item (*.item)                 item-lang[0.0.3]                        
+$ textx list-generators
+any -> dot                    textX[2.4.0.dev0]             Generating dot visualizations from arbitrary models
+textX -> dot                  textX[2.4.0.dev0]             Generating dot visualizations from textX grammars
+textX -> PlantUML             textX[2.4.0.dev0]             Generating PlantUML visualizations from textX grammars
+item -> cpp                   item-codegen-cpp[0.0.3]       Generating c++ code from the item model
+item -> python                item-codegen-python[0.0.4]    Generating c++ code from the item model
+algo -> cpp                   algo-codegen-cpp[0.0.2]       Generating c++ code from the item model
+algo -> python                algo-codegen-python[0.0.2]    Generating c++ code from the algo model
+```

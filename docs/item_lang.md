@@ -154,6 +154,36 @@ Syntax example:
 Fixed sized arrays and scalar attributes can be embedded in bitfields.
 "if restrictions" may not bed used for embedded attributes or containers.
 
+#### Restricted Attributes ("if")
+
+You can restrict attributes to exist
+only if a certain (simple) requirement
+is fullfilled (e.g. a version field
+is above a certain value).
+
+With this you can - under certain 
+circumstances - handle different
+versions of an interface.
+
+```
+package test
+
+struct Point {
+    scalar dim: built_in.uint32 (.maxValue=3)
+    scalar x: built_in.int32
+    if (dim>1) scalar y: built_in.int32
+    if (dim>2) scalar z: built_in.int32
+}
+
+struct Data {
+    scalar version: built_in.uint32 (.maxValue=1)
+    scalar n: built_in.uint32
+    array data: built_in.uint32[n]
+    if (version==0) array data0: built_in.uint32[n]
+    if (version==1) array data1: built_in.uint32[n]
+}
+```
+
 ### Properties
 
 Properties are used to enrich the model with additional meta information.
