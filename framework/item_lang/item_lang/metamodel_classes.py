@@ -31,7 +31,7 @@ class VariantAttribute(object):
         setattr(self, "parent", None)
         for k in kwargs.keys():
             setattr(self, k, kwargs[k])
-        setattr(self, "validation_embedded", False)
+        setattr(self, "embedded", False)
 
     def is_container(self):
         return False
@@ -53,7 +53,7 @@ class ScalarAttribute(object):
         if self.embedded:
             return False
         next = self.parent.get_next_attr(self)
-        return next is not None and hasattr(next, 'validation_embedded') and next.embedded
+        return next is not None and hasattr(next, 'embedded') and next.embedded
 
     def is_embedded(self):
         return self.embedded

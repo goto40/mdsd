@@ -186,7 +186,8 @@ package example.one (property_set example.one.ProjExt)
 
 ## Model Validation
 
-The easiest way to get an overvire of validation rules is to look at the
-filebased tests. For each validator there is a folder `valdation_*`
-in the filebased tests folder illustrating the good case (with explanation)
+The easiest way to get an overview of validation rules is to look at the
+filebased tests. These tests illustrate the good case (with explanation)
 and the bad cases (with the expected error output).
+
+You can also have a look at `item_lang/validation.py`.

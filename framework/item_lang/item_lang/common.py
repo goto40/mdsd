@@ -164,7 +164,7 @@ def get_fixed_dimension(attr):
 
 def _assert_is_embedded(atype):
     if not atype.is_embedded():
-        raise TextXSemanticError('unexpected: get_start_end_bit called for an non-validation_embedded attribute {}'.format(
+        raise TextXSemanticError('unexpected: get_start_end_bit called for an non-embedded attribute {}'.format(
             atype), **get_location(atype))
 
 
@@ -185,7 +185,7 @@ def get_container(atype):
     while p is not None and not p.is_container():
         p = atype.parent.get_prev_attr(p)
     if p is None:
-        raise TextXSemanticError('unexpected: did not found container of validation_embedded attribute {}'.format(
+        raise TextXSemanticError('unexpected: did not found container of embedded attribute {}'.format(
             atype), **get_location(atype))
     return p
 
@@ -193,14 +193,14 @@ def get_container(atype):
 def get_start_end_bit(myattr):
     """
     compute the start and end bit (both included)
-    :param myattr: an validation_embedded attribute
+    :param myattr: an embedded attribute
     :return: start_bit, end_bit (starting at the MSB)
     """
     _assert_is_embedded(myattr)
     c = get_container(myattr)
     lst = get_embedded_elements(c)
     idx = lst.index(myattr)
-    textx_assert(idx >= 0, myattr, "unexpected: element not in list of validation_embedded elements of own conatainer")
+    textx_assert(idx >= 0, myattr, "unexpected: element not in list of embedded elements of own conatainer")
     lst = lst[0:idx]
     start_bit = reduce(lambda a,b: a+get_bits(b), lst, 0)
     end_bit = start_bit + get_bits(myattr)
@@ -224,7 +224,7 @@ def get_bits(x):
     elif textx.textx_isinstance(x, mm['ScalarAttribute']):
         return get_bits(x.type)
     elif textx.textx_isinstance(x, mm['ArrayAttribute']):
-        textx_assert(x.has_fixed_size(), x, "validation_embedded arrays must have fixed size")
+        textx_assert(x.has_fixed_size(), x, "embedded arrays must have fixed size")
         return get_bits(x.type) * x.compute_formula()
     else:
         raise TextXSemanticError('unexpected: no bits available for {}'.format(
