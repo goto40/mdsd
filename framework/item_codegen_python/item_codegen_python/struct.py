@@ -88,7 +88,7 @@ from functools import reduce
                         pass
                     else:
                         raise Exception("unexpected type")
-                else:  # not embedded
+                else:  # not validation_embedded
                     if textx_isinstance(a, mm["ScalarAttribute"]):
                         if textx_isinstance(a.type, mm["RawType"]):
                             f.write("    {} : {}={}()\n".format(a.name, fqn(a.type), fqn(a.type)))

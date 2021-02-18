@@ -10,15 +10,15 @@ def test_embedded1():
     struct Point {
       scalar a : built_in.uint32
       scalar c : built_in.uint32
-      embedded scalar x : built_in.int20
-      embedded scalar y : built_in.int12
+      validation_embedded scalar x : built_in.int20
+      validation_embedded scalar y : built_in.int12
       scalar d : built_in.uint32
     }
     struct Other {
       scalar a : built_in.uint32
       scalar c : built_in.uint32
-      embedded scalar x : built_in.int20
-      embedded array y : built_in.int2[6]
+      validation_embedded scalar x : built_in.int20
+      validation_embedded array y : built_in.int2[6]
     }
     """
     mm = metamodel_for_language("item")
@@ -66,8 +66,8 @@ def test_embedded_error_in_embedded_field1():
     package example
     struct Point {
       scalar c : built_in.uint64
-      embedded scalar x : built_in.float
-      embedded scalar y : built_in.int32
+      validation_embedded scalar x : built_in.float
+      validation_embedded scalar y : built_in.int32
     }
     """
     mm = metamodel_for_language("item")
@@ -81,14 +81,14 @@ def test_embedded_error_in_sum_of_bits1():
     package example
     struct Point {
       scalar c : built_in.uint32
-      embedded scalar x : built_in.int20
-      embedded scalar y : built_in.int13
-      embedded scalar z : built_in.bool
+      validation_embedded scalar x : built_in.int20
+      validation_embedded scalar y : built_in.int13
+      validation_embedded scalar z : built_in.bool
     }
     """
     mm = metamodel_for_language("item")
     assert mm is not None
-    with raises(TextXSemanticError, match=r".*embedded elements of container c .34. do not sum up to 32.*"):
+    with raises(TextXSemanticError, match=r".*validation_embedded elements of container c .34. do not sum up to 32.*"):
         mm.model_from_str(text)
 
 
@@ -97,8 +97,8 @@ def test_embedded_error_in_type_of_container():
     package example
     struct Point {
       scalar c : built_in.int32
-      embedded scalar x : built_in.int20
-      embedded scalar y : built_in.int12
+      validation_embedded scalar x : built_in.int20
+      validation_embedded scalar y : built_in.int12
     }
     """
     mm = metamodel_for_language("item")
@@ -112,8 +112,8 @@ def test_embedded_badtype1():
     package example
     struct Point {
       scalar c : built_in.uint33 // error!
-      embedded scalar x : built_in.int21
-      embedded scalar y : built_in.int12
+      validation_embedded scalar x : built_in.int21
+      validation_embedded scalar y : built_in.int12
     }
     """
     mm = metamodel_for_language("item")

@@ -25,9 +25,9 @@ def test_enum1():
     }
     struct Test {
       scalar c : built_in.uint32
-      embedded scalar spare : built_in.int20
-      embedded scalar abc : ABC
-      embedded array onoffs : OnOff[10]
+      validation_embedded scalar spare : built_in.int20
+      validation_embedded scalar abc : ABC
+      validation_embedded array onoffs : OnOff[10]
       scalar d : SABC
     }
     """
@@ -65,8 +65,8 @@ def test_variant_with_enum1():
     struct Test {
       scalar sel8 : ABC8
       scalar c: built_in.uint8
-      embedded scalar spare: built_in.uint6
-      embedded scalar sel2 : ABC2
+      validation_embedded scalar spare: built_in.uint6
+      validation_embedded scalar sel2 : ABC2
       variant data8 : sel8 -> {
         A : E1
         B : E1
@@ -107,8 +107,8 @@ def test_variant_with_enum1_bad_selector_value99():
     struct Test {
       scalar sel8 : ABC8
       scalar c: built_in.uint8
-      embedded scalar spare: built_in.uint6
-      embedded scalar sel2 : ABC2
+      validation_embedded scalar spare: built_in.uint6
+      validation_embedded scalar sel2 : ABC2
       variant data8 : sel8 -> {
         A : E1
         B : E1

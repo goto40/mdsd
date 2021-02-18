@@ -29,7 +29,7 @@ def check_Attribute(a):
 
     if hasattr(a,'type'):
         if a.embedded:
-            textx_assert(a.type.name != 'char', a, 'char may be be used as embedded field')
+            textx_assert(a.type.name != 'char', a, 'char may be be used as validation_embedded field')
 
     if hasattr(a, 'type'):
         if textx_isinstance(a.type, RawType):
@@ -53,7 +53,7 @@ def check_Attribute(a):
         textx_assert(a.if_attr is None, a, f"restricted attributes may not be used as container (put them into a separate substruct)")
 
     if a.is_embedded():
-        textx_assert(a.if_attr is None, a, f"restricted attributes may not be embedded (put them into a separate substruct)")
+        textx_assert(a.if_attr is None, a, f"restricted attributes may not be validation_embedded (put them into a separate substruct)")
 
 
 def check_Struct(s):
@@ -135,6 +135,8 @@ def check_Property(p):
 
 
 def check_ScalarAttribute(a):
+    # tests: see filebased_tests/embedded
+
     if a.is_container():
         if not textx_isinstance(a.type, RawType):
             raise TextXSemanticError("container {} must be an unsigned integral type.".format(a.name), **get_location(a))
@@ -144,11 +146,13 @@ def check_ScalarAttribute(a):
             lambda a,b:a+b,
             map(lambda a:get_bits(a.type)*get_fixed_dimension(a), a.get_container_elements()))
         if num_bits != get_bits(a.type):
-            raise TextXSemanticError("embedded elements of container {} ({}) do not sum up to {}.".format(
+            raise TextXSemanticError("validation_embedded elements of container {} ({}) do not sum up to {}.".format(
                 a.name,num_bits,get_bits(a.type)), **get_location(a))
 
 
 def check_ArrayAttribute(a):
+    # tests: see filebased_tests/char
+
     if a.type.name == 'char':
         textx_assert( len(a.dims) == 1, a, "no multidimensional strings allowed")
 
