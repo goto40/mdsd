@@ -15,7 +15,7 @@ nav:
   - Architectural Details: architecture.md
   - Maintenance: develop.md
 - About:
-  - License: https://github.com/goto40/mdsd/blob/master/LICENSE.txt
+  - License: https://github.com/goto40/mdsd/blob/master/LICENSE
 
 markdown_extensions:
 - admonition:

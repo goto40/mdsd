@@ -46,6 +46,7 @@ use of SWIG simpler.
 All textx languages are defined as individual python projects, as well as all code generators. This makes it easy to add new code generators or new languages using the existing ones.
 
 Also you can define search paths to allow models to include models from other locations. This allows to easily create depdendent modules with item models (using environemt variables):
+
  - `ITEM_LANG_SEARCH_PATH`: additional search directories
  - `ITEM_LANG_FILE_SUFFIX`: model file suffix (default: `*.item`)
 
