@@ -1,0 +1,15 @@
+name: run-tests
+
+on: [push]
+
+jobs:
+  ubuntu-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: deps
+      run: apt install python, virtualenv, pip
+    - name: install
+      run: ./install_all.sh
+    - name: test1
+      run: cd framework/item_lang && sh run_tests.sh
+
