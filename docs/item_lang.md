@@ -249,7 +249,7 @@ package example.one (property_set example.one.ProjExt)
 ## Model Validation
 
 The easiest way to get an overview of validation rules is to look at the
-filebased tests. These tests illustrate the good case (with explanation)
+filebased tests ([framework/item_lang/tests/model/filebased_tests](https://github.com/goto40/mdsd/blob/master/framework/item_lang/tests/model/filebased_tests)). These tests illustrate the good case (with explanation)
 and the bad cases (with the expected error output).
 
 You can also have a look at `item_lang/validation.py`.
