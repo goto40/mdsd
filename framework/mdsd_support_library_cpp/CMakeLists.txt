@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.0)
 project(mdsd_support_library)
 FIND_PROGRAM(LCOV_PATH lcov)
 FIND_PROGRAM(GENHTML_PATH genhtml)
+find_path(CATCH_INCLUDE_PATH catch.hpp REQUIRED)
+message("catch found at ${CATCH_INCLUDE_PATH}")
 
 set(TARGET_NAME Tester.exe)
 
@@ -36,6 +38,7 @@ file(GLOB_RECURSE TSTFILES "${TSTSRC}/*.cpp")
 add_executable(${TARGET_NAME} ${TSTFILES})
 target_sources(${TARGET_NAME} PUBLIC ${INC})
 target_link_libraries(${TARGET_NAME})
+target_include_directories(${TARGET_NAME} SYSTEM PRIVATE ${CATCH_INCLUDE_PATH})
 add_dependencies(${TARGET_NAME} mdsd_support_library_cpp_item_code)
 
 
