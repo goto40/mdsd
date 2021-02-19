@@ -33,7 +33,7 @@ Here, we describe the rough architecture of the software
 
 ## Code Generators
 
- * Generators are shipped as separate python projects.
+ * Generators are shipped as separate python projects (create your own generator!).
  * They make use of the core `item_lang` language and tools.
  * Common concept of "enhanced reflection", which fits into a visitor pattern.
  * Note: for the moment you find the generators embedded in this project...

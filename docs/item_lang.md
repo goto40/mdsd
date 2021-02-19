@@ -212,8 +212,8 @@ ApplicableForRawType: 'rawtype' ('(' concrete_types+=[RawType|FQN][','] ')')?;
    * if undefined, the property is applicable everywhere, except for struct definitions.
    * **array**, **scalar**, **variant**, or **struct_definition** allows arrays, scalars, variants, or struct definitions.
    * **rawtype** or **rawtype(...)** allows rawtypes or certain rawtypes.
-   * **internaltype**: INT, UINT, STRING, or ATTRTYPE (ATTRTYPE inherits the type from the attribute to which the property is bound to; not applicable for struct definitions)
-   * **... times per message** limits the number of properties per message (recursively; recusrion is stopped by array and the flag `.breakTimesPerMessage=true`) 
+   * **internaltype**: INT, UINT, STRING, ..., or ATTRTYPE (ATTRTYPE inherits the type from the attribute to which the property is bound to; not applicable for struct definitions)
+   * **... times per message** limits the number of properties per message (recursively; recusrion is stopped by arrays and the flag `.breakTimesPerMessage=true`) 
 
 Example with built in property definitions:
 ```
