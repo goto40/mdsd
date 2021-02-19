@@ -93,7 +93,7 @@ PropertySet: 'property_set' name=ID ('extends' extends=[PropertySet|FQN])?
 // Note: times_per_message is only considered for scalar attributes
 PropertyDefinition: 'property'
     optional?='optional'
-    ('applicable' 'for' applicable_for+=ApplicableFor[','])?
+    (('applicable' 'for'|'applicable_for') applicable_for+=ApplicableFor[','])?
     name=ID ':'
     internaltype=InternalType
     ('(' '.' 'description' '=' description=STRING ')')?

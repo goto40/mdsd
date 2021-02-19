@@ -28,7 +28,7 @@ enum ABC : built_in.int2 (.description="test") {
 
 struct Header {
     constant three: built_in.uint32 = 6/2
-    scalar id: TypeSelector (.defaultValue=TRIANGLE)
+    scalar id: TypeSelector (.defaultValue=TRIANGLE, .is_message_id_field=true)
     scalar length: built_in.uint32 (.maxValue=MyOtherConstants.maxlen)
 }
 
@@ -110,3 +110,27 @@ struct VersionedData {
     if (version==0) array data0: built_in.uint32[n]
     if (version==1) array data1: built_in.uint32[n]
 }
+
+struct Headers1 {
+    scalar header: Header
+    scalar header_extra: Header (.breakTimesPerMessage=true)
+}
+struct Headers2 {
+    scalar header_extra: Header (.breakTimesPerMessage=true)
+    scalar header: Header
+}
+struct Headers3 {
+    scalar header: Header
+    array header_extra: Header[2]
+}
+struct Headers4 {
+    scalar header: Header
+    array header_extra: Header[1] // since ararys are not considered for "times per message", this is ok
+}
+struct Headers5_noheader {
+    array header_extra: Header[1]
+}
+struct Headers6_noheader {
+    scalar header_extra: Header  (.breakTimesPerMessage=true)
+}
+

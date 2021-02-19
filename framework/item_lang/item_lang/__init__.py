@@ -27,7 +27,9 @@ def lang():
         property optional applicable for rawtype, enum defaultValue : ATTRTYPE
         property optional applicable for rawtype(char) defaultStringValue : STRING
         property optional description : STRING
-        property optional applicable for scalar, array breakTimesPerMessage : BOOL
+        property optional applicable for scalar breakTimesPerMessage : BOOL
+        property optional applicable for scalar is_message_id_field : BOOL { 0 to 1 times per message }
+        property optional applicable for scalar is_message_length_field : BOOL { 0 to 1 times per message }
     }
     rawtype double FLOAT 64
     rawtype float64 FLOAT 64

@@ -191,6 +191,30 @@ Default property definitions are built in, like `minValue` and `maxValue`.
 Additional, project specific property definitions can be added to support
 custom modeling aspects.
 
+Property definitions define where a property is applicable:
+```
+PropertyDefinition: 'property'
+    optional?='optional'
+    (('applicable' 'for'|'applicable_for') applicable_for+=ApplicableFor[','])?
+    name=ID ':'
+    internaltype=InternalType
+    ('(' '.' 'description' '=' description=STRING ')')?
+    ('{' (numberOfPropRestriction=NumberPropertiesPerStructDefRestriction)? '}')?;
+
+NumberPropertiesPerStructDefRestriction: min=INT 'to' max=INT ('times_per_message'|'times' 'per' 'message');
+// Note: "array" is used to disallow "scalars"
+// Note: "scalar" is used to disallow "arrays"
+ApplicableFor: ApplicableForRawType| 'struct'| 'enum' | 'array'|'scalar'|'variant'|'struct_definition';
+ApplicableForRawType: 'rawtype' ('(' concrete_types+=[RawType|FQN][','] ')')?;
+```
+ * **optional**: means the property is optional (else it is mandatory, if applicable).
+ * **applicable for**
+   * if undefined, the property is applicable everywhere, except for struct definitions.
+   * **array**, **scalar**, **variant**, or **struct_definition** allows arrays, scalars, variants, or struct definitions.
+   * **rawtype** or **rawtype(...)** allows rawtypes or certain rawtypes.
+   * **internaltype**: INT, UINT, STRING, or ATTRTYPE (ATTRTYPE inherits the type from the attribute to which the property is bound to; not applicable for struct definitions)
+   * **... times per message** limits the number of properties per message (recursively; recusrion is stopped by array and the flag `.breakTimesPerMessage=true`) 
+
 Example with built in property definitions:
 ```
 package example
