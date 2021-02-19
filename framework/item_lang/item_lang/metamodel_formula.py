@@ -1,5 +1,6 @@
 from functools import reduce
-import sys, inspect
+import sys
+import inspect
 
 
 def get_all_classes():

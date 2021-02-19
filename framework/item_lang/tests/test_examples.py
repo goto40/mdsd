@@ -1,4 +1,4 @@
-from textx import metamodel_for_language, generator_for_language_target
+from textx import metamodel_for_language
 import os
 import pytest
 from textx.exceptions import TextXSemanticError
@@ -49,16 +49,16 @@ def test_example1():
     }
     struct Line {
       scalar p1 : Point
-      scalar p2 : Point  
+      scalar p2 : Point
     }
     struct Circle {
       scalar center : Point
-      scalar radius : built_in.float  
+      scalar radius : built_in.float
     }
     struct ColoredTriangle {
       array color : built_in.float[3]
       array points : Point[3]
-    }    
+    }
     """
     mm = metamodel_for_language("item")
     assert mm is not None
@@ -77,11 +77,11 @@ def test_example2():
     }
     struct Line {
       scalar p1 : Point
-      scalar p2 : Point  
+      scalar p2 : Point
     }
     struct Circle {
       scalar center : Point
-      scalar radius : built_in.float  
+      scalar radius : built_in.float
     }
     struct VariantExample {
         scalar selector: built_in.uint32
@@ -112,11 +112,11 @@ def test_example2_fail_with_nonstruct_variant():
     }
     struct Line {
       scalar p1 : Point
-      scalar p2 : Point  
+      scalar p2 : Point
     }
     struct Circle {
       scalar center : Point
-      scalar radius : built_in.float  
+      scalar radius : built_in.float
     }
     struct VariantExample {
         scalar selector: built_in.uint32

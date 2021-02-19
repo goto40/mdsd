@@ -1,9 +1,6 @@
 import textx
 import textx.scoping.providers as scoping_providers
-from textx import get_location
 from textx.scoping import ModelRepository
-from textx.exceptions import TextXSemanticError
-import item_lang.metamodel_formula as f
 from os.path import dirname, join, abspath
 import os
 import item_lang.metamodel_classes as mmc

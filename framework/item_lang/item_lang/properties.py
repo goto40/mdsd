@@ -4,7 +4,6 @@ from textx import (
     TextXSemanticError,
     textx_isinstance,
     get_location,
-    get_model,
 )
 from item_lang.common import (
     textx_assert,

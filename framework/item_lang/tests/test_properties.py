@@ -50,7 +50,7 @@ def test_property_set2_default_properties():
 def test_property1():
     text = r"""
     package example
-    
+
     struct Point {
       scalar x : built_in.float (.minValue=0.1, .defaultValue=1, .maxValue=1e5)
       scalar y : built_in.float (.defaultValue=0x0aB, .description="Hello")
@@ -58,7 +58,7 @@ def test_property1():
     struct Polygon {
       scalar n : built_in.uint32
       array points : Point[n]
-    }    
+    }
     """
     mm = metamodel_for_language("item")
     assert mm is not None
@@ -181,7 +181,7 @@ def test_property1_bad_type3():
     text = r"""
     package example(property_set X)
     property_set X {
-        property test: ATTRTYPE    
+        property test: ATTRTYPE
     }
     struct Point {
       scalar x : built_in.uint32 (.test=1.2)
@@ -197,7 +197,7 @@ def test_property1_bad_type4():
     text = r"""
     package example(property_set X)
     property_set X {
-        property test: ATTRTYPE    
+        property test: ATTRTYPE
     }
     struct Point {
       scalar x : built_in.uint32 (.test="no str allowed here")
@@ -227,7 +227,7 @@ def test_property1_no_constexpr():
 def test_property1_get_property_type():
     text = r"""
     package example(property_set X)
-    
+
     property_set X {
         property optional test: INT
         property optional test2: BOOL

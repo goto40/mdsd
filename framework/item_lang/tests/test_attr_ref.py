@@ -14,7 +14,7 @@ def test_attr_ref1():
     struct Polygon {
       scalar n : built_in.uint32
       array points : Point[n]
-    }    
+    }
     """
     mm = metamodel_for_language("item")
     assert mm is not None
@@ -38,12 +38,12 @@ def test_attr_ref2():
     }
     struct Header {
       scalar n : built_in.uint32
-      scalar nb_bytes: built_in.uint32    
+      scalar nb_bytes: built_in.uint32
     }
     struct Polygon {
       scalar header: Header
       array points : Point[header.n]
-    }    
+    }
     """
     mm = metamodel_for_language("item")
     assert mm is not None
@@ -69,12 +69,12 @@ def test_attr_ref3():
     }
     struct Header {
       scalar n : built_in.uint32
-      scalar nb_bytes: built_in.uint32    
+      scalar nb_bytes: built_in.uint32
     }
     struct Polygon {
       scalar header: Header
       array points : Point[header.not_existant]
-    }    
+    }
     """
     mm = metamodel_for_language("item")
     with pytest.raises(TextXSemanticError, match=r".*Unknown object.*not_existant.*"):

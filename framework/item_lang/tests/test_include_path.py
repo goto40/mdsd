@@ -1,4 +1,4 @@
-from textx import metamodel_for_language, generator_for_language_target
+from textx import metamodel_for_language
 import os
 import pytest
 from item_lang import lang

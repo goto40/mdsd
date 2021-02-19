@@ -22,7 +22,8 @@ from item_lang.properties import (
 )
 from item_lang.attributes import is_attribute_before_other_attribute
 from functools import reduce
-import sys, inspect
+import sys
+import inspect
 
 
 def get_all_checks_as_map():
@@ -83,14 +84,14 @@ def check_Attribute(a):
         textx_assert(
             a.if_attr is None,
             a,
-            f"restricted attributes may not be used as container (put them into a separate substruct)",
+            "restricted attributes may not be used as container (put them into a separate substruct)",
         )
 
     if a.is_embedded():
         textx_assert(
             a.if_attr is None,
             a,
-            f"restricted attributes may not be embedded (put them into a separate substruct)",
+            "restricted attributes may not be embedded (put them into a separate substruct)",
         )
 
 

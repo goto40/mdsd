@@ -1,5 +1,6 @@
 from functools import reduce
-import sys, inspect
+import sys
+import inspect
 import item_lang.metamodel_formula as f
 
 
@@ -86,7 +87,7 @@ class Struct(object):
                 return self.attributes[idx]
             else:
                 return None
-        except:
+        except Exception:
             return None
 
     def get_prev_attr(self, a):
@@ -98,7 +99,7 @@ class Struct(object):
                 return self.attributes[idx]
             else:
                 return None
-        except:
+        except Exception:
             return None
 
     def __str__(self):

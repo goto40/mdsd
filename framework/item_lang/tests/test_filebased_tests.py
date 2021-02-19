@@ -1,5 +1,6 @@
 from textx import metamodel_for_language, TextXSemanticError
-import os, glob
+import os
+import glob
 from codegen_test_support import get_expected_error_regex
 import pytest
 
