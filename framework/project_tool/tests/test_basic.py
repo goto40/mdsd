@@ -5,9 +5,9 @@ import os
 
 def test_create_order1():
     tool = SwigTool(["."])
-    a = Header("a.h",".")
-    b = Header("b.h",".")
-    c = Header("c.h",".")
+    a = Header("a.h", ".")
+    b = Header("b.h", ".")
+    c = Header("c.h", ".")
 
     tool.headers.append(a)
     tool.headers.append(b)
@@ -22,11 +22,12 @@ def test_create_order1():
     assert h[1] == b
     assert h[2] == a
 
+
 def test_create_order2():
     tool = SwigTool(["."])
-    a = Header("a.h",".")
-    b = Header("b.h",".")
-    c = Header("c.h",".")
+    a = Header("a.h", ".")
+    b = Header("b.h", ".")
+    c = Header("c.h", ".")
 
     tool.headers.append(a)
     tool.headers.append(b)
@@ -40,11 +41,12 @@ def test_create_order2():
     assert h[1] == b
     assert h[2] == c
 
+
 def test_create_order3():
     tool = SwigTool(["."])
-    a = Header("a.h",".")
-    b = Header("b.h",".")
-    c = Header("c.h",".")
+    a = Header("a.h", ".")
+    b = Header("b.h", ".")
+    c = Header("c.h", ".")
 
     tool.headers.append(a)
     tool.headers.append(b)
@@ -60,17 +62,17 @@ def test_create_order3():
 
 def test_create_lookup1():
     tool = SwigTool(["."])
-    a = Header("a.h",".")
-    b = Header("b.h",".")
-    c = Header("c.h",".")
+    a = Header("a.h", ".")
+    b = Header("b.h", ".")
+    c = Header("c.h", ".")
 
     tool.headers.append(a)
     tool.headers.append(b)
     tool.headers.append(c)
 
-    assert a==tool.lookup("a.h")
-    assert b==tool.lookup("b.h")
-    assert c==tool.lookup("c.h")
+    assert a == tool.lookup("a.h")
+    assert b == tool.lookup("b.h")
+    assert c == tool.lookup("c.h")
 
     with pytest.raises(Exception):
         tool.lookup("unknown.h")
@@ -83,49 +85,51 @@ def test_create_lookup1():
 
 
 def test_create_lookup2():
-    tool = SwigTool(["lib1","lib2"])
-    a = Header("a.h","lib1")
-    b = Header("x/b.h","lib2")
-    c = Header("x/c.h","lib2")
-    d = Header("x/d.h","lib1")
+    tool = SwigTool(["lib1", "lib2"])
+    a = Header("a.h", "lib1")
+    b = Header("x/b.h", "lib2")
+    c = Header("x/c.h", "lib2")
+    d = Header("x/d.h", "lib1")
 
     tool.headers.append(a)
     tool.headers.append(b)
     tool.headers.append(c)
     tool.headers.append(d)
 
-    assert a==tool.lookup("a.h")
-    assert b==tool.lookup("x/b.h")
-    assert c==tool.lookup("x/c.h")
-    assert d==tool.lookup("x/d.h")
+    assert a == tool.lookup("a.h")
+    assert b == tool.lookup("x/b.h")
+    assert c == tool.lookup("x/c.h")
+    assert d == tool.lookup("x/d.h")
 
     with pytest.raises(Exception):
         tool.lookup("b.h")
 
-    assert b==tool.lookup("b.h",c)
+    assert b == tool.lookup("b.h", c)
     with pytest.raises(Exception):
         tool.lookup("b.h", d)
 
 
 def test_with_real_files():
     base = os.path.dirname(__file__)
-    tool = SwigTool([
-        os.path.join(base, "example_ok", "lib1"),
-        os.path.join(base, "example_ok", "lib2"),
-    ])
+    tool = SwigTool(
+        [
+            os.path.join(base, "example_ok", "lib1"),
+            os.path.join(base, "example_ok", "lib2"),
+        ]
+    )
     tool.analyze()
 
     assert len(tool.headers) == 6
 
     a = tool.lookup("a.h")
-    b = tool.lookup("x/b.h",a)
+    b = tool.lookup("x/b.h", a)
     assert len(b.headers) == 3
 
     x_a = tool.lookup("x/a.h")
     assert x_a != a
 
     c = tool.lookup("x/c.h")
-    x_a2 = tool.lookup("a.h",c)
+    x_a2 = tool.lookup("a.h", c)
     assert x_a2 == x_a
     assert len(c.headers) == 0
     assert a.basedir.endswith("lib1")
@@ -143,21 +147,27 @@ def test_with_real_files():
 
 def test_with_real_files_require_pattern1():
     base = os.path.dirname(__file__)
-    tool = SwigTool([
-        os.path.join(base, "example_ok", "lib1"),
-        os.path.join(base, "example_ok", "lib2"),
-    ], r"^\s*//\s*ACTIVATE FOR SWIG\s*$")
+    tool = SwigTool(
+        [
+            os.path.join(base, "example_ok", "lib1"),
+            os.path.join(base, "example_ok", "lib2"),
+        ],
+        r"^\s*//\s*ACTIVATE FOR SWIG\s*$",
+    )
     tool.analyze()
 
-    assert len(list(filter(lambda x:x.relevant, tool.headers))) == 1
+    assert len(list(filter(lambda x: x.relevant, tool.headers))) == 1
 
 
 def test_with_real_files_require_pattern1():
     base = os.path.dirname(__file__)
-    tool = SwigTool([
-        os.path.join(base, "example_ok", "lib1"),
-        os.path.join(base, "example_ok", "lib2"),
-    ], r"^\s*//\s*ACTIVATE FOR SWIG")
+    tool = SwigTool(
+        [
+            os.path.join(base, "example_ok", "lib1"),
+            os.path.join(base, "example_ok", "lib2"),
+        ],
+        r"^\s*//\s*ACTIVATE FOR SWIG",
+    )
     tool.analyze()
 
-    assert len(list(filter(lambda x:x.relevant, tool.headers))) == 2
+    assert len(list(filter(lambda x: x.relevant, tool.headers))) == 2

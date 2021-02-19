@@ -1,6 +1,9 @@
 import os, shutil
-from textx import (metamodel_for_language, generator_for_language_target,
-                   get_children_of_type)
+from textx import (
+    metamodel_for_language,
+    generator_for_language_target,
+    get_children_of_type,
+)
 
 
 def test_attr_formula1():
@@ -37,7 +40,7 @@ def test_attr_formula1():
 
 
 def test_constants_with_formulas():
-    text='''
+    text = """
     package abc {
         constants MyConstants (.description = "example")
         {
@@ -52,13 +55,15 @@ def test_constants_with_formulas():
             array c: built_in.uint32[4*CONST MyConstants.c1]
         }
     }
-    '''
+    """
     mm = metamodel_for_language("item")
     assert mm is not None
     model = mm.model_from_str(text)
     assert model is not None
 
-    model._tx_filename = os.path.join(os.path.abspath(os.path.dirname(__file__)), "mymodel.txt")
+    model._tx_filename = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)), "mymodel.txt"
+    )
     path = os.path.join(os.path.abspath(os.path.dirname(__file__)), "src-gen")
     gen1 = generator_for_language_target("item", "cpp")
     if os.path.exists(path):
@@ -121,7 +126,11 @@ def test_example2():
 def test_props_load_and_import():
     mm = metamodel_for_language("item")
     assert mm is not None
-    model = mm.model_from_file(os.path.join(os.path.abspath(os.path.dirname(__file__)), "model", "props_example.item"))
+    model = mm.model_from_file(
+        os.path.join(
+            os.path.abspath(os.path.dirname(__file__)), "model", "props_example.item"
+        )
+    )
     assert model is not None
 
     model._tx_filename = "example.item"

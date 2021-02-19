@@ -17,13 +17,19 @@ def generate_python(metamodel, model, output_path, overwrite, debug):
     constants = get_children_of_type("Constants", model)
 
     for elem in structs:
-        output_file = create_folder_and_return_output_filename(elem, base_dir, overwrite)
+        output_file = create_folder_and_return_output_filename(
+            elem, base_dir, overwrite
+        )
         generate_py_for_struct(elem, output_file)
 
     for elem in enums:
-        output_file = create_folder_and_return_output_filename(elem, base_dir, overwrite)
+        output_file = create_folder_and_return_output_filename(
+            elem, base_dir, overwrite
+        )
         generate_py_for_enum(elem, output_file)
 
     for elem in constants:
-        output_file = create_folder_and_return_output_filename(elem, base_dir, overwrite)
+        output_file = create_folder_and_return_output_filename(
+            elem, base_dir, overwrite
+        )
         generate_py_for_constants(elem, output_file)

@@ -1,8 +1,7 @@
 import textx, os, click
 from algo_lang.codegen_common import get_package_names
 from item_codegen_cpp.common import output_filename
-from textx import (get_children_of_type, get_model,
-                   TextXSemanticError,  get_location)
+from textx import get_children_of_type, get_model, TextXSemanticError, get_location
 
 
 @textx.generator("algo", "cpp")
@@ -10,7 +9,7 @@ def generate_cpp(metamodel, model, output_path, overwrite, debug):
     "Generating c++ code from the item model"
     input_file = model._tx_filename
     base_dir = output_path if output_path else os.path.dirname(input_file)
-    base_dir = os.path.join(base_dir,*get_package_names(model))
+    base_dir = os.path.join(base_dir, *get_package_names(model))
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     base_name, _ = os.path.splitext(os.path.basename(input_file))
@@ -27,20 +26,23 @@ def generate_cpp(metamodel, model, output_path, overwrite, debug):
 def fqn(a):
     return "::".join(get_package_names(get_model(a))) + "::" + a.name
 
-def fqn_funcparam(a,prefix = None):
+
+def fqn_funcparam(a, prefix=None):
     t = fqn(a.type)
     if prefix is not None:
-        t = prefix+" "+t
-    if (hasattr(a,"datatype") and a.datatype=="shared_ptr"):
+        t = prefix + " " + t
+    if hasattr(a, "datatype") and a.datatype == "shared_ptr":
         return "std::shared_ptr<{}>".format(t)
-    elif (hasattr(a,"datatype") and a.datatype is not None):
-        raise TextXSemanticError("unexpected: unknown datatype {}".format(a.datatype), **get_location(a))
+    elif hasattr(a, "datatype") and a.datatype is not None:
+        raise TextXSemanticError(
+            "unexpected: unknown datatype {}".format(a.datatype), **get_location(a)
+        )
     else:
-        return t+"&"
-    
+        return t + "&"
+
 
 def _get_open_namespace(model):
-    return "namespace "+"::".join(get_package_names(model))+"{\n"
+    return "namespace " + "::".join(get_package_names(model)) + "{\n"
 
 
 def generate_cpp_from_model(model, base_name, output_file):
@@ -55,7 +57,7 @@ def generate_cpp_from_model(model, base_name, output_file):
         for p in a.parameters:
             item_models.append(get_model(p.type))
     item_models = set(item_models)
-    item_headers =[]
+    item_headers = []
     for m in item_models:
         for element in get_children_of_type("Struct", m):
             item_headers.append(output_filename(None, element))
@@ -67,8 +69,16 @@ def generate_cpp_from_model(model, base_name, output_file):
     item_headers.sort()
 
     with open(output_file, "w") as f:
-        f.write("#ifndef __{}_{}_H\n".format("_".join(get_package_names(model)), base_name.upper()))
-        f.write("#define __{}_{}_H\n".format("_".join(get_package_names(model)), base_name.upper()))
+        f.write(
+            "#ifndef __{}_{}_H\n".format(
+                "_".join(get_package_names(model)), base_name.upper()
+            )
+        )
+        f.write(
+            "#define __{}_{}_H\n".format(
+                "_".join(get_package_names(model)), base_name.upper()
+            )
+        )
         f.write("// ACTIVATE FOR SWIG\n")
         f.write("#include <functional>\n")
         f.write("#include <memory>\n")
@@ -82,24 +92,46 @@ def generate_cpp_from_model(model, base_name, output_file):
         f.write(_get_open_namespace(model))
         for a in algos:
             f.write("class {} {{\n".format(a.name))
-            f.write('    inline static std::function<std::shared_ptr<{}>()> factory = nullptr;\n'.format(a.name))
-            f.write('protected:\n')
+            f.write(
+                "    inline static std::function<std::shared_ptr<{}>()> factory = nullptr;\n".format(
+                    a.name
+                )
+            )
+            f.write("protected:\n")
             for p in a.parameters:
-                f.write('        {} {};\n'.format(fqn(p.type), p.name))
-            f.write('public:\n')
-            f.write('    virtual ~{}() {{}}\n'.format(a.name))
-            f.write('    static const char* get_classname() {{ return "{}"; }}\n'.format(a.name))
-            f.write('    static std::shared_ptr<{}> create() {{ if (factory==nullptr) {{ throw std::runtime_error("factory not set."); }} return factory(); }}\n'.format(a.name))
-            f.write('    template<class F> static void set_factory(F f) {{ factory=f; }}\n'.format(a.name))
-            f.write('    virtual void compute(')
+                f.write("        {} {};\n".format(fqn(p.type), p.name))
+            f.write("public:\n")
+            f.write("    virtual ~{}() {{}}\n".format(a.name))
+            f.write(
+                '    static const char* get_classname() {{ return "{}"; }}\n'.format(
+                    a.name
+                )
+            )
+            f.write(
+                '    static std::shared_ptr<{}> create() {{ if (factory==nullptr) {{ throw std::runtime_error("factory not set."); }} return factory(); }}\n'.format(
+                    a.name
+                )
+            )
+            f.write(
+                "    template<class F> static void set_factory(F f) {{ factory=f; }}\n".format(
+                    a.name
+                )
+            )
+            f.write("    virtual void compute(")
             sep = ""
             for p in a.inputs:
-                f.write('{}\n        {} {}'.format(sep, fqn_funcparam(p, "const"), p.name))
-                sep=", "
+                f.write(
+                    "{}\n        {} {}".format(sep, fqn_funcparam(p, "const"), p.name)
+                )
+                sep = ", "
             for p in a.outputs:
-                f.write('{}\n        {} {}'.format(sep, fqn_funcparam(p), p.name))
-                sep=", "
-            f.write('\n    )=0;\n')
+                f.write("{}\n        {} {}".format(sep, fqn_funcparam(p), p.name))
+                sep = ", "
+            f.write("\n    )=0;\n")
             f.write("}}; // struct {}\n".format(a.name))
         f.write("} // close namespace\n")
-        f.write("#endif // __{}_{}_H\n".format("_".join(get_package_names(model)),base_name.upper()))
+        f.write(
+            "#endif // __{}_{}_H\n".format(
+                "_".join(get_package_names(model)), base_name.upper()
+            )
+        )

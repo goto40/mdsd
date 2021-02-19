@@ -26,10 +26,14 @@ grammar = r"""
 def lang():
     mm = textx.metamodel_from_str(grammar)
     mm.register_scope_providers({"*.*": scoping_providers.FQNImportURI()})
+
     def algo_check(a):
         for p in a.parameters:
             if p.datatype is not None:
-                raise TextXSemanticError("parameter is not allowed to have {} flag".format(p.datatype), **get_location(p));
-    mm.register_obj_processors({
-        "Algo": algo_check})
+                raise TextXSemanticError(
+                    "parameter is not allowed to have {} flag".format(p.datatype),
+                    **get_location(p)
+                )
+
+    mm.register_obj_processors({"Algo": algo_check})
     return mm

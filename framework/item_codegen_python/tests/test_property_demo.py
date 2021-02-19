@@ -21,7 +21,7 @@ class Point:
 
     @property
     def myflag(self):
-        return (self.flags & 2) !=0
+        return (self.flags & 2) != 0
 
     @myflag.setter
     def myflag(self, v):
@@ -35,13 +35,15 @@ class Point:
     def allflags(self):
         def getter(idx):
             (self.flags & (1 << idx)) != 0,
+
         def setter(idx, val):
             self.flags = (self.flags & (~(1 << idx))) | ((val & 1) << idx)
-        return ArrayLike( getter, setter )
+
+        return ArrayLike(getter, setter)
 
     @property
     def mySeason(self):
-        return Season(self.flags&7)
+        return Season(self.flags & 7)
 
     @mySeason.setter
     def mySeason(self, v):
@@ -74,7 +76,7 @@ def test_property_demo():
     assert p.flags == 6
 
     with pytest.raises(Exception):
-        p.allflags[0] = 6 # not a bool
+        p.allflags[0] = 6  # not a bool
 
     with pytest.raises(Exception):
         p.myflag = 6

@@ -5,17 +5,19 @@ import numpy as np
 
 @init_visitor
 class init_default_values_visitor:
-    def __init__(self,):
+    def __init__(
+        self,
+    ):
         pass
 
     def visit_scalar(self, struct, attr, meta):
         if meta["_has_char_content"] and meta["__has_defaultStringValue"]:
-            setattr(struct,attr+"_as_str",meta["defaultStringValue"]())
+            setattr(struct, attr + "_as_str", meta["defaultStringValue"]())
         elif meta["__has_defaultValue"]:
             setattr(struct, attr, meta["defaultValue"]())
 
     def visit_scalar_struct(self, struct, attr, meta):
-        accept(getattr(struct,attr), self)
+        accept(getattr(struct, attr), self)
 
     def visit_array(self, struct, attr, meta):
         if meta["__has_defaultValue"]:
@@ -24,7 +26,7 @@ class init_default_values_visitor:
 
     def visit_string(self, struct, attr, rawattr, meta):
         if meta["__has_defaultStringValue"]:
-            setattr(struct,attr,meta["defaultStringValue"]())
+            setattr(struct, attr, meta["defaultStringValue"]())
         else:
             self.visit_array(struct, rawattr, meta)
 

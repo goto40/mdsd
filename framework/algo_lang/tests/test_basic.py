@@ -1,6 +1,9 @@
 import os
-from textx import (metamodel_for_language, get_children_of_type,
-                   generator_for_language_target)
+from textx import (
+    metamodel_for_language,
+    get_children_of_type,
+    generator_for_language_target,
+)
 import shutil
 import pytest
 from textx.exceptions import TextXSemanticError
@@ -38,7 +41,9 @@ def test_parse2():
 
 def test_bad_datatype():
     path = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "basic", "mean_algo_bad_datatype.algo"
+        os.path.abspath(os.path.dirname(__file__)),
+        "basic",
+        "mean_algo_bad_datatype.algo",
     )
     mm = metamodel_for_language("algo")
     assert mm is not None

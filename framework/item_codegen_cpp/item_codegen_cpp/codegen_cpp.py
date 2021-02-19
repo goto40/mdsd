@@ -16,15 +16,19 @@ def generate_cpp(metamodel, model, output_path, overwrite, debug):
     constants = get_children_of_type("Constants", model)
 
     for elem in structs:
-        output_file = create_folder_and_return_output_filename(elem, base_dir, overwrite)
+        output_file = create_folder_and_return_output_filename(
+            elem, base_dir, overwrite
+        )
         generate_cpp_for_struct(elem, output_file, overwrite)
 
     for elem in enums:
-        output_file = create_folder_and_return_output_filename(elem, base_dir, overwrite)
+        output_file = create_folder_and_return_output_filename(
+            elem, base_dir, overwrite
+        )
         generate_cpp_for_enum(elem, output_file, overwrite)
 
     for elem in constants:
-        output_file = create_folder_and_return_output_filename(elem, base_dir, overwrite)
+        output_file = create_folder_and_return_output_filename(
+            elem, base_dir, overwrite
+        )
         generate_cpp_for_constants(elem, output_file, overwrite)
-
-

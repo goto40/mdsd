@@ -1,6 +1,9 @@
 import os
-from textx import (metamodel_for_language, get_children_of_type,
-                   generator_for_language_target)
+from textx import (
+    metamodel_for_language,
+    get_children_of_type,
+    generator_for_language_target,
+)
 import shutil
 import pytest
 from textx.exceptions import TextXSemanticError
@@ -30,10 +33,11 @@ def test_codegen():
     assert "shared_ptr<Items::MeanAlgo" not in cpp_code
 
 
-
 def test_codegen_cpp():
     path = os.path.join(
-        os.path.abspath(os.path.dirname(__file__)), "basic", "mean_algo_with_shared_ptr.algo"
+        os.path.abspath(os.path.dirname(__file__)),
+        "basic",
+        "mean_algo_with_shared_ptr.algo",
     )
     mm = metamodel_for_language("algo")
     assert mm is not None

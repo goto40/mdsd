@@ -1,4 +1,8 @@
-from textx import metamodel_for_language, generator_for_language_target, get_children_of_type
+from textx import (
+    metamodel_for_language,
+    generator_for_language_target,
+    get_children_of_type,
+)
 from os.path import join, abspath, dirname, exists
 from os import mkdir
 from shutil import rmtree
@@ -35,5 +39,5 @@ def test_big_example():
     for s in structs + enums + constants:
         check_file(
             filename=output_filename(outpath, s),
-            regex_reference_filename=output_filename(refpath, s, "regex_ref")
+            regex_reference_filename=output_filename(refpath, s, "regex_ref"),
         )

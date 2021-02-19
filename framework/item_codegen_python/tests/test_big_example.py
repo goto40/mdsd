@@ -1,4 +1,8 @@
-from textx import metamodel_for_language, generator_for_language_target, get_children_of_type
+from textx import (
+    metamodel_for_language,
+    generator_for_language_target,
+    get_children_of_type,
+)
 from os.path import join, abspath, dirname, exists
 from os import mkdir
 from shutil import rmtree
@@ -16,13 +20,14 @@ def test_big_example():
 
     model = mm.model_from_file(join(inpath, "big_example.item"))
     assert model is not None
-    refpath = join(this_folder, "model","ref")
+    refpath = join(this_folder, "model", "ref")
 
     structs = get_children_of_type("Struct", model)
     enums = get_children_of_type("Enum", model)
     constants = get_children_of_type("Constants", model)
 
     outpath = join(this_folder, "../src-gen")
+
 
 #    for s in structs + enums + constants:
 #        check_file(
