@@ -191,6 +191,8 @@ Default property definitions are built in, like `minValue` and `maxValue`.
 Additional, project specific property definitions can be added to support
 custom modeling aspects.
 
+Project specific property definitions are specified in a property definition set (which can inherit from other property definition sets). You implicitely inherit from the built in property set. Thus, you cannot redefine the existing properties like `description`, `minValue`, etc.
+
 Property definitions define where a property is applicable:
 ```
 PropertyDefinition: 'property'
@@ -221,20 +223,26 @@ package example
     
     struct Point {
       scalar x : built_in.float (.minValue=0.1, .defaultValue=1, .maxValue=1e5)
-      scalar y : built_in.float (.defaultValue=0x0aB, .description="Hello")
+      scalar y : built_in.float (
+          .defaultValue=0x0aB,
+          .description="Hello")
     }
 ```
 
 Example with custom propery definitions:
 ```
-// TODO find better example
 package example.one (property_set example.one.ProjExt)
+
     property_set ProjExt {
         property optional myprop1: STRING
         property myprop2: ATTRTYPE
     }
+
     struct A {
-        scalar x: built_in.int32 (.description="a", .myprop2=1)
+        scalar x: built_in.int32 (
+            .description="a",
+            .myprop1="Hello",
+            .myprop2=1)
     }
 ```
 
