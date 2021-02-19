@@ -27,6 +27,7 @@ def lang():
         property optional applicable for rawtype, enum defaultValue : ATTRTYPE
         property optional applicable for rawtype(char) defaultStringValue : STRING
         property optional description : STRING
+        property optional applicable for scalar, array breakTimesPerMessage : BOOL
     }
     rawtype double FLOAT 64
     rawtype float64 FLOAT 64

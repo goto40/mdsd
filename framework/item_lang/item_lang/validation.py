@@ -71,8 +71,11 @@ def check_Struct(s):
         for a in s.attributes:
             lst = lst + a.properties
             if textx_isinstance(a, mm["ScalarAttribute"]) and textx_isinstance(a.type, mm["Struct"]):
-                lst = lst + get_all_properties_of_struct(a.type)
+                do_break = get_property(a, "breakTimesPerMessage") # None or bool
+                if do_break is None or not do_break:
+                    lst = lst + get_all_properties_of_struct(a.type)
         return lst
+
     properties = get_all_properties_of_struct(s)
     properties_per_def={}
     for p in properties:

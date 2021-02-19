@@ -1,4 +1,5 @@
 // - mandatory properties must be defined (see folder `property_tests`)
+// - min/max occurence of certain properties ("times per message", see folder `property_tests`)
 // - the minimum/maximum number of properties must be fullfilled (see folder `property_tests`)
 // - attribute names must be unique
 // - constant names must be unique

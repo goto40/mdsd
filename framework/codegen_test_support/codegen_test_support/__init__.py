@@ -51,6 +51,6 @@ def get_expected_error_regex(filename):
             error_line = lineno+1
             error_regex = m.group(1)
 
-    assert error_line is not None
-    assert error_regex is not None
+    assert error_line is not None, f"missing 'expected:' in file {filename}"
+    assert error_regex is not None, f"missing 'expected:' in file {filename}"
     return f"{filename}.*:{error_line}.*:.*{error_regex}"
