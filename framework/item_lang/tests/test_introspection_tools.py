@@ -16,9 +16,16 @@ def test_metamodel_classes():
     for c in fneg:
         assert c not in classes
 
-    fpos = [mmc.Package, mmc.ScalarAttribute, mmc.VariantAttribute,
-            mmc.Struct, mmc.RawType, mmc.ArrayAttribute, mmc.Enum,
-            mmc.PropertyDefinition]
+    fpos = [
+        mmc.Package,
+        mmc.ScalarAttribute,
+        mmc.VariantAttribute,
+        mmc.Struct,
+        mmc.RawType,
+        mmc.ArrayAttribute,
+        mmc.Enum,
+        mmc.PropertyDefinition,
+    ]
     fneg = []
 
     for c in fpos:

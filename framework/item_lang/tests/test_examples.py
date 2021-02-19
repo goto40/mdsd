@@ -4,7 +4,7 @@ import pytest
 from textx.exceptions import TextXSemanticError
 from textx import get_children_of_type
 from item_lang import lang
-from item_lang.common import (get_referenced_elements_of_struct)
+from item_lang.common import get_referenced_elements_of_struct
 
 
 def test_example0():
@@ -158,6 +158,7 @@ def test_example3_load_and_import():
 def test_example4_load_and_import():
     mm = metamodel_for_language("item")
     assert mm is not None
-    model = mm.model_from_file(os.path.join(os.path.abspath(os.path.dirname(__file__)), "model","a.item"))
+    model = mm.model_from_file(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), "model", "a.item")
+    )
     assert model is not None
-

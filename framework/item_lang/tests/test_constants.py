@@ -1,11 +1,11 @@
 from textx import metamodel_for_language
 from pytest import raises
 from textx.exceptions import TextXSemanticError
-from item_lang.common import (get_referenced_elements_of_constants)
+from item_lang.common import get_referenced_elements_of_constants
 
 
 def test_constants1():
-    text='''
+    text = """
     package abc
     constants MyConstants (.description = "example")
     {
@@ -24,22 +24,22 @@ def test_constants1():
     struct Test2 {
         scalar a: built_in.uint32 (.defaultValue = 3*Test1.c3)
     }
-    '''
+    """
     mm = metamodel_for_language("item")
     assert mm is not None
     model = mm.model_from_str(text)
     assert model is not None
     assert len(model.package.constants) == 2
     assert len(model.package.constants[0].constant_entries) == 2
-    assert model.package.constants[0].constant_entries[0].name == 'c1'
-    assert model.package.constants[0].constant_entries[1].name == 'c2'
+    assert model.package.constants[0].constant_entries[0].name == "c1"
+    assert model.package.constants[0].constant_entries[1].name == "c2"
 
     refs = get_referenced_elements_of_constants(model.package.constants[1])
     assert len(refs) == 1
 
 
 def test_constants1_type_error_in_struct():
-    text='''
+    text = """
     package abc
     constants MyConstants (.description = "example")
     {
@@ -49,7 +49,7 @@ def test_constants1_type_error_in_struct():
     struct Test1 {
         scalar a: built_in.uint32 (.defaultValue = 3*MyConstants.c2)
     }
-    '''
+    """
     mm = metamodel_for_language("item")
     assert mm is not None
     with raises(TextXSemanticError, match=r".*must be an INT/UINT for.*"):
@@ -57,14 +57,14 @@ def test_constants1_type_error_in_struct():
 
 
 def test_constants1_type_error1():
-    text='''
+    text = """
     package abc
     constants MyConstants (.description = "example")
     {
         constant c2: built_in.float = 3 (.description = "constant") // ok (int -> float)
         constant c1: built_in.uint32 = 1.2 (.description = "constant") // error
     }
-    '''
+    """
     mm = metamodel_for_language("item")
     assert mm is not None
 
@@ -73,14 +73,14 @@ def test_constants1_type_error1():
 
 
 def test_constants1_type_error2():
-    text='''
+    text = """
     package abc
     constants MyConstants (.description = "example")
     {
         constant c2: built_in.float = 3 (.description = "constant") // ok (int -> float)
         constant c1: built_in.uint32 = -1 (.description = "constant") // error
     }
-    '''
+    """
     mm = metamodel_for_language("item")
     assert mm is not None
 
@@ -89,7 +89,7 @@ def test_constants1_type_error2():
 
 
 def test_constants_with_formulas_and_wrong_valueClassificator():
-    text='''
+    text = """
     package abc {
         constants MyConstants (.description = "example")
         {
@@ -104,8 +104,11 @@ def test_constants_with_formulas_and_wrong_valueClassificator():
             array c: built_in.uint32[4*ENUM MyConstants.c1]
         }
     }
-    '''
+    """
     mm = metamodel_for_language("item")
     assert mm is not None
-    with raises(TextXSemanticError, match=r".*referenced value is not matching classificator 'ENUM'.*"):
+    with raises(
+        TextXSemanticError,
+        match=r".*referenced value is not matching classificator 'ENUM'.*",
+    ):
         mm.model_from_str(text)

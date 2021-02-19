@@ -12,11 +12,19 @@ def get_all_classes():
     return res
 
 
-def render_ref(ref, separator=".", postfix="", prefix="", const_separator='::',
-               enum_separator=None, repeat_type_name_for_enums=False,
-               inhibit_fqn_for_parent=None):
+def render_ref(
+    ref,
+    separator=".",
+    postfix="",
+    prefix="",
+    const_separator="::",
+    enum_separator=None,
+    repeat_type_name_for_enums=False,
+    inhibit_fqn_for_parent=None,
+):
     from textx import textx_isinstance, get_metamodel
     from item_lang.common import get_package_names_of_obj
+
     if enum_separator is None:
         enum_separator = const_separator
     mm = get_metamodel(ref)
@@ -25,20 +33,17 @@ def render_ref(ref, separator=".", postfix="", prefix="", const_separator='::',
     else:
         fqn_parts = get_package_names_of_obj(ref) + [ref.parent.name]
     if textx_isinstance(ref, mm["ScalarAttribute"]):
-        return prefix + separator.join(
-            map(lambda x: x.name, ref._tx_path)) + postfix
+        return prefix + separator.join(map(lambda x: x.name, ref._tx_path)) + postfix
     elif textx_isinstance(ref, mm["Constant"]):
-        return const_separator.join(
-            fqn_parts + [ref.name])
+        return const_separator.join(fqn_parts + [ref.name])
     elif textx_isinstance(ref, mm["EnumEntry"]):
         if repeat_type_name_for_enums:
-            return enum_separator.join(
-                fqn_parts + [ref.parent.name, ref.name])
+            return enum_separator.join(fqn_parts + [ref.parent.name, ref.name])
         else:
-            return enum_separator.join(
-                fqn_parts + [ref.name])
+            return enum_separator.join(fqn_parts + [ref.name])
     else:
         from textx.exceptions import TextXSemanticError
+
         raise TextXSemanticError("unexpected type " + ref._tx_obj.__class__.__name__)
 
 
@@ -56,15 +61,19 @@ class FormulaBase(CustomIdlBase):
         super(FormulaBase, self).__init__()
 
     def has_fixed_size(self):
-        return reduce(lambda x, y: x and y, map(
-            lambda x: x.has_fixed_size(), self.parts), True)
+        return reduce(
+            lambda x, y: x and y, map(lambda x: x.has_fixed_size(), self.parts), True
+        )
 
     def render_formula(self, **p):
         if len(self.parts) == 1:
             return self.parts[0].render_formula(**p)
         else:
-            return "(" + self.operator.join(map(
-                lambda x: x.render_formula(**p), self.parts)) + ")"
+            return (
+                "("
+                + self.operator.join(map(lambda x: x.render_formula(**p), self.parts))
+                + ")"
+            )
 
     def __repr__(self):
         return self.render_formula()
@@ -91,11 +100,22 @@ class Predicate_Cmp(FormulaBase):
 
     def render_formula(self, **p):
         if len(self.other_parts) == 0:
-            raise Exception("unexpected: comparison with at least two elements required.")
+            raise Exception(
+                "unexpected: comparison with at least two elements required."
+            )
         else:
             res0 = self.part0.render_formula(**p)
-            return "(" + res0 + "".join(map(
-                lambda x: x.cmp_op + x.part.render_formula(**p), self.other_parts)) + ")"
+            return (
+                "("
+                + res0
+                + "".join(
+                    map(
+                        lambda x: x.cmp_op + x.part.render_formula(**p),
+                        self.other_parts,
+                    )
+                )
+                + ")"
+            )
 
 
 class Sum(FormulaBase):
@@ -108,22 +128,25 @@ class Sum(FormulaBase):
         if len(self.parts) == 1:
             return self.parts[0].compute_formula()
         else:
-            return reduce(lambda a,b: a.compute_formula()+b.compute_formula(), self.parts)
+            return reduce(
+                lambda a, b: a.compute_formula() + b.compute_formula(), self.parts
+            )
 
     def get_enum(self):
         from textx import textx_isinstance, get_metamodel
-        if len(self.parts)!=1:
+
+        if len(self.parts) != 1:
             return None
-        if len(self.parts[0].parts)!=1:
+        if len(self.parts[0].parts) != 1:
             return None
-        if len(self.parts[0].parts[0].parts)!=1:
+        if len(self.parts[0].parts[0].parts) != 1:
             return None
-        if len(self.parts[0].parts[0].parts[0].parts)!=1:
+        if len(self.parts[0].parts[0].parts[0].parts) != 1:
             return None
         v = self.parts[0].parts[0].parts[0].parts[0]
         mm = get_metamodel(v)
         if v.ref is not None:
-            if textx_isinstance(v.ref.ref,mm["EnumEntry"]):
+            if textx_isinstance(v.ref.ref, mm["EnumEntry"]):
                 return v.ref.ref._tx_obj
         return None
 
@@ -141,7 +164,9 @@ class Dif(FormulaBase):
         if len(self.parts) == 1:
             return self.parts[0].compute_formula()
         else:
-            return reduce(lambda a,b: a.compute_formula()-b.compute_formula(), self.parts)
+            return reduce(
+                lambda a, b: a.compute_formula() - b.compute_formula(), self.parts
+            )
 
 
 class Mul(FormulaBase):
@@ -154,23 +179,26 @@ class Mul(FormulaBase):
         if len(self.parts) == 1:
             return self.parts[0].compute_formula()
         else:
-            return reduce(lambda a,b: a.compute_formula()*b.compute_formula(), self.parts)
+            return reduce(
+                lambda a, b: a.compute_formula() * b.compute_formula(), self.parts
+            )
 
 
-def _mydiv(a,b):
+def _mydiv(a, b):
     """
     int save divison. Unlike python3 1/5 yields 0 here... (like C)
     :param a:
     :param b:
     :return: a/b
     """
-    #return a.compute_formula()/b.compute_formula()
+    # return a.compute_formula()/b.compute_formula()
     va = a.compute_formula()
     vb = b.compute_formula()
-    if isinstance(va,int) and isinstance(vb,int):
-        return va//vb
+    if isinstance(va, int) and isinstance(vb, int):
+        return va // vb
     else:
-        return va/vb
+        return va / vb
+
 
 class Div(FormulaBase):
     def __init__(self, **kwargs):
@@ -201,7 +229,8 @@ class Val(FormulaBase):
     def compute_formula(self):
         if self.ref:
             from textx import textx_isinstance, get_metamodel
-            if (textx_isinstance(self.ref.ref, get_metamodel(self)["Attribute"])):
+
+            if textx_isinstance(self.ref.ref, get_metamodel(self)["Attribute"]):
                 raise Exception("no constexpr")
             return self.ref.ref.value.compute_formula()
         elif self.sum:

@@ -23,7 +23,7 @@ class Enum(object):
         setattr(self, "parent", None)
         for k in kwargs.keys():
             setattr(self, k, kwargs[k])
-        setattr(self, "internaltype", 'ENUM')
+        setattr(self, "internaltype", "ENUM")
 
 
 class VariantAttribute(object):
@@ -40,7 +40,7 @@ class VariantAttribute(object):
         return False
 
     def __str__(self):
-        return self.parent.name + '.' + self.name
+        return self.parent.name + "." + self.name
 
 
 class ScalarAttribute(object):
@@ -53,7 +53,7 @@ class ScalarAttribute(object):
         if self.embedded:
             return False
         next = self.parent.get_next_attr(self)
-        return next is not None and hasattr(next, 'embedded') and next.embedded
+        return next is not None and hasattr(next, "embedded") and next.embedded
 
     def is_embedded(self):
         return self.embedded
@@ -62,13 +62,13 @@ class ScalarAttribute(object):
         assert self.is_container()
         next = self.parent.get_next_attr(self)
         result = list()
-        while (next is not None and next.embedded):
+        while next is not None and next.embedded:
             result.append(next)
             next = self.parent.get_next_attr(next)
         return result
 
     def __str__(self):
-        return self.parent.name + '.' + self.name
+        return self.parent.name + "." + self.name
 
 
 class Struct(object):
@@ -136,13 +136,21 @@ class ArrayAttribute(object):
             setattr(self, k, kwargs[k])
 
     def has_fixed_size(self):
-        return reduce(lambda a, b: a and b, map(lambda x: x.dim.has_fixed_size(), self.dims), True)
+        return reduce(
+            lambda a, b: a and b, map(lambda x: x.dim.has_fixed_size(), self.dims), True
+        )
 
     def compute_formula(self):
-        return reduce(lambda a, b: a * b, map(lambda x: x.dim.compute_formula(), self.dims), 1)
+        return reduce(
+            lambda a, b: a * b, map(lambda x: x.dim.compute_formula(), self.dims), 1
+        )
 
     def render_formula(self, **kwargs):
-        return reduce(lambda a, b: "{}*{}".format(a, b), map(lambda x: x.dim.render_formula(**kwargs), self.dims), "1")
+        return reduce(
+            lambda a, b: "{}*{}".format(a, b),
+            map(lambda x: x.dim.render_formula(**kwargs), self.dims),
+            "1",
+        )
 
     def render_formula_comma_separated(self, **kwargs):
         dims = list(map(lambda x: x.dim.render_formula(**kwargs), self.dims))
@@ -158,4 +166,4 @@ class ArrayAttribute(object):
         return self.embedded
 
     def __str__(self):
-        return self.parent.name + '.' + self.name
+        return self.parent.name + "." + self.name

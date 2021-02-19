@@ -1,6 +1,6 @@
 from textx import metamodel_for_language
 from pytest import raises
-from item_lang.common import (get_referenced_elements_of_enum)
+from item_lang.common import get_referenced_elements_of_enum
 
 
 def test_enum1():
@@ -35,7 +35,7 @@ def test_enum1():
     assert mm is not None
     model = mm.model_from_str(text)
     assert model is not None
-    assert len(model.package.items)==4
+    assert len(model.package.items) == 4
 
     onoff = model.package.items[0]
     assert onoff.name == "OnOff"
@@ -123,7 +123,7 @@ def test_variant_with_enum1_bad_selector_value99():
     """
     mm = metamodel_for_language("item")
     assert mm is not None
-    with raises(Exception, match=r'.*bad type.*'):
+    with raises(Exception, match=r".*bad type.*"):
         _ = mm.model_from_str(text)
 
 
@@ -141,7 +141,7 @@ def test_enum_in_formula_error1():
     """
     mm = metamodel_for_language("item")
     assert mm is not None
-    with raises(Exception, match=r'.*must not be part of a formula.*'):
+    with raises(Exception, match=r".*must not be part of a formula.*"):
         _ = mm.model_from_str(text)
 
 
@@ -159,7 +159,7 @@ def test_enum_in_formula_error2():
     """
     mm = metamodel_for_language("item")
     assert mm is not None
-    with raises(Exception, match=r'.*must not be part of a formula.*'):
+    with raises(Exception, match=r".*must not be part of a formula.*"):
         _ = mm.model_from_str(text)
 
 

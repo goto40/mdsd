@@ -4,11 +4,13 @@ from textx import textx_isinstance, get_metamodel, get_children_of_type
 def get_all_attributes_before(a):
     s = a.parent
     idx0 = s.attributes.index(a)
-    assert idx0>=0
-    return filter(lambda x: s.attributes.index(x)<idx0, s.attributes)
+    assert idx0 >= 0
+    return filter(lambda x: s.attributes.index(x) < idx0, s.attributes)
 
-def is_attribute_before_other_attribute(a,b):
+
+def is_attribute_before_other_attribute(a, b):
     return a in get_all_attributes_before(b)
+
 
 def is_dynamic(a):
     """
@@ -28,10 +30,13 @@ def is_dynamic(a):
     if textx_isinstance(a, mm["ScalarAttribute"]):
         return False
     if textx_isinstance(a, mm["ArrayAttribute"]):
-        attr_refs = list(filter(
-            lambda x: textx_isinstance(x.ref, mm["Attribute"]),
-            get_children_of_type("AttrRef", a)))
-        if len(attr_refs)>0:
+        attr_refs = list(
+            filter(
+                lambda x: textx_isinstance(x.ref, mm["Attribute"]),
+                get_children_of_type("AttrRef", a),
+            )
+        )
+        if len(attr_refs) > 0:
             return True
         else:
             return False

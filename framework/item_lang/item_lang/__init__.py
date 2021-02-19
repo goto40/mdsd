@@ -11,14 +11,14 @@ import item_lang.validation as v
 from item_lang.properties import get_property_set, get_default_property_set
 
 
-@textx.language("item", "*."+os.getenv('ITEM_LANG_FILE_SUFFIX', "item"))
+@textx.language("item", "*." + os.getenv("ITEM_LANG_FILE_SUFFIX", "item"))
 def lang():
     this_folder = dirname(abspath(__file__))
     fn = join(this_folder, "item_lang.tx")
-    mm = textx.metamodel_from_file(fn,
-                                   builtin_models=ModelRepository(),
-                                   classes=mmc.get_all_classes())
-    modeltext = '''
+    mm = textx.metamodel_from_file(
+        fn, builtin_models=ModelRepository(), classes=mmc.get_all_classes()
+    )
+    modeltext = """
     package built_in
     property_set default_properties {
         property optional applicable for rawtype minValue : ATTRTYPE
@@ -37,15 +37,14 @@ def lang():
     rawtype float32 FLOAT 32
     rawtype bool BOOL 1
     rawtype char INT 8
-    '''
+    """
     for b in range(1, 65):
-        modeltext += "rawtype uint{} UINT {}\n".format(b,b)
+        modeltext += "rawtype uint{} UINT {}\n".format(b, b)
     for b in range(2, 65):
-        modeltext += "rawtype int{} INT {}\n".format(b,b)
-        modeltext += "rawtype sint{} INT {}\n".format(b,b)
+        modeltext += "rawtype int{} INT {}\n".format(b, b)
+        modeltext += "rawtype sint{} INT {}\n".format(b, b)
 
-    mm.builtin_models.add_model(
-        mm.model_from_str(modeltext))
+    mm.builtin_models.add_model(mm.model_from_str(modeltext))
 
     def prop_scope(refItem, attr, attr_ref):
         ps = get_property_set(refItem)
@@ -62,34 +61,33 @@ def lang():
                 ps = ps.extends
         return None
 
-    search_path = os.getenv('ITEM_LANG_SEARCH_PATH', None)
+    search_path = os.getenv("ITEM_LANG_SEARCH_PATH", None)
     if search_path is not None:
         search_path = search_path.split(os.pathsep)
-        search_path = list(filter(lambda x:len(x)>0, search_path))
+        search_path = list(filter(lambda x: len(x) > 0, search_path))
         if len(search_path) == 0:
             search_path = None
 
-    mm.register_scope_providers({
-        "*.*": scoping_providers.FQNImportURI(search_path=search_path),
-        "Property.definition": prop_scope
-    })
+    mm.register_scope_providers(
+        {
+            "*.*": scoping_providers.FQNImportURI(search_path=search_path),
+            "Property.definition": prop_scope,
+        }
+    )
 
     def text2bool(value):
-        if value == 'true':
+        if value == "true":
             return 1
-        if value == 'false':
+        if value == "false":
             return 0
         raise Exception("unexpected/impossible")
 
-    object_processors = {
-        'HexNumber': lambda x: int(x, 16),
-        'BoolNumber': text2bool
-    }
+    object_processors = {"HexNumber": lambda x: int(x, 16), "BoolNumber": text2bool}
     checks = v.get_all_checks_as_map()
     for c in checks:
         if c not in mm:
             raise Exception(f"unexpected check found for unknown class {c}")
-    object_processors.update( checks )
+    object_processors.update(checks)
 
-    mm.register_obj_processors( object_processors )
+    mm.register_obj_processors(object_processors)
     return mm

@@ -9,9 +9,15 @@ def test_filebased_tests():
     assert mm is not None
 
     good_files = glob.glob(
-        os.path.join(os.path.abspath(
-        os.path.dirname(__file__)), "model","filebased_tests","**","good*.item"),
-        recursive=True)
+        os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "model",
+            "filebased_tests",
+            "**",
+            "good*.item",
+        ),
+        recursive=True,
+    )
 
     print(f"good files found: {len(good_files)}")
     assert len(good_files) > 0
@@ -20,9 +26,15 @@ def test_filebased_tests():
         assert model is not None
 
     bad_files = glob.glob(
-        os.path.join(os.path.abspath(
-        os.path.dirname(__file__)), "model","filebased_tests","**","bad*.item"),
-        recursive=True)
+        os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            "model",
+            "filebased_tests",
+            "**",
+            "bad*.item",
+        ),
+        recursive=True,
+    )
 
     print(f"bad files found: {len(bad_files)}")
     assert len(bad_files) > 0
