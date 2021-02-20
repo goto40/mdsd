@@ -9,6 +9,7 @@ interface specification tool among other aspects.
 
 ## Example
 
+Some items:
 ```
 package Items
 
@@ -25,6 +26,7 @@ struct MeanAlgoOutput {
 }
 ```
 
+An algorithm:
 ```
 import "data.item"
 
