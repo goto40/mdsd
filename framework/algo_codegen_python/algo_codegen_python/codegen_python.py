@@ -63,7 +63,6 @@ def generate_python_from_model(model, base_name, output_file):
 
     with open(output_file, "w") as f:
         f.write("from abc import ABC, abstractmethod\n")
-        f.write('todo: problem with "base"-package... encoded in output path.\n')
         for h in required_mdoules:
             f.write("import {}\n".format(h))
         for a in algos:

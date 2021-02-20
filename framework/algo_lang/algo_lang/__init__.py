@@ -1,4 +1,4 @@
-import textx, click
+import textx
 import textx.scoping.providers as scoping_providers
 from textx import get_location
 from textx.exceptions import TextXSemanticError

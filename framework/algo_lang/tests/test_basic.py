@@ -2,9 +2,7 @@ import os
 from textx import (
     metamodel_for_language,
     get_children_of_type,
-    generator_for_language_target,
 )
-import shutil
 import pytest
 from textx.exceptions import TextXSemanticError
 
