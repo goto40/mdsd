@@ -18,7 +18,7 @@ swig -c++ -python -I../../framework/mdsd_support_library_cpp/src -Isrc/cpp -Isrc
 pip install -e src-gen/swig || exit 1
 pip install -e src-gen/python || exit 1
 
-py.test tests/ || exit 1
+py.test --junit-xml=test_results.xml tests || exit 1
 
 #python demo.py
 #python -i -m demo
