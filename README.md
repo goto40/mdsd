@@ -1,15 +1,3 @@
-<style>
-.column-left{
-  float: left;
-  width: 49%;
-  text-align: left;
-}
-.column-right{
-  float: right;
-  width: 49%;
-  text-align: left;
-}
-</style>
 # MDSD demo toolchain and examples
 [![badge](https://github.com/goto40/mdsd/actions/workflows/run_tests.yml/badge.svg)](https://github.com/goto40/mdsd/actions?query=workflow%3Arun-tests)
 
@@ -21,7 +9,6 @@ interface specification tool among other aspects.
 
 ## Example
 
-<div class="column-left">
 ```
 package Items
 
@@ -37,9 +24,7 @@ struct MeanAlgoOutput {
     scalar value: built_in.float
 }
 ```
-</div>
 
-<div class="column-right">
 ```
 import "data.item"
 
@@ -58,7 +43,6 @@ algo MeanAlgo {
     }
 }
 ```
-</div>
 
 ## Purpose
 
