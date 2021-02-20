@@ -1,4 +1,4 @@
-# MDSD demo toolchain and examples
+# MDSD demo toolchain and examples ![badge](https://github.com/goto40/mdsd/actions/workflows/run_tests.yml/badge.svg)
 
 Here, we present a simple item and algorithmic
 interface specification tool among other aspects.
