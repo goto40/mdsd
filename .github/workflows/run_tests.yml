@@ -23,4 +23,8 @@ jobs:
       run: mkdir framework/mdsd_support_library_cpp/build && cd framework/mdsd_support_library_cpp/build && cmake .. && sudo make install
     - name: test1
       run: ./run_tests.sh
-
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: test-results/**/test_results.xml
