@@ -20,6 +20,10 @@ TestDirs=(
  
 for d in ${TestDirs[@]}; do
 	{
+	echo "=================================================="
+	echo "= RUNNNING TESTS IN"
+	echo "= $d"
+	echo "=================================================="
 	cd $d
 	./run_tests.sh || exit 1
 	cd -
