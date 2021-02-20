@@ -1,7 +1,7 @@
 #ifndef __MyVectorAdd_H
 #define __MyVectorAdd_H
 
-#include "algos/example.h"
+#include "algos/VectorAdd.h"
 #include <iostream>
 
 // AxxxCTIVATE FOR SWIG
