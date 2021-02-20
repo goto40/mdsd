@@ -17,8 +17,10 @@ jobs:
         fetch-depth: 1
     - name: update textx to the bleeding edge version
       run: pip install git+https://github.com/textX/textX.git#egg=textx
-    - name: install the mdsd framework
+    - name: install the mdsd framework (python)
       run: ./install_all.sh
+    - name: install the mdsd framework (c++ support lib)
+      run: mkdir framework/mdsd_support_library_cpp/build && cd framework/mdsd_support_library_cpp/build && cmake .. && sudo make install
     - name: test1
       run: ./run_tests.sh
 
