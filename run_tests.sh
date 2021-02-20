@@ -14,6 +14,8 @@ TestDirs=(
 	"framework/mdsd_support_library_cpp"
 	
 	"framework/project_tool"
+
+	"examples/cpp_python_demo"
 )
  
 for d in ${TestDirs[@]}; do

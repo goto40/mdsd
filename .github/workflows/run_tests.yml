@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: deps
-      run: sudo apt update -y -qq && sudo apt -y -qq install build-essential cmake swig g++
+      run: sudo apt update -y -qq && sudo apt -y -qq install build-essential cmake swig g++ python-wxgtk3.0-dev
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
@@ -20,5 +20,5 @@ jobs:
     - name: install the mdsd framework
       run: ./install_all.sh
     - name: test1
-      run: cd framework/item_lang && sh run_tests.sh
+      run: ./run_tests.sh
 
