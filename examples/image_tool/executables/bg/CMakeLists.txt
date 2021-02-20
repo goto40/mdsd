@@ -4,6 +4,9 @@ PROJECT(bg)
 SET(wxWidgets_USE_LIBS)
 #SET(USE_PROPGRID=1)
 
+FIND_PROGRAM(TEXTX_PATH textx)
+message("textx found at ${TEXTX_PATH}")
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -24,7 +27,7 @@ file(GLOB_RECURSE INCGEN "${SRCGEN}/*.h")
 
 add_custom_target(
     executable_bg_item_code
-    COMMAND textx generate model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
+    COMMAND ${TEXTX_PATH} generate model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 

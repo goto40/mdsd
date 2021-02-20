@@ -4,6 +4,8 @@ project(mdsd_support_library)
 FIND_PROGRAM(LCOV_PATH lcov)
 FIND_PROGRAM(GENHTML_PATH genhtml)
 find_path(CATCH_INCLUDE_PATH catch.hpp REQUIRED)
+FIND_PROGRAM(TEXTX_PATH textx)
+message("textx found at ${TEXTX_PATH}")
 message("catch found at ${CATCH_INCLUDE_PATH}")
 
 set(TARGET_NAME Tester.exe)
@@ -16,7 +18,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(SRCGEN src-gen)
 add_custom_target(
     mdsd_support_library_cpp_item_code
-    COMMAND textx generate ../mdsd_support_library_common/model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
+    COMMAND ${TEXTX_PATH} generate ../mdsd_support_library_common/model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 

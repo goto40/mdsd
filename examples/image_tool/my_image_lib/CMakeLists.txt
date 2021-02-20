@@ -4,6 +4,9 @@ project(my_image_lib)
 
 set(TSTNAME Tester.exe)
 
+FIND_PROGRAM(TEXTX_PATH textx)
+message("textx found at ${TEXTX_PATH}")
+
 # determine whether this is a standalone project or included by other projects
 set(GSL_STANDALONE_PROJECT OFF)
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
@@ -23,7 +26,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED on)
 set(SRCGEN src-gen)
 add_custom_target(
     my_image_lib_item_code
-    COMMAND textx generate model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
+    COMMAND ${TEXTX_PATH} generate model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
