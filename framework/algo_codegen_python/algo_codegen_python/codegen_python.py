@@ -55,7 +55,6 @@ def fqn(a):
 
 
 def generate_py_for_algo(a, output_file):
-    #mm = get_metamodel(a)
     if obj_is_newer_than_file(a, output_file):
         item_models = []
         for p in a.inputs:
@@ -83,10 +82,10 @@ def generate_py_for_algo(a, output_file):
             f.write("class {}(ABC):\n".format(a.name))
             f.write("    def __init__(self):\n")
             for p in a.parameters:
-                f.write("        self.{}={}();\n".format(p.name, fqn(p.type)))
+                f.write("        self.{}={}()\n".format(p.name, fqn(p.type)))
             f.write("\n")
             f.write("    @abstractmethod\n")
-            f.write("    def compute(")
+            f.write("    def compute(self,")
             sep = ""
             for p in a.inputs:
                 f.write("{}\n                {}:{}".format(sep, p.name, fqn(p.type)))

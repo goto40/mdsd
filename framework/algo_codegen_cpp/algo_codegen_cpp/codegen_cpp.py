@@ -1,4 +1,6 @@
-import textx, os, click
+import textx
+import os
+import click
 from item_lang.common import get_package_names_of_obj
 from textx import get_children_of_type, get_model, TextXSemanticError, get_location
 from item_lang.common import obj_is_newer_than_file
@@ -101,14 +103,13 @@ def generate_cpp_for_algo(a, output_file):
                 )
             )
             f.write(
-                '    static std::shared_ptr<{}> create() {{ if (factory==nullptr) {{ throw std::runtime_error("factory not set."); }} return factory(); }}\n'.format(
+                '    static std::shared_ptr<{}> create() {{ if (factory==nullptr)'
+                ' {{ throw std::runtime_error("factory not set."); }} return factory(); }}\n'.format(
                     a.name
                 )
             )
             f.write(
-                "    template<class F> static void set_factory(F f) {{ factory=f; }}\n".format(
-                    a.name
-                )
+                "    template<class F> static void set_factory(F f) {{ factory=f; }}\n"
             )
             f.write("    virtual void compute(")
             sep = ""

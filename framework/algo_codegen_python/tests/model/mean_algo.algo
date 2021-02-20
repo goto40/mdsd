@@ -7,7 +7,8 @@ algo MeanAlgo {
         params: Items.MeanAlgoParameters
     }
     inputs {
-        inp: Items.MeanAlgoInput
+        inp1: Items.MeanAlgoInput
+        inp2: Items.MeanAlgoInput
     }
     outputs {
         oup: Items.MeanAlgoOutput
