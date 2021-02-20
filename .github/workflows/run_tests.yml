@@ -10,8 +10,8 @@ jobs:
       run: sudo apt update -y -qq && sudo apt -y -qq install build-essential cmake swig g++
     - name: Set up Python
       uses: actions/setup-python@v1
-        with:
-          python-version: 3.8
+      with:
+        python-version: 3.8
     - uses: actions/checkout@v1
       with:
         fetch-depth: 1
