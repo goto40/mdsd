@@ -503,12 +503,12 @@ def generate_cpp_struct(f, i):
 
     f.write(f"  {i.name}() {{\n")
     f.write("    mdsd::init_default_values(*this);\n")
-    f.write("  }}\n")
+    f.write("  }\n")
 
     if _extra_init_required(i):
         f.write(f"  {i.name}({_get_ctor_params(i)}) {{\n")
         f.write(f"    {_get_ctor_body(i)};\n")
-        f.write("  }}\n")
+        f.write("  }\n")
 
     f.write(
         "  static std::shared_ptr<{}> item_create() {{ return std::make_shared<{}>(); }}\n".format(
