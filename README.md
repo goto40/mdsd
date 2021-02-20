@@ -1,3 +1,15 @@
+<style>
+.column-left{
+  float: left;
+  width: 49%;
+  text-align: left;
+}
+.column-right{
+  float: right;
+  width: 49%;
+  text-align: left;
+}
+</style>
 # MDSD demo toolchain and examples
 [![badge](https://github.com/goto40/mdsd/actions/workflows/run_tests.yml/badge.svg)](https://github.com/goto40/mdsd/actions?query=workflow%3Arun-tests)
 
@@ -6,6 +18,47 @@ interface specification tool among other aspects.
 
  * Items = data structures (like C structs)
  * Algorithms = functions to transform items into other items.
+
+## Example
+
+<div class="column-left">
+```
+package Items
+
+struct MeanAlgoParameters {
+    scalar alpha: built_in.float
+}
+
+struct MeanAlgoInput {
+    scalar value: built_in.float
+}
+
+struct MeanAlgoOutput {
+    scalar value: built_in.float
+}
+```
+</div>
+
+<div class="column-right">
+```
+import "data.item"
+
+package Algortihms
+
+algo MeanAlgo {
+    parameters {
+        params: Items.MeanAlgoParameters
+    }
+    inputs {
+        inp1: Items.MeanAlgoInput
+        inp2: Items.MeanAlgoInput
+    }
+    outputs {
+        oup: Items.MeanAlgoOutput
+    }
+}
+```
+</div>
 
 ## Purpose
 
@@ -39,3 +92,4 @@ clear specification language and single source.
 ./activate_env
 makdocs serve
 ```
+(or look into the `docs` folder...)
