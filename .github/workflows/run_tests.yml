@@ -7,7 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: deps
-      run: apt install python, virtualenv, pip
+      run: sudo apt -y install python, virtualenv, pip
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
     - name: install
       run: ./install_all.sh
     - name: test1
