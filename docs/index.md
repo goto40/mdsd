@@ -1,6 +1,7 @@
 # Introduction
 
-This site contains a collection of demos on **M**odel **D**riven **S**oftware **D**esign (MDSD). MDSD implies that code is derived (generated) from model data.
+This site contains a collection of demos on **M**odel **D**riven **S**oftware **D**esign (MDSD).
+MDSD implies that code is derived (generated) from model data.
 MDSD fosters **single source** (the model) and **consistency** (in the generated artifacts).
 
 This collection is a **proof of concept**. Many aspects are experimental
@@ -44,11 +45,11 @@ use of SWIG simpler.
 
 ### Modelling tools
 
-All textx languages are defined as individual python projects, as well as all code generators. 
+All textX languages are defined as individual python projects, as well as all code generators. 
 This makes it easy to add new code generators or new languages using the existing ones.
 
 Also you can define search paths to allow models to include models from other locations. 
-This allows to easily create depdendent modules with item models (using environemt variables):
+This allows to easily create dependent modules with item models (using environment variables):
 
  - `ITEM_LANG_SEARCH_PATH`: additional search directories
  - `ITEM_LANG_FILE_SUFFIX`: model file suffix (default: `item`)
@@ -64,6 +65,6 @@ textX -> dot                  textX[2.4.0.dev0]             Generating dot visua
 textX -> PlantUML             textX[2.4.0.dev0]             Generating PlantUML visualizations from textX grammars
 item -> cpp                   item-codegen-cpp[0.0.3]       Generating c++ code from the item model
 item -> python                item-codegen-python[0.0.4]    Generating c++ code from the item model
-algo -> cpp                   algo-codegen-cpp[0.0.2]       Generating c++ code from the item model
+algo -> cpp                   algo-codegen-cpp[0.0.2]       Generating c++ code from the algo model
 algo -> python                algo-codegen-python[0.0.2]    Generating c++ code from the algo model
 ```

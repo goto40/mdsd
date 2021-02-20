@@ -31,7 +31,7 @@ You can see many examples in [framework/item_lang/tests/model/filebased_tests](h
 ## Model Structure
 
  * The model consists of objects of the following types.
-   Grammar: see our [rough arhitecture](architecture.md) description.
+   Grammar: see our [rough architecture](architecture.md) description.
    * `Struct` (like C-structs), with data members (`Attribute`).
       Each `Attribute` can have properties (`Property`) to 
       add meta information (like `minValue`, `maxValue`,
@@ -46,10 +46,10 @@ You can see many examples in [framework/item_lang/tests/model/filebased_tests](h
    * With properties, additional information can be included in the
      generated code (like min/max values, e.g., a point with x/y values
      which must be positive).
-   * You can define additional user defiend properties to your model.
+   * You can define additional user defined properties to your model.
      For most languages, these additional properties (maybe formatting hints
      or additional value restrictions) are included in the generate
-     code (without chaging the code generator itself).
+     code (without changing the code generator itself).
 
 ### Raw Types and built in types
 
@@ -85,7 +85,7 @@ package abc
 ### Constants
 
 Constants can be defined to be used in the model and to be exported to various target
-langugaes. Example:
+languages. Example:
 
 ```
 package abc
@@ -158,7 +158,7 @@ Fixed sized arrays and scalar attributes can be embedded in bitfields.
 
 You can restrict attributes to exist
 only if a certain (simple) requirement
-is fullfilled (e.g. a version field
+is fulfilled (e.g. a version field
 is above a certain value).
 
 With this you can - under certain 
@@ -214,8 +214,12 @@ ApplicableForRawType: 'rawtype' ('(' concrete_types+=[RawType|FQN][','] ')')?;
    * if undefined, the property is applicable everywhere, except for struct definitions.
    * **array**, **scalar**, **variant**, or **struct_definition** allows arrays, scalars, variants, or struct definitions.
    * **rawtype** or **rawtype(...)** allows rawtypes or certain rawtypes.
-   * **internaltype**: INT, UINT, STRING, ..., or ATTRTYPE (ATTRTYPE inherits the type from the attribute to which the property is bound to; not applicable for struct definitions)
-   * **... times per message** limits the number of properties per message (recursively; recusrion is stopped by arrays and the flag `.breakTimesPerMessage=true`) 
+   * **internaltype**: INT, UINT, STRING, ..., or ATTRTYPE 
+     (ATTRTYPE inherits the type from the attribute to which the property is bound to;
+     not applicable for struct definitions)
+   * **... times per message** limits the number of properties per message
+     (recursively; recursion is stopped by arrays and the flag `.breakTimesPerMessage=true`;
+     arrays o structs are not taken into account) 
 
 Example with built in property definitions:
 ```
@@ -229,7 +233,7 @@ package example
     }
 ```
 
-Example with custom propery definitions:
+Example with custom property definitions:
 ```
 package example.one (property_set example.one.ProjExt)
 
@@ -249,7 +253,7 @@ package example.one (property_set example.one.ProjExt)
 ## Model Validation
 
 The easiest way to get an overview of validation rules is to look at the
-filebased tests ([framework/item_lang/tests/model/filebased_tests](https://github.com/goto40/mdsd/blob/master/framework/item_lang/tests/model/filebased_tests)). These tests illustrate the good case (with explanation)
+file based tests ([framework/item_lang/tests/model/filebased_tests](https://github.com/goto40/mdsd/blob/master/framework/item_lang/tests/model/filebased_tests)). These tests illustrate the good case (with explanation)
 and the bad cases (with the expected error output).
 
 You can also have a look at `item_lang/validation.py`.

@@ -11,7 +11,7 @@ interface specification tool among other aspects.
 Provide a simple MDSD chain as a **proof of concept**. Many aspects are experimental
 and not meant to be used for production.
 
-The goal is to **generate 100% code for item specififcations** 
+The goal is to **generate 100% code for item specifications** 
 (input/output data and parameters for algorithms) and to
 **provide a homogeneous algorithm skeleton**.
 
@@ -23,7 +23,7 @@ implementations.
 **Question**: Why do we generate 100% of the item code,
 but not the algorithm code?
 **Answer**: We think that algorithm development deserves much
-creativiy. This makes it important to have two independent
+creativity. This makes it important to have two independent
 implementations (together with some documentation, e.g. as python
 notebook). A single source for such an algorithm would
 obscure how the algorithm works. This is part of the

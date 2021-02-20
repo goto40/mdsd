@@ -7,7 +7,7 @@ Also have a look at the [architecture](architecture.md).
 
 We provide a script `activate_env` to setup a virtual
 environment for python and CMake projects (C++). All
-software is installed in the `venv` directoroy created by
+software is installed in the `venv` directory created by
 the script. use `mycmake` instead of `cmake` to install
 any cmake project into the local environment.
 
