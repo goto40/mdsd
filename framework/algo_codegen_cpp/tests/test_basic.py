@@ -1,12 +1,9 @@
 import os
 from textx import (
     metamodel_for_language,
-    get_children_of_type,
     generator_for_language_target,
 )
 import shutil
-import pytest
-from textx.exceptions import TextXSemanticError
 
 
 def test_codegen():
@@ -26,7 +23,7 @@ def test_codegen():
     os.mkdir(path)
     gen(mm, model, output_path=path, overwrite=True, debug=False)
 
-    cpp_code = open(os.path.join(path, "P1", "P2", "mean_algo2.h")).read()
+    cpp_code = open(os.path.join(path, "P1", "P2", "MeanAlgo.h")).read()
     print(cpp_code)
     assert "struct MeanAlgo" in cpp_code
     assert "shared_ptr<const Items::MeanAlgo" not in cpp_code
@@ -52,7 +49,7 @@ def test_codegen_cpp():
     os.mkdir(path)
     gen(mm, model, output_path=path, overwrite=True, debug=False)
 
-    cpp_code = open(os.path.join(path, "P1", "mean_algo_with_shared_ptr.h")).read()
+    cpp_code = open(os.path.join(path, "P1", "MeanAlgo.h")).read()
     print(cpp_code)
     assert "struct MeanAlgo" in cpp_code
     assert "shared_ptr<const Items::MeanAlgo" in cpp_code

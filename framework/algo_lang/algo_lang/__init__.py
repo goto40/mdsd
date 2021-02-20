@@ -9,6 +9,7 @@ grammar = r"""
   Model: imports*=Import package=Package;
   NestedPackage: '.' name=ID (package=NestedPackage|algos+=Algo);
   Package: 'package' name=ID (package=NestedPackage|algos+=Algo);
+  AnyPackage: NestedPackage|Package;
   Algo: 'algo' name=ID '{'
     'parameters' '{' parameters*=Data '}'
     'inputs' '{' inputs*=Data '}'

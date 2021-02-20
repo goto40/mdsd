@@ -1,12 +1,9 @@
 import os
 from textx import (
     metamodel_for_language,
-    get_children_of_type,
     generator_for_language_target,
 )
 import shutil
-import pytest
-from textx.exceptions import TextXSemanticError
 
 
 def test_codegen_python():
@@ -28,7 +25,7 @@ def test_codegen_python():
     os.mkdir(path)
     gen(mm, model, output_path=path, overwrite=True, debug=False)
 
-    py_code = open(os.path.join(path, "P1", "mean_algo_with_shared_ptr.py")).read()
+    py_code = open(os.path.join(path, "P1", "MeanAlgo.py")).read()
     print(py_code)
     assert "class MeanAlgo" in py_code
-    assert "Items.data.MeanAlgo" in py_code
+    assert "i:Items.MeanAlgoInput.MeanAlgoInput" in py_code

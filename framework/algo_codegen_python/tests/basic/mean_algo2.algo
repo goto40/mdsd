@@ -8,9 +8,9 @@ algo MeanAlgo {
         params: Items.MeanAlgoParameters
     }
     inputs {
-        params: Items.MeanAlgoInput
+        inp: Items.MeanAlgoInput
     }
     outputs {
-        params: Items.MeanAlgoOutput
+        outp: Items.MeanAlgoOutput
     }
 }
