@@ -1,5 +1,7 @@
+import textx
+import os
 from textx import get_children_of_type
-from item_codegen_cpp.common import *
+from item_codegen_cpp.common import create_folder_and_return_output_filename
 from item_codegen_cpp.constants import generate_cpp_for_constants
 from item_codegen_cpp.enum import generate_cpp_for_enum
 from item_codegen_cpp.struct import generate_cpp_for_struct

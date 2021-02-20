@@ -2,7 +2,12 @@ from item_lang.common import (
     get_referenced_elements_of_constants,
     obj_is_newer_than_file,
 )
-from item_codegen_cpp.common import *
+from item_codegen_cpp.common import (
+    get_package_names_of_obj,
+    get_open_namespace_for_obj,
+    output_filename,
+    fqn,
+)
 from os.path import exists
 
 

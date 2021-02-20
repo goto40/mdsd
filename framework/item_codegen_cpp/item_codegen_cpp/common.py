@@ -1,4 +1,6 @@
-import textx, click, os
+import textx
+import click
+import os
 from textx import textx_isinstance, get_metamodel
 from item_lang.properties import get_property_type, get_property
 from item_lang.common import get_package_names_of_obj

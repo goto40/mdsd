@@ -7,7 +7,7 @@ from os.path import join, abspath, dirname, exists
 from os import mkdir
 from shutil import rmtree
 from codegen_test_support import check_file
-from item_codegen_cpp.codegen_cpp import output_filename
+from item_codegen_cpp.common import output_filename
 
 
 this_folder = abspath(dirname(__file__))

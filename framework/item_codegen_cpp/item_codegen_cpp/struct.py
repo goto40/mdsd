@@ -1,3 +1,5 @@
+import textx
+from textx import get_metamodel
 from item_lang.properties import get_all_possible_properties, has_property
 from item_lang.common import (
     get_referenced_elements_of_struct,
@@ -7,7 +9,21 @@ from item_lang.common import (
     obj_is_newer_than_file,
 )
 from item_lang.attributes import is_dynamic
-from item_codegen_cpp.common import *
+from item_codegen_cpp.common import (
+    get_package_names_of_obj,
+    output_filename,
+    get_variant_types,
+    get_cpp_return_type,
+    fqn,
+    tf,
+    get_open_namespace_for_obj,
+    define_swig_array,
+    define_swig_variant_access,
+    define_swig_vector,
+    get_property_type,
+    get_property_constexpr,
+    get_signed_or_unsigned,
+)
 from os.path import exists
 
 
@@ -228,9 +244,8 @@ def generate_cpp_struct(f, i):
                     )
                 )
                 f.write(
-                    "      static constexpr const auto __get_ref(const STRUCT &s) {{ return mdsd::String(s.{}); }}\n".format(
-                        a.name
-                    )
+                    "      static constexpr const auto __get_ref(const STRUCT &s)"
+                    " {{ return mdsd::String(s.{}); }}\n".format(a.name)
                 )
             else:
                 f.write(
@@ -250,9 +265,8 @@ def generate_cpp_struct(f, i):
                 )
             )
             f.write(
-                "      static constexpr const auto& __get_ref_of_container(const STRUCT &s) {{ return s.{}; }}\n".format(
-                    get_container(a).name
-                )
+                "      static constexpr const auto& __get_ref_of_container(const STRUCT &s)"
+                " {{ return s.{}; }}\n".format(get_container(a).name)
             )
             if textx.textx_isinstance(a, mm["ArrayAttribute"]):
                 f.write(
@@ -273,9 +287,8 @@ def generate_cpp_struct(f, i):
                 f.write("          {}\n".format(a.compute_formula()))
                 f.write("      ); }\n")
                 f.write(
-                    "      static constexpr auto __get_ref(const STRUCT &s) {{ return mdsd::makeCArrayRef<{}>(\n".format(
-                        fqn(a.type)
-                    )
+                    "      static constexpr auto __get_ref(const STRUCT &s)"
+                    " {{ return mdsd::makeCArrayRef<{}>(\n".format(fqn(a.type))
                 )
                 f.write(
                     "          [&s](size_t idx){{ return s.{}(idx); }},\n".format(
@@ -489,13 +502,13 @@ def generate_cpp_struct(f, i):
     f.write("#endif // #ifndef SWIG\n\n")
 
     f.write(f"  {i.name}() {{\n")
-    f.write(f"    mdsd::init_default_values(*this);\n")
-    f.write(f"  }}\n")
+    f.write("    mdsd::init_default_values(*this);\n")
+    f.write("  }}\n")
 
     if _extra_init_required(i):
         f.write(f"  {i.name}({_get_ctor_params(i)}) {{\n")
         f.write(f"    {_get_ctor_body(i)};\n")
-        f.write(f"  }}\n")
+        f.write("  }}\n")
 
     f.write(
         "  static std::shared_ptr<{}> item_create() {{ return std::make_shared<{}>(); }}\n".format(
@@ -515,7 +528,8 @@ def generate_cpp_struct(f, i):
                     "  inline {} {}::{}() const {{\n".format(value_type, i.name, a.name)
                 )
                 f.write(
-                    f"     return mdsd::read_{signed_info}_from_container<{value_type}>({container_name}, META::{a.name}::__embedded_start_bit, META::{a.name}::__embedded_end_bit);\n"
+                    f"     return mdsd::read_{signed_info}_from_container<{value_type}>({container_name},"
+                    f" META::{a.name}::__embedded_start_bit, META::{a.name}::__embedded_end_bit);\n"
                 )
                 f.write("  }\n")
             else:
@@ -525,7 +539,9 @@ def generate_cpp_struct(f, i):
                     )
                 )
                 f.write(
-                    f"     return mdsd::read_{signed_info}_from_container<{value_type}>({container_name}, META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits, META::{a.name}::__embedded_end_bit-idx*META::{a.name}::__embedded_bits);\n"
+                    f"     return mdsd::read_{signed_info}_from_container<{value_type}>({container_name},"
+                    f" META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits,"
+                    f" META::{a.name}::__embedded_end_bit-idx*META::{a.name}::__embedded_bits);\n"
                 )
                 f.write("  }\n")
 
@@ -536,7 +552,8 @@ def generate_cpp_struct(f, i):
                     )
                 )
                 f.write(
-                    f"     {container_name} = mdsd::write_to_container({container_name}, META::{a.name}::__embedded_start_bit, META::{a.name}::__embedded_end_bit, val);\n"
+                    f"     {container_name} = mdsd::write_to_container({container_name},"
+                    f" META::{a.name}::__embedded_start_bit, META::{a.name}::__embedded_end_bit, val);\n"
                 )
                 f.write("  }\n")
             else:
@@ -546,7 +563,9 @@ def generate_cpp_struct(f, i):
                     )
                 )
                 f.write(
-                    f"     {container_name} = mdsd::write_to_container({container_name}, META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits, META::{a.name}::__embedded_end_bit-idx*META::{a.name}::__embedded_bits, val);\n"
+                    f"     {container_name} = mdsd::write_to_container({container_name},"
+                    f" META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits,"
+                    f" META::{a.name}::__embedded_end_bit-idx*META::{a.name}::__embedded_bits, val);\n"
                 )
                 f.write("  }\n")
 
