@@ -448,7 +448,7 @@ def generate_cpp_struct(f, i):
             else:
                 f.write("      static constexpr bool __is_dynamic_array = true;\n")
             f.write(
-                "      static constexpr size_t __get_dim(const {} &{}) {{ return {};}}\n".format(
+                "      static constexpr size_t __get_dim([[maybe_unused]] const {} &{}) {{ return {};}}\n".format(
                     i.name,
                     "s" if not a.has_fixed_size() else "",
                     a.render_formula(prefix="s."),

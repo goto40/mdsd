@@ -32,13 +32,13 @@ struct StructFunctions : StructBase {
 
 template<class S>
 struct Struct : StructFunctions<S> {
-  S data;
+  S data = {};
   virtual S& get_data() { return data; }
   virtual const S& get_data() const { return data; }
 };
 template<class S>
 struct StructWrapper : StructFunctions<S> {
-  S *data;
+  S *data = nullptr;
   StructWrapper(S* __data) : data(__data) {}
   StructWrapper(const StructWrapper&) = default; // needed by SWIG code...
 #ifndef SWIG

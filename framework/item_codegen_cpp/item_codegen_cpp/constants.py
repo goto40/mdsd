@@ -56,4 +56,4 @@ def generate_cpp_constants(f, cs):
             )
         )
     f.write("}}; //{}\n\n".format(cs.name))
-    f.write("};\n")
+    f.write("}\n")

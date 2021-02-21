@@ -51,7 +51,7 @@ struct AttributeWrapper : AttributeBase {
       throw std::runtime_error("get_dim called for non-array attribute");
   }
 
-  std::unique_ptr<AttributeBase> get_attribute_in_struct(std::string_view name) override { 
+  std::unique_ptr<AttributeBase> get_attribute_in_struct([[maybe_unused]] std::string_view name) override { 
     if constexpr (META::__is_variant) {
       std::unique_ptr<AttributeBase> ret; 
       META::__call_function_on_concrete_variant_type(s,[&name, &ret](auto &x){
@@ -66,7 +66,7 @@ struct AttributeWrapper : AttributeBase {
       throw std::runtime_error("get_attribute_in_struct(name) called for array attribute or non-struct");
     }
   }
-  std::unique_ptr<AttributeBase> get_attribute_in_struct([[ maybe_unused ]] size_t idx, std::string_view name) override { 
+  std::unique_ptr<AttributeBase> get_attribute_in_struct([[ maybe_unused ]] size_t idx, [[maybe_unused]] std::string_view name) override { 
     if constexpr (META::__is_array && META::__is_struct) 
       return get_attribute(META::__get_ref(s)[idx], name); 
     else
@@ -87,7 +87,7 @@ struct AttributeWrapper : AttributeBase {
       throw std::runtime_error("get_all_attributes_in_struct() called for array attribute or non-struct");
     }
   }
-  std::vector<std::unique_ptr<AttributeBase>> get_all_attributes_in_struct(size_t idx) override { 
+  std::vector<std::unique_ptr<AttributeBase>> get_all_attributes_in_struct([[maybe_unused]] size_t idx) override { 
     if constexpr (META::__is_array && META::__is_struct) 
       return get_all_attributes(META::__get_ref(s)[idx]); 
     else
