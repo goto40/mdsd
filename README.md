@@ -9,39 +9,59 @@ interface specification tool among other aspects.
 
 ## Example
 
-Some items:
+Some items (`image.item` and `background_subtraction.item`):
 ```
-package Items
+package my_image_lib
 
-struct MeanAlgoParameters {
-    scalar alpha: built_in.float
-}
-
-struct MeanAlgoInput {
-    scalar value: built_in.float
-}
-
-struct MeanAlgoOutput {
-    scalar value: built_in.float
+struct GrayImage {
+  scalar w: built_in.uint32
+  scalar h: built_in.uint32
+  array pixel : built_in.float[h][w]
 }
 ```
-
-An algorithm:
 ```
-import "data.item"
+import "image.item"
 
-package Algortihms
+package my_image_lib.background_subtraction
 
-algo MeanAlgo {
+struct BackgroundSubtractionResults {
+  scalar threshold: my_image_lib.GrayImage
+  scalar result:    my_image_lib.GrayImage
+}
+
+enum MedianType : built_in.uint8 {
+  value MEDIAN = 0
+  value HISTOGRAMBASED_MEDIAN_APPROX = 1
+}
+
+struct BackgroundSubtractionParameters {
+  scalar n: built_in.uint32 (.defaultValue=31)
+  scalar type : MedianType (.defaultValue=HISTOGRAMBASED_MEDIAN_APPROX)
+  scalar threshold: built_in.float (.defaultValue=-0.1)
+}
+```
+
+An algorithm (background_subtraction.algo):
+```
+import "image.item"
+import "background_subtraction.item"
+
+package my_image_lib.background_subtraction
+
+algo AlgoBackgroundSubtraction {
+----------------------------------------
+An algorithm to subtract the background
+from an image. The background is approximated
+by a median filtered version of the image.
+----------------------------------------
     parameters {
-        params: Items.MeanAlgoParameters
+        params: my_image_lib.background_subtraction.BackgroundSubtractionParameters
     }
     inputs {
-        inp1: Items.MeanAlgoInput
-        inp2: Items.MeanAlgoInput
+        input: my_image_lib.GrayImage
     }
     outputs {
-        oup: Items.MeanAlgoOutput
+        output: my_image_lib.background_subtraction.BackgroundSubtractionResults
     }
 }
 ```

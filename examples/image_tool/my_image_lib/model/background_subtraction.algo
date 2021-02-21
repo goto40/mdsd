@@ -6,7 +6,7 @@ package my_image_lib.background_subtraction
 algo AlgoBackgroundSubtraction {
 ----------------------------------------
 An algorithm to subtract the background
-from an image. Th ebackground is approximated
+from an image. The background is approximated
 by a median filtered version of the image.
 ----------------------------------------
     parameters {
