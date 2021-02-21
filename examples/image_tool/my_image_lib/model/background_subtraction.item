@@ -9,13 +9,11 @@ struct BackgroundSubtractionResults {
 
 enum MedianType : built_in.uint8 {
   value MEDIAN = 0
-  value SEPARATED_PSEUDO_MEDIAN = 1
-  value HISTOGRAMBASED_MEDIAN_APPROX = 2
+  value HISTOGRAMBASED_MEDIAN_APPROX = 1
 }
 
 struct BackgroundSubtractionParameters {
-  scalar x: built_in.uint32 (.defaultValue=11)
-  scalar y: built_in.uint32 (.defaultValue=11)
+  scalar n: built_in.uint32 (.defaultValue=31)
   scalar type : MedianType (.defaultValue=HISTOGRAMBASED_MEDIAN_APPROX)
   scalar threshold: built_in.float (.defaultValue=-0.1)
 }
