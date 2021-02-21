@@ -9,6 +9,12 @@ interface specification tool among other aspects.
 
 ## Example
 
+Here, we model the data structures for
+a simple algorithm of a GUI C++
+application.
+
+![app image](docs/images/simple_example_bg.png)
+
 Some items (`image.item` and `background_subtraction.item`):
 ```
 package my_image_lib
