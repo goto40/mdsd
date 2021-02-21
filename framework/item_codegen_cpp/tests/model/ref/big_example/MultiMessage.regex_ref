@@ -63,7 +63,7 @@ struct MultiMessage {
       static constexpr bool __is_variant = false;
       static constexpr bool __is_array = true;
       static constexpr bool __is_dynamic_array = false;
-      static constexpr size_t __get_dim\(const MultiMessage &\) { return 1\*10;}
+      static constexpr size_t __get_dim\(.*const MultiMessage &\) { return 1\*10;}
       static constexpr bool __is_enumtype = true;
       static constexpr bool __is_rawtype = false;
       static constexpr bool __is_struct = false;

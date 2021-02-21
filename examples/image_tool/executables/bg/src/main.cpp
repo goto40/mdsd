@@ -33,7 +33,7 @@ int main() {
 #include <mdsd/virtual_attribute_support.h>
 
 #include <wx/propgrid/propgrid.h>
-#include "algo/BackgroundDetectionParameter.h"
+#include "my_image_lib/background_subtraction/AlgoBackgroundSubtractionImpl.h"
 
 namespace {
     struct InitThingsForWxExt {
@@ -166,13 +166,7 @@ struct MyApp : wxApp
         auto ctrl     = new wxExt::wxInputImageViewer<wxExt::wxGrayImageViewer>(f, wxID_ANY);
         auto viewer   = new wxExt::wxGrayImageViewer(f, wxID_ANY);
         auto sizer    = new wxBoxSizer( wxHORIZONTAL );
-        auto pg       = new wxMessageEditor<algo::BackgroundDetectionParameter>(f, wxID_ANY);
-
-        pg->parameter.selector = 0;
-        mdsd::adjust_array_sizes_and_variants(pg->parameter);
-        std::get<algo::Median>(pg->parameter.parameter).x=21;
-        std::get<algo::Median>(pg->parameter.parameter).y=51;
-        std::get<algo::Median>(pg->parameter.parameter).full=false;
+        auto pg       = new wxMessageEditor<my_image_lib::background_subtraction::BackgroundSubtractionParameters>(f, wxID_ANY);
 
         pg->Refresh();
 
@@ -198,38 +192,14 @@ struct MyApp : wxApp
 
         auto compute = [viewer, ctrl, pg]() {
             auto &v = ctrl->GetImageViewer();
-            auto &parameter = pg->parameter;
             std::cout << v.GrayImage().w << " x "
                 << v.GrayImage().w << "\n";
-            if (parameter.selector==0) {
-                algo::Median &params = std::get<algo::Median>(parameter.parameter);
-                size_t Mx = params.x;
-                size_t My = params.y;
-                size_t N = std::thread::hardware_concurrency(); // #cores std::thread::hardware_concurrency
-                if (params.full==false) {
-                    my_image_lib::GrayImage tmp1, tmp2;
-                    {
-                        my_image_lib::Tictoc tictoc{"median1D ** 2"};
-                        my_image_lib::median1D( v.GrayImage(), Mx, true, tmp1, N );
-                        my_image_lib::median1D( tmp1, My, false, tmp2, N );
-                    }
-                    /*for (size_t i=0;i<v.GrayImage().w*v.GrayImage().h;i++) {
-                        tmp2.pixel[i] = v.GrayImage().pixel[i] - tmp2.pixel[i];
-                    }*/
-                    viewer->SetImage( tmp2 );
-                }
-                else {
-                    my_image_lib::GrayImage tmp;
-                    {
-                        my_image_lib::Tictoc tictoc{"median2D"};
-                        my_image_lib::median2D( v.GrayImage(), Mx, My, tmp, N );
-                    }
-                    viewer->SetImage( tmp );
-                }
-            }
-            else {
-                //TODO
-            }
+            auto algo = my_image_lib::background_subtraction::AlgoBackgroundSubtraction::create();
+            my_image_lib::background_subtraction::BackgroundSubtractionResults res;
+            algo->set_params( pg->parameter );
+            std::cout << "th=" << pg->parameter.threshold << "\n";
+            algo->compute(v.GrayImage(), res);
+            viewer->SetImage( res.result );
         };
         ctrl->GetImageViewer().BindOnImageChanged([compute](auto &){ compute(); });
         pg->BindOnMessageChanged([compute](auto &){ compute(); });

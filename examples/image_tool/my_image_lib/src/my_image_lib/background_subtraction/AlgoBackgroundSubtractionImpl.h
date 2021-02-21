@@ -18,9 +18,9 @@ public:
         my_image_lib::background_subtraction::BackgroundSubtractionResults& output
     ) {
         my_image_lib::Tictoc tictoc{"median2D"};
-        my_image_lib::median2D( input, params.x, params.y, output.threshold, 4 );
+        my_image_lib::median2D( input, params.x, params.y, output.threshold, std::thread::hardware_concurrency() );
         for (auto &pixel: output.threshold.pixel) {
-            pixel = pixel + params.threshold;
+            pixel += params.threshold;
         }
         output.result.w = output.threshold.w;
         output.result.h = output.threshold.h;

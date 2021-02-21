@@ -27,6 +27,7 @@ set(SRCGEN src-gen)
 add_custom_target(
     my_image_lib_item_code
     COMMAND ${TEXTX_PATH} generate model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
+    COMMAND ${TEXTX_PATH} generate model/*.algo --overwrite --target cpp  --output-path=${SRCGEN}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
@@ -44,6 +45,7 @@ add_library(my_image_lib INTERFACE)
 target_sources(my_image_lib INTERFACE ${INC} ${INCGEN} ${MODEL})
 target_include_directories(my_image_lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 target_include_directories(my_image_lib INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/${SRCGEN}/)
+add_dependencies(my_image_lib my_image_lib_item_code)
 
 install(DIRECTORY src/ DESTINATION include FILES_MATCHING PATTERN "*.h")
 install(DIRECTORY src-gen/ DESTINATION include FILES_MATCHING PATTERN "*.h")

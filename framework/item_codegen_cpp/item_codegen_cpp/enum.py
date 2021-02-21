@@ -29,6 +29,17 @@ def generate_cpp_enum(f, e):
     f.write("  return o;\n")
     f.write("}\n")
 
+    f.write(f"std::istream& operator>>(std::istream& i, {e.name}& ret) {{\n")
+    f.write("  std::string txt;\n")
+    f.write("  i >> txt;\n")
+    elseif = "if"
+    for ee in e.enum_entries:
+        f.write(f'  {elseif}(txt == "{ee.name}") {{ ret = {e.name}::{ee.name}; }}\n')
+        elseif = "else if"
+    f.write(f'  else {{ throw std::runtime_error(std::string("unknown {e.name}: ")+txt); }}\n')
+    f.write("  return i;\n")
+    f.write("}\n")
+
     f.write("} // close namespace\n")
 
 
