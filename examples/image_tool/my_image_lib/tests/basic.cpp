@@ -3,8 +3,10 @@
 #include "my_image_lib/tools.h"
 #include "my_image_lib/Tictoc.h"
 #include "mdsd/item_support.h"
+#include "my_image_lib/background_subtraction/AlgoBackgroundSubtractionImpl.h"
 
 #include <algorithm>
+#include <numeric>
 
 using namespace my_image_lib;
 using namespace mdsd;
@@ -88,4 +90,22 @@ TEST_CASE( "Simple.median1D1D parallel y", "[basic]" ) {
     for (size_t i=0;i<im.w*im.h;i++) {
         REQUIRE( res1.pixel[i] == res2.pixel[i] );
     }
+}
+
+TEST_CASE( "AlgoBackground", "[basic]" ) {
+    auto algo = my_image_lib::background_subtraction::AlgoBackgroundSubtraction::create();
+    my_image_lib::background_subtraction::BackgroundSubtractionParameters params;
+    params.type = my_image_lib::background_subtraction::MedianType::MEDIAN;
+    params.threshold = 0;
+
+    my_image_lib::GrayImage im;
+    my_image_lib::background_subtraction::BackgroundSubtractionResults res;
+
+    im.w=320;
+    im.h=200;
+    adjust_array_sizes_and_variants(im);
+    std::iota( im.pixel.begin(), im.pixel.end(), 0 );
+ 
+    // smoke test
+    algo->compute(im, res);
 }

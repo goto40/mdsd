@@ -1,0 +1,22 @@
+import "image.item"
+
+package my_image_lib.background_subtraction
+
+struct BackgroundSubtractionResults {
+  scalar threshold: my_image_lib.GrayImage
+  scalar result:    my_image_lib.GrayImage
+}
+
+enum MedianType : built_in.uint8 {
+  value MEDIAN = 0
+  value SEPARATED_PSEUDO_MEDIAN = 1
+  value HISTOGRAMBASED_MEDIAN_APPROX = 2
+}
+
+struct BackgroundSubtractionParameters {
+  scalar x: built_in.uint32 (.defaultValue=11)
+  scalar y: built_in.uint32 (.defaultValue=11)
+  scalar type : MedianType (.defaultValue=HISTOGRAMBASED_MEDIAN_APPROX)
+  scalar threshold: built_in.float (.defaultValue=-0.1)
+}
+

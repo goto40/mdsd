@@ -94,7 +94,7 @@ def generate_cpp_for_algo(a, output_file):
             )
             f.write("protected:\n")
             for p in a.parameters:
-                f.write("        {} {};\n".format(fqn(p.type), p.name))
+                f.write("    {} {} = {{}};\n".format(fqn(p.type), p.name))
             f.write("public:\n")
             f.write("    virtual ~{}() {{}}\n".format(a.name))
             f.write(
@@ -111,6 +111,8 @@ def generate_cpp_for_algo(a, output_file):
             f.write(
                 "    template<class F> static void set_factory(F f) {{ factory=f; }}\n"
             )
+            for p in a.parameters:
+                f.write(f"    void set_{p.name}(const {fqn(p.type)}& _{p.name}) {{ {p.name} = _{p.name}; }}\n")
             f.write("    virtual void compute(")
             sep = ""
             for p in a.inputs:

@@ -11,6 +11,7 @@ grammar = r"""
   Package: 'package' name=ID (package=NestedPackage|algos+=Algo);
   AnyPackage: NestedPackage|Package;
   Algo: 'algo' name=ID '{'
+    (description=PSTRING)?
     'parameters' '{' parameters*=Data '}'
     'inputs' '{' inputs*=Data '}'
     'outputs' '{' outputs*=Data '}'
@@ -19,6 +20,7 @@ grammar = r"""
   Import: 'import' importURI=STRING;
   FQN: ID('.'ID)*;
   Comment: /\/\/.*$/;
+  PSTRING: text=/(?ms)\-{4}\-*\s*\n(.*?)^\s*\-{4}\-*\s*\n/;
   DataType: "shared_ptr";
 """
 

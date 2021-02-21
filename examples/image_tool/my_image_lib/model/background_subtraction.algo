@@ -1,0 +1,21 @@
+import "image.item"
+import "background_subtraction.item"
+
+package my_image_lib.background_subtraction
+
+algo AlgoBackgroundSubtraction {
+----------------------------------------
+An algorithm to subtract the background
+from an image. Th ebackground is approximated
+by a median filtered version of the image.
+----------------------------------------
+    parameters {
+        params: my_image_lib.background_subtraction.BackgroundSubtractionParameters
+    }
+    inputs {
+        input: my_image_lib.GrayImage
+    }
+    outputs {
+        output: my_image_lib.background_subtraction.BackgroundSubtractionResults
+    }
+}

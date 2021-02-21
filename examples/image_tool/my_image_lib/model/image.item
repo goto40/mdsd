@@ -3,5 +3,5 @@ package my_image_lib
 struct GrayImage {
   scalar w: built_in.uint32
   scalar h: built_in.uint32
-  array pixel : built_in.float[w*h]
+  array pixel : built_in.float[h][w]
 }
