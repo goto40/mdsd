@@ -123,11 +123,19 @@ from functools import reduce
                                 )
                             )
                         else:
-                            f.write(
-                                "    {} : {}={}()\n".format(
-                                    a.name, fqn(a.type), fqn(a.type)
+                            if textx_isinstance(a.type, mm["Enum"]):
+                                f.write(
+                                    "    {} : {}={}.{}\n".format(
+                                        a.name, fqn(a.type), fqn(a.type),
+                                        a.type.enum_entries[0].name
+                                    )
                                 )
-                            )
+                            else:
+                                f.write(
+                                    "    {} : {}={}()\n".format(
+                                        a.name, fqn(a.type), fqn(a.type)
+                                    )
+                                )
                         if hasattr(a, "type") and a.type.name == "char":
                             f.write(f"    @property\n")
                             f.write(f"    def {a.name}_as_str(self):\n")

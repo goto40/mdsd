@@ -22,4 +22,5 @@ htmlcov
 coverage
 coverage.xml
 test_results.xml
+.ipynb_checkpoints
 

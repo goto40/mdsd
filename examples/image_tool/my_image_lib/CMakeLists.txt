@@ -28,6 +28,8 @@ add_custom_target(
     my_image_lib_item_code
     COMMAND ${TEXTX_PATH} generate model/*.item --overwrite --target cpp  --output-path=${SRCGEN}
     COMMAND ${TEXTX_PATH} generate model/*.algo --overwrite --target cpp  --output-path=${SRCGEN}
+    COMMAND ${TEXTX_PATH} generate model/*.item --overwrite --target python  --output-path=ref/${SRCGEN}
+    COMMAND ${TEXTX_PATH} generate model/*.algo --overwrite --target python  --output-path=ref/${SRCGEN}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
 
