@@ -13,9 +13,14 @@ Here, we model the data structures for
 a simple algorithm of a GUI C++
 application.
 
+The C++ Implementation is used in a C++ GUI application:
 ![app image](docs/images/simple_example_bg.png)
 
-Some items (`image.item` and `background_subtraction.item`):
+The Reference Implementation (Python) is compared to the
+C++ implementation (see "demo results"
+[on the buildserver](https://github.com/goto40/mdsd/actions?query=workflow%3Arun-tests)).
+
+Some items (`image.item` and `background_subtraction.item`)...
 ```
 package my_image_lib
 
@@ -46,8 +51,7 @@ struct BackgroundSubtractionParameters {
   scalar threshold: built_in.float (.defaultValue=-0.1)
 }
 ```
-
-An algorithm (background_subtraction.algo):
+...and the algorithm (background_subtraction.algo):
 ```
 import "image.item"
 import "background_subtraction.item"

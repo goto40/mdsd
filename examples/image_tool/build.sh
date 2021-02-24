@@ -2,7 +2,12 @@
 rm -rf  my_image_lib/ref/src-gen
 mkdir -p build
 cd build
-mycmake -DCMAKE_BUILD_TYPE=Release .. && make || exit 1
+if ! command -v mycmake &> /dev/null
+then
+	cmake -DCMAKE_BUILD_TYPE=Release .. && make || exit 1
+else
+	mycmake -DCMAKE_BUILD_TYPE=Release .. && make || exit 1
+fi
 cd ..
 
 rm -rf build/swig_proj
