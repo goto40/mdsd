@@ -13,12 +13,12 @@ Here, we model the data structures for
 a simple algorithm of a GUI C++
 application.
 
-The C++ Implementation is used in a C++ GUI application:
+The **C++ Implementation is used in a C++ GUI Application**:
 ![app image](docs/images/simple_example_bg.png)
 
-The Reference Implementation (Python) is compared to the
-C++ implementation (see "demo results"
-[on the buildserver](https://github.com/goto40/mdsd/actions?query=workflow%3Arun-tests)).
+The **Reference Implementation (Python) is compared to the
+C++ Implementation** (see "demo results"
+[on the build server](https://github.com/goto40/mdsd/actions?query=workflow%3Arun-tests)).
 
 Some items (`image.item` and `background_subtraction.item`)...
 ```
