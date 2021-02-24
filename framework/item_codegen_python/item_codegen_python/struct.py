@@ -27,7 +27,7 @@ def generate_py_for_struct(struct_obj, output_file):
         with open(output_file, "w") as f:
             f.write(
                 """# generated code
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 import mdsd.item_support as support
 from mdsd.item.init_default_values import init_default_values
@@ -125,14 +125,14 @@ from functools import reduce
                         else:
                             if textx_isinstance(a.type, mm["Enum"]):
                                 f.write(
-                                    "    {} : {}={}.{}\n".format(
+                                    "    {} : {} = {}.{}\n".format(
                                         a.name, fqn(a.type), fqn(a.type),
                                         a.type.enum_entries[0].name
                                     )
                                 )
                             else:
                                 f.write(
-                                    "    {} : {}={}()\n".format(
+                                    "    {} : {}= field( default_factory=lambda: {}() )\n".format(
                                         a.name, fqn(a.type), fqn(a.type)
                                     )
                                 )
