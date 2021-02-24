@@ -17,7 +17,7 @@ The **C++ Implementation is used in a C++ GUI Application**:
 ![app image](docs/images/simple_example_bg.png)
 
 The **Reference Implementation (Python) is compared to the
-C++ Implementation** (see "run_tests / demo results"
+C++ Implementation** (see "run_tests", then select the latest run and go to the "Artifacts")
 [on the build server](https://github.com/goto40/mdsd/actions?query=workflow%3Arun-tests)).
 
 Some items (`image.item` and `background_subtraction.item`)...
