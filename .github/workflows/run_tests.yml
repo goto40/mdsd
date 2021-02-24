@@ -26,7 +26,7 @@ jobs:
     - name: full demo preparation
       run: pip install jupyter matplotlib scipy scikit-image
     - name: full demo
-      run: cd examples/image_tool && sh run_tests && jupyter nbconvert my_image_lib/ref/BackgroundSubtraction.ipynb --execute --to html
+      run: cd examples/image_tool && sh run_tests.sh && jupyter nbconvert my_image_lib/ref/BackgroundSubtraction.ipynb --execute --to html
     - name: Archive demo result
       uses: actions/upload-artifact@v2
       with:
