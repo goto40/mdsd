@@ -23,6 +23,15 @@ jobs:
       run: mkdir framework/mdsd_support_library_cpp/build && cd framework/mdsd_support_library_cpp/build && cmake .. && sudo make install
     - name: test1
       run: ./run_tests.sh
+    - name: full demo preparation
+      run: pip install jupyter matplotlib scipy scikit-image libwxbase3.0-dev libwxgtk3.0-gtk3-dev
+    - name: full demo
+      run: cd examples/image_tool && sh run_tests && jupyter nbconvert my_image_lib/ref/BackgroundSubtraction.ipynb --execute --to html
+    - name: Archive demo result
+      uses: actions/upload-artifact@v2
+      with:
+        name: demo result (notebook report)
+        path: examples/image_tool/my_image_lib/ref/BackgroundSubtraction.html      
     - name: Publish Unit Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
       if: always()
