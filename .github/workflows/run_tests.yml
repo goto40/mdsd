@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: deps
-      run: sudo apt update -y -qq && sudo apt -y -qq install build-essential cmake swig g++ python-wxgtk3.0-dev catch lcov gcovr
+      run: sudo apt update -y -qq && sudo apt -y -qq install build-essential cmake swig g++ python-wxgtk3.0-dev catch lcov gcovr libwxbase3.0-dev libwxgtk3.0-gtk3-dev
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
@@ -25,7 +25,6 @@ jobs:
       run: ./run_tests.sh
     - name: full demo preparation
       run: pip install jupyter matplotlib scipy scikit-image libwxbase3.0-dev libwxgtk3.0-gtk3-dev
-      run: sudo apt -y -qq install libwxbase3.0-dev libwxgtk3.0-gtk3-dev
     - name: full demo
       run: cd examples/image_tool && sh run_tests && jupyter nbconvert my_image_lib/ref/BackgroundSubtraction.ipynb --execute --to html
     - name: Archive demo result
