@@ -112,7 +112,7 @@ def check_Struct(s):
             if textx_isinstance(a, mm["ScalarAttribute"]) and textx_isinstance(
                 a.type, mm["Struct"]
             ):
-                do_break = get_property(a, "breakTimesPerMessage")  # None or bool
+                do_break = get_property(a, "is_payload")  # None or bool
                 if do_break is None or not do_break:
                     lst = lst + get_all_properties_of_struct(a.type)
         return lst

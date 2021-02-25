@@ -1,5 +1,6 @@
 # rm -rf build
 rm -rf  my_image_lib/ref/src-gen
+rm -rf  my_image_lib/src-gen
 mkdir -p build
 cd build
 if ! command -v mycmake &> /dev/null

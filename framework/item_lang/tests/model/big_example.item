@@ -113,10 +113,10 @@ struct VersionedData {
 
 struct Headers1 {
     scalar header: Header
-    scalar header_extra: Header (.breakTimesPerMessage=true)
+    scalar header_extra: Header (.is_payload=true)
 }
 struct Headers2 {
-    scalar header_extra: Header (.breakTimesPerMessage=true)
+    scalar header_extra: Header (.is_payload=true)
     scalar header: Header
 }
 struct Headers3 {
@@ -131,6 +131,6 @@ struct Headers5_noheader {
     array header_extra: Header[1]
 }
 struct Headers6_noheader {
-    scalar header_extra: Header  (.breakTimesPerMessage=true)
+    scalar header_extra: Header  (.is_payload=true)
 }
 

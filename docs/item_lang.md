@@ -218,8 +218,8 @@ ApplicableForRawType: 'rawtype' ('(' concrete_types+=[RawType|FQN][','] ')')?;
      (ATTRTYPE inherits the type from the attribute to which the property is bound to;
      not applicable for struct definitions)
    * **... times per message** limits the number of properties per message
-     (recursively; recursion is stopped by arrays and the flag `.breakTimesPerMessage=true`;
-     arrays o structs are not taken into account) 
+     (recursively; recursion is stopped by the flag `.is_payload=true`;
+     arrays of structs or variants are not taken into account) 
 
 Example with built in property definitions:
 ```
