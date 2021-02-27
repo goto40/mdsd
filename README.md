@@ -102,6 +102,32 @@ documentation, provided manually.
 The **item code is stereotypical**. Here, we take full advantage of a 
 clear specification language and single source.
 
+## Maturity... (what do you need to use the framework)
+
+### item_lang: language and code generators
+
+ * Maturity: quite usable (many examples included in the tests).
+ * You need to install the python projects (and for the
+   generated code the corresponding language specific support project,
+   like `mdsd_support_library_cpp`). See also [index.md](docs/index.md).
+ * You can easily create your own code generators: read
+   [item_lang.md](docs/item_lang.md) to help you understanding the
+   structure of the model. Look at the existing code generators:
+   they are implemented straight forward (just print the code
+   in some destination files... << 1000 LOC)
+ * Some features I want to add: fix point values, ...
+
+### algo_lang: language and generators
+
+ * Maturity: very simple, may change with high probability...
+ * See demos and tools. Proof of concept.
+
+### project_tool / SWIG integration
+
+ * Maturity: usable, but in a very 'raw' state. 
+   You need to pass folders etc. manually... not very nice. Needs
+   to be reworked. Proof of concept.
+ 
 ## Read more...
 
 ```
