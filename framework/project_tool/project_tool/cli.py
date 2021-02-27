@@ -76,7 +76,7 @@ def create_i_file(headers, module_name):
 
 
 def create_setup_file(module_name, header_paths):
-    includes = ",".join(map(lambda x: "'../../{}'".format(x), header_paths))
+    includes = ",".join(map(lambda x: "'{}'".format(x), header_paths))
     res = ""
     res += "from setuptools import setup, Extension\n"
     res += "import os\n"

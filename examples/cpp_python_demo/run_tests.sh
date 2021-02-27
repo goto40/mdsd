@@ -10,9 +10,14 @@ textx generate model/*.item --overwrite --target python --output-path src-gen/py
 textx generate model/*.algo --overwrite --target cpp --output-path src-gen/cpp || exit 1
 
 projecttool generic-setup-file ${PACKAGE_NAME} src-gen/python
-projecttool python-i-file --require-pattern="ACTIVATE FOR SWIG" ${SWIG_PACKAGE_NAME} src-gen/swig src/cpp src-gen/cpp/ ../../framework/mdsd_support_library_cpp/src/
 
-swig -c++ -python -I../../framework/mdsd_support_library_cpp/src -Isrc/cpp -Isrc-gen/cpp -o src-gen/swig/wrapper.cpp src-gen/swig/${SWIG_PACKAGE_NAME}.i || exit 1
+mkdir -p src-gen/swig
+cd src-gen/swig
+
+projecttool python-i-file --require-pattern="ACTIVATE FOR SWIG" ${SWIG_PACKAGE_NAME} . ../../src/cpp ../../src-gen/cpp/ ../../../../framework/mdsd_support_library_cpp/src/
+
+swig -c++ -python -I../../../../framework/mdsd_support_library_cpp/src -I../../src/cpp -I../../src-gen/cpp -o ./wrapper.cpp ${SWIG_PACKAGE_NAME}.i || exit 1
+cd ../..
 
 #python setup.py build sdist bdist_wheel || exit 1
 pip install -e src-gen/swig || exit 1
