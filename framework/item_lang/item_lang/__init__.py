@@ -27,6 +27,9 @@ def lang():
         property optional applicable for scalar is_payload : BOOL
         property optional applicable for scalar is_message_id_field : BOOL { 0 to 1 times per message }
         property optional applicable for scalar is_message_length_field : BOOL { 0 to 1 times per message }
+        property optional applicable for rawtype fixedpointLsbValue : FLOAT
+        property optional applicable for rawtype fixedpointOffsetValue : FLOAT
+        property optional applicable for rawtype fixedpointMsbValue : FLOAT
     }
     rawtype double FLOAT 64
     rawtype float64 FLOAT 64

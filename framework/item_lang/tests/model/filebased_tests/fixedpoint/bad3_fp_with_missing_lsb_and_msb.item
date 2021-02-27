@@ -1,0 +1,8 @@
+package fixedpoint_example
+
+struct Example1 {
+    scalar u: built_in.uint32 (.fixedpointLsbValue=0.1)
+    scalar s: built_in.sint16 (.fixedpointOffsetValue=10.0) // expected: specify either MSB or LSB \(you need at least one of them for fixpoint values\)
+    array au: built_in.uint32[2] (.fixedpointLsbValue=0.1)
+    array as: built_in.sint16[2] (.fixedpointLsbValue=0.1)
+}
