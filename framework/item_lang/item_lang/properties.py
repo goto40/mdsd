@@ -253,3 +253,23 @@ def is_applicable_for(parent, definition):
             elif attr.type in allowed:
                 return True
     return False
+
+
+def has_fixedpoint(a):
+    return has_property(a, "fixedpointLsbValue") or has_property(a, "fixedpointMsbValue")
+
+
+def get_fixedpoint_LSB_value(a):
+    assert has_fixedpoint(a), f"expected fixpoint infos for {a.name}"
+    if has_property(a, "fixedpointLsbValue"):
+        return get_property(a, "fixedpointLsbValue")
+    elif has_property(a, "fixedpointMsbValue"):
+        return get_property(a, "fixedpointMsbValue")/(2**(a.type.bits-1))  # TBC
+
+
+def get_fixedpoint_offset_value(a):
+    assert has_fixedpoint(a), f"expected fixpoint infos for {a.name}"
+    if has_property(a, "fixedpointOffsetValue"):
+        return get_property(a, "fixedpointOffsetValue")
+    else:
+        return 0.0

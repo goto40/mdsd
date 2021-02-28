@@ -1,6 +1,12 @@
 import textx
 from textx import get_metamodel
-from item_lang.properties import get_all_possible_properties, has_property
+from item_lang.properties import (
+    get_all_possible_properties,
+    has_property,
+    get_fixedpoint_LSB_value,
+    get_fixedpoint_offset_value,
+    has_fixedpoint
+)
 from item_lang.common import (
     get_referenced_elements_of_struct,
     get_start_end_bit,
@@ -320,6 +326,15 @@ def generate_cpp_struct(f, i):
 
         pdefs = get_all_possible_properties(a)
         pdefs = sorted(pdefs.keys())
+
+        if "fixedpointLsbValue" in pdefs:
+            if has_fixedpoint(a):
+                f.write("      static constexpr bool __has_fixedpoint = true;\n")
+                f.write(f"      static constexpr double __fixedpointLsbValue = {get_fixedpoint_LSB_value(a)};\n")
+                f.write(f"      template<class FLOAT=float> static constexpr {fqn(a.type)} __fixedpoint2integral(FLOAT f) {{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixedpointLsbValue)); }}\n")
+                f.write(f"      template<class FLOAT=float> static constexpr FLOAT __fixedpoint2integral({fqn(a.type)} i) {{ return static_cast<FLOAT>(i)*__fixedpointLsbValue; }}\n")
+            else:
+                f.write("      static constexpr bool __has_fixedpoint = false;\n")
 
         for pname in pdefs:
             if has_property(a, pname):

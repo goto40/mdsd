@@ -1,0 +1,118 @@
+    struct u1 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      template<class FLOAT=float> static constexpr uint32_t __fixedpoint2integral\(FLOAT f\) \{ return static_cast<uint32_t>\(std::llround\(f/__fixedpointLsbValue\)\); \}
+      template<class FLOAT=float> static constexpr FLOAT __fixedpoint2integral\(uint32_t i\) \{ return static_cast<FLOAT>\(i\)\*__fixedpointLsbValue; \}
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = false;
+    }; // meta struct u1
+    struct s1 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = false;
+    }; // meta struct s1
+    struct au1 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = false;
+    }; // meta struct au1
+    struct as1 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = false;
+    }; // meta struct as1
+    struct u2 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -100.0 };}
+    }; // meta struct u2
+    struct s2 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -100.0 };}
+    }; // meta struct s2
+    struct au2 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -100.0 };}
+    }; // meta struct au2
+    struct as2 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -100.0 };}
+    }; // meta struct as2
+    struct u3 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = .*
+      static constexpr bool __has_fixedpointLsbValue = false;
+      static constexpr bool __has_fixedpointMsbValue = true;
+      static constexpr double fixedpointMsbValue\(\) { return double{ 360.0 };}
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -180.0 };}
+    }; // meta struct u3
+    struct s3 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = .*;
+      static constexpr bool __has_fixedpointLsbValue = false;
+      static constexpr bool __has_fixedpointMsbValue = true;
+      static constexpr double fixedpointMsbValue\(\) { return double{ 360.0 };}
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -180.0 };}
+    }; // meta struct s3
+    struct c4 {
+      static constexpr bool __has_fixedpoint = false;
+    }; // meta struct c4
+    struct u4 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -100.0 };}
+    }; // meta struct u4
+    struct s4 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -100.0 };}
+    }; // meta struct s4
+    struct a4 {
+      static constexpr bool __has_fixedpoint = true;
+      static constexpr double __fixedpointLsbValue = 0.1;
+      static constexpr bool __has_fixedpointLsbValue = true;
+      static constexpr double fixedpointLsbValue\(\) { return double{ 0.1 };}
+      static constexpr bool __has_fixedpointMsbValue = false;
+      static constexpr bool __has_fixedpointOffsetValue = true;
+      static constexpr double fixedpointOffsetValue\(\) { return double{ -100.0 };}
+    }; // meta struct a4
