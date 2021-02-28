@@ -40,6 +40,9 @@ class VariantAttribute(object):
     def is_embedded(self):
         return False
 
+    def is_array(self):
+        return False;
+
     def __str__(self):
         return self.parent.name + "." + self.name
 
@@ -67,6 +70,9 @@ class ScalarAttribute(object):
             result.append(next)
             next = self.parent.get_next_attr(next)
         return result
+
+    def is_array(self):
+        return False;
 
     def __str__(self):
         return self.parent.name + "." + self.name
@@ -165,6 +171,9 @@ class ArrayAttribute(object):
 
     def is_embedded(self):
         return self.embedded
+
+    def is_array(self):
+        return True;
 
     def __str__(self):
         return self.parent.name + "." + self.name

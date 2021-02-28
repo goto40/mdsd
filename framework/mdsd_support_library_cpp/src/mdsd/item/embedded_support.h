@@ -14,7 +14,7 @@ struct Ref {
   operator T() const {
     return getter();
   }
-  Ref& operator=(T x) const {
+  Ref& operator=(T x) {
     setter(x);
     return *this;
   }

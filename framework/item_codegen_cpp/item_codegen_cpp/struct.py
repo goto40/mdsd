@@ -115,7 +115,12 @@ def _get_ctor_params(i):
 def _get_ctor_body(i):
     res = ""
     for a in i.attributes:
-        if not a.is_container():
+        if a.is_embedded():
+            if a.is_array():
+                res += f"for(size_t __idx=0;__idx<_p_{a.name}.size();__idx++) {{ {a.name}(__idx, _p_{a.name}[__idx]); }} "
+            else:
+                res += f"{a.name}(_p_{a.name}); "
+        elif not a.is_container():
             res += f"{a.name} = _p_{a.name}; "
     return res
 
@@ -219,6 +224,8 @@ def generate_cpp_struct(f, i):
         f.write("      using STRUCT={};\n".format(i.name))
         f.write("      static constexpr const char* __name() ")
         f.write('{{ return "{}"; }}\n'.format(a.name))
+        if not textx.textx_isinstance(a, mm["VariantAttribute"]):
+            f.write(f"      using __type = {fqn(a.type)};")
         f.write(f"      static constexpr bool __is_dynamic = {tf(is_dynamic(a))};\n")
 
         if hasattr(a, "type") and a.type.name == "char":
@@ -329,12 +336,12 @@ def generate_cpp_struct(f, i):
 
         if "fixedpointLsbValue" in pdefs:
             if has_fixedpoint(a):
-                f.write("      static constexpr bool __has_fixedpoint = true;\n")
+                f.write("      static constexpr bool __is_fixedpoint = true;\n")
                 f.write(f"      static constexpr double __fixedpointLsbValue = {get_fixedpoint_LSB_value(a)};\n")
-                f.write(f"      template<class FLOAT=float> static constexpr {fqn(a.type)} __fixedpoint2integral(FLOAT f) {{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixedpointLsbValue)); }}\n")
-                f.write(f"      template<class FLOAT=float> static constexpr FLOAT __fixedpoint2integral({fqn(a.type)} i) {{ return static_cast<FLOAT>(i)*__fixedpointLsbValue; }}\n")
+                f.write(f"      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) {{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixedpointLsbValue)); }}\n")
+                f.write(f"      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) {{ return static_cast<FLOAT>(i)*__fixedpointLsbValue; }}\n")
             else:
-                f.write("      static constexpr bool __has_fixedpoint = false;\n")
+                f.write("      static constexpr bool __is_fixedpoint = false;\n")
 
         for pname in pdefs:
             if has_property(a, pname):

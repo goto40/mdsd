@@ -70,10 +70,37 @@ struct ScanVisitor {
   bool suppress_first_name_check = false;
   template<class META, class T>
   void visit_scalar(T& x) {
+    if constexpr (META::__is_container) return;
     if (!suppress_first_name_check) details::__check_name<META>(stream);
     else suppress_first_name_check = false;
-    bool ok = details::read_from<META>(stream, x);
-    if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading value of ")+META::__name());
+    if constexpr (META::__is_embedded) {
+      if constexpr (META::__is_fixedpoint) {
+        typename META::__type v;
+        double dv;          
+        bool ok = details::read_from<META>(stream, dv);
+        if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+META::__name());
+        v = META::__float2integral(dv);
+        x = v;
+      }
+      else {
+        typename META::__type v;
+        bool ok = details::read_from<META>(stream, v);
+        if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+META::__name());
+        x = v;
+      }
+    }
+    else { // not embedded
+      if constexpr (META::__is_fixedpoint) {
+        double dv;
+        bool ok = details::read_from<META>(stream, dv);
+        if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading value of ")+META::__name());
+        x = META::__float2integral(dv);
+      }
+      else {
+        bool ok = details::read_from<META>(stream, x);
+        if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading value of ")+META::__name());
+      }
+    }
   }
   template<class META, class T>
   void visit_item_scalar(T& x) {
@@ -87,8 +114,34 @@ struct ScanVisitor {
     else suppress_first_name_check = false;
     details::__check_char<META>(stream, '[');
     for (size_t i=0;i<x.size();i++) {
-      bool ok = details::read_from<META>(stream, x[i]);
-      if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+std::to_string(i)+ "th value of "+META::__name());
+      if constexpr (META::__is_embedded) {
+        if constexpr (META::__is_fixedpoint) {
+          typename META::__type v;
+          double dv;          
+          bool ok = details::read_from<META>(stream, dv);
+          if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+std::to_string(i)+ "th value of "+META::__name());
+          v = META::__float2integral(dv);
+          x[i] = v;
+        }
+        else {
+          typename META::__type v;
+          bool ok = details::read_from<META>(stream, v);
+          if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+std::to_string(i)+ "th value of "+META::__name());
+          x[i] = v;
+        }
+      }
+      else {
+        if constexpr (META::__is_fixedpoint) {
+          double dv;
+          bool ok = details::read_from<META>(stream, dv);
+          if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+std::to_string(i)+ "th value of "+META::__name());
+          x[i] = META::__float2integral(dv);
+        }
+        else {
+          bool ok = details::read_from<META>(stream, x[i]);
+          if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+std::to_string(i)+ "th value of "+META::__name());
+        }
+      }
     }
     details::__check_char<META>(stream, ']');
   }

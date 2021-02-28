@@ -154,3 +154,12 @@ struct FixedpointExample {
     embedded array a4: built_in.sint6[2] (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
 }
 
+struct FixedpointExample2 {
+    scalar u1: built_in.uint32 (.fixedpointLsbValue=0.1)
+    scalar s1: built_in.sint16 (.fixedpointLsbValue=0.1)
+    array as1: built_in.sint32[2] (.fixedpointLsbValue=0.1)
+    scalar c4: built_in.uint32
+    embedded scalar u4: built_in.uint10 (.fixedpointLsbValue=0.1)
+    embedded scalar s4: built_in.sint10 (.fixedpointLsbValue=0.1)
+    embedded array a4: built_in.sint6[2] (.fixedpointLsbValue=0.1)
+}
