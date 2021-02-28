@@ -205,7 +205,7 @@ def check_Property(p):
             a, "specify either MSB or LSB (and not both at the same time)")
         textx_assert(
             has_property(a,'fixedpointLsbValue') or has_property(a,'fixedpointMsbValue'),
-            p, "specify either MSB or LSB (you need at least one of them for fixpoint values)")
+            p, "specify either MSB or LSB (you need at least one of them for fixedpoint values)")
         textx_assert(
             a.type.internaltype in ["UINT","INT"],
             a, "fixedpoint meta information only possible with integral values")

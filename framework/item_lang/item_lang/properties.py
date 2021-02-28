@@ -260,7 +260,7 @@ def has_fixedpoint(a):
 
 
 def get_fixedpoint_LSB_value(a):
-    assert has_fixedpoint(a), f"expected fixpoint infos for {a.name}"
+    assert has_fixedpoint(a), f"expected fixedpoint infos for {a.name}"
     if has_property(a, "fixedpointLsbValue"):
         return get_property(a, "fixedpointLsbValue")
     elif has_property(a, "fixedpointMsbValue"):
@@ -268,7 +268,7 @@ def get_fixedpoint_LSB_value(a):
 
 
 def get_fixedpoint_offset_value(a):
-    assert has_fixedpoint(a), f"expected fixpoint infos for {a.name}"
+    assert has_fixedpoint(a), f"expected fixedpoint infos for {a.name}"
     if has_property(a, "fixedpointOffsetValue"):
         return get_property(a, "fixedpointOffsetValue")
     else:
