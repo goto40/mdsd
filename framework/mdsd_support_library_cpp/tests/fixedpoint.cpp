@@ -6,26 +6,53 @@
 TEST_CASE( "basic fixedpoint test", "[fixedpoint_tests]" ) {
     {
         big_example::FixedpointExample2 i;
+        i.u4( 11 );
+        CHECK( i.u4() == 11 );
+        i.s4( -11 );
+        CHECK( i.s4() == -11 );
+        CHECK( i.u4() == 11 );
+        i.a4( 0, -14 );
+        CHECK( i.a4(0) == -14 );
+        CHECK( i.s4() == -11 );
+        CHECK( i.u4() == 11 );
+        i.a4( 1, -9 );
+        CHECK( i.a4(1) == -9 );
+        CHECK( i.a4(0) == -14 );
+        CHECK( i.s4() == -11 );
+        CHECK( i.u4() == 11 );
         std::istringstream s{R"(
             FixedpointExample2 {
                 u1 = 0.3
                 s1 = -0.4
-                as1 = [-100.1 200.2]
+                as1 = [-1.1 2.2]
                 u4 = 1.3
                 s4 = -1.4
-                a4 = [-200.1 400.2]
+                a4 = [-1.3 1.2]
             }
         )"};
         mdsd::scan(i, s);
-        REQUIRE(i.u1 == 3);
-        REQUIRE(i.s1 == -4);
-        REQUIRE(i.as1[0] == -1001);
-        REQUIRE(i.as1[1] == 2002);
+        CHECK(i.u1 == 3);
+        CHECK(i.s1 == -4);
+        CHECK(i.as1[0] == -11);
+        CHECK(i.as1[1] == 22);
         CHECK((int)i.u4() == 13);
         CHECK((int)i.s4() == -14);
-        CHECK((int)i.a4(0) == -2001);
-        CHECK((int)i.a4(1) == 4002);
+        CHECK((int)i.a4(0) == -13);
+        CHECK((int)i.a4(1) == 12);
+
+        i = big_example::FixedpointExample2(
+            1, -2, {-3, 4},
+            5, -6, {-7, 8}
+        );
+
+        CHECK(i.u1 == 1);
+        CHECK(i.s1 == -2);
+        CHECK(i.as1[0] == -3);
+        CHECK(i.as1[1] == 4);
+        CHECK((int)i.u4() == 5);
+        CHECK((int)i.s4() == -6);
+        CHECK((int)i.a4(0) == -7);
+        CHECK((int)i.a4(1) == 8);
+
     }
 }
-
-// TODO init obj (constr. with params)

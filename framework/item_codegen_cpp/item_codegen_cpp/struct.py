@@ -563,7 +563,7 @@ def generate_cpp_struct(f, i):
                 f.write(
                     f"     return mdsd::read_{signed_info}_from_container<{value_type}>({container_name},"
                     f" META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits,"
-                    f" META::{a.name}::__embedded_end_bit-idx*META::{a.name}::__embedded_bits);\n"
+                    f" META::{a.name}::__embedded_start_bit+1-(idx+1)*META::{a.name}::__embedded_bits);\n"
                 )
                 f.write("  }\n")
 
@@ -587,7 +587,7 @@ def generate_cpp_struct(f, i):
                 f.write(
                     f"     {container_name} = mdsd::write_to_container({container_name},"
                     f" META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits,"
-                    f" META::{a.name}::__embedded_end_bit-idx*META::{a.name}::__embedded_bits, val);\n"
+                    f" META::{a.name}::__embedded_start_bit+1-(idx+1)*META::{a.name}::__embedded_bits, val);\n"
                 )
                 f.write("  }\n")
 
