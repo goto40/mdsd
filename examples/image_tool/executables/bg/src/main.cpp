@@ -164,14 +164,16 @@ struct MyApp : wxApp
     bool OnInit() override {
         auto f        = new wxFrame(nullptr,wxID_ANY, "Simple Demo");
         auto ctrl     = new wxExt::wxInputImageViewer<wxExt::wxGrayImageViewer>(f, wxID_ANY);
-        auto viewer   = new wxExt::wxGrayImageViewer(f, wxID_ANY);
+        auto viewer1   = new wxExt::wxGrayImageViewer(f, wxID_ANY);
+        auto viewer2   = new wxExt::wxGrayImageViewer(f, wxID_ANY);
         auto sizer    = new wxBoxSizer( wxHORIZONTAL );
         auto pg       = new wxMessageEditor<my_image_lib::background_subtraction::BackgroundSubtractionParameters>(f, wxID_ANY);
 
         pg->Refresh();
 
         ctrl->Select("zeitung.png");
-        ctrl->GetImageViewer().LinkViewer(*viewer);
+        ctrl->GetImageViewer().LinkViewer(*viewer1);
+        ctrl->GetImageViewer().LinkViewer(*viewer2);
 
         // copy image from clipboard on startup
         if (wxApp::argc==2) {
@@ -186,11 +188,12 @@ struct MyApp : wxApp
         }
 
         sizer->Add(ctrl, 1, wxEXPAND);
-        sizer->Add(viewer, 1, wxEXPAND);
+        sizer->Add(viewer1, 1, wxEXPAND);
+        sizer->Add(viewer2, 1, wxEXPAND);
         sizer->Add(pg, 1, wxEXPAND);
         f->SetSizerAndFit(sizer);
 
-        auto compute = [viewer, ctrl, pg]() {
+        auto compute = [viewer1,viewer2, ctrl, pg]() {
             auto &v = ctrl->GetImageViewer();
             std::cout << v.GrayImage().w << " x "
                 << v.GrayImage().w << "\n";
@@ -199,7 +202,8 @@ struct MyApp : wxApp
             algo->set_params( pg->parameter );
             std::cout << "th=" << pg->parameter.threshold << "\n";
             algo->compute(v.GrayImage(), res);
-            viewer->SetImage( res.result );
+            viewer1->SetImage( res.threshold );
+            viewer2->SetImage( res.result );
         };
         ctrl->GetImageViewer().BindOnImageChanged([compute](auto &){ compute(); });
         pg->BindOnMessageChanged([compute](auto &){ compute(); });

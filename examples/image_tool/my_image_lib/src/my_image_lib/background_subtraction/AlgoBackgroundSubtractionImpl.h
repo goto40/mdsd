@@ -30,9 +30,10 @@ public:
                 static_cast<int>(input.w),
                 static_cast<int>(input.h)
             };
-            my_image_lib::ImageImpl res = my_image_lib::medianfilter_approx_par<256>(
+            my_image_lib::ImageImpl res = my_image_lib::medianfilter_approx_par(
                 im,
-                params.n
+                params.n,
+                params.histosize
             );
             for (size_t idx=0;idx<output.threshold.pixel.size(); idx++) {
                 output.threshold.pixel[idx] = res.begin()[idx];

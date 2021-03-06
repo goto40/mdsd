@@ -10,19 +10,29 @@
 
 namespace my_image_lib {
 
-template<size_t N=256, class T=uint8_t, class C=size_t, size_t W=50>
+template<class T=uint8_t, class C=size_t, size_t W=50>
 struct Histogram {
-    std::array<C,N> h={};
-    std::array<T,N> bins={};
+    size_t histosize;
+    std::vector<C> h={};
+    std::vector<T> bins={};
     C operator[](size_t idx) const { return h[idx]; }
 
     template<class IM>
-    Histogram(const IM& im, bool init=true) {
+    Histogram(const IM& im, size_t _histosize, bool init=true) : histosize(_histosize) {
         static_assert(std::is_same_v<T, std::remove_const_t<typename IM::type>>);
+        h.resize(histosize);
+        bins.resize(histosize);
         auto mima = std::minmax_element(im.begin(), im.end());
-        for(size_t i=0;i<N;i++) bins[i] = *mima.first + (*mima.second-*mima.first)*i/N;
+        for(size_t i=0;i<histosize;i++) bins[i] = *mima.first + (*mima.second-*mima.first)*i/histosize;
         if (init) fill(im);
         else clear();
+    }
+
+    Histogram(size_t _histosize, T mi, T ma) : histosize(_histosize) {
+        h.resize(histosize);
+        bins.resize(histosize);
+        for(size_t i=0;i<histosize;i++) bins[i] = mi + (ma-mi)*i/histosize;
+        clear();
     }
 
     void clear() {
@@ -41,9 +51,12 @@ struct Histogram {
         if (diff==0) {
             return 0;
         }
+        else if (value < bins.front()) {
+            return 0;
+        }
         else {
-            auto pos = static_cast<size_t>(std::floor((value - bins.front())*N/diff));
-            if (pos>=N) pos = N-1;
+            auto pos = static_cast<size_t>(std::floor((value - bins.front())*histosize/diff));
+            if (pos>=histosize) pos = histosize-1;
             return pos;
         }
     }
@@ -61,7 +74,7 @@ struct Histogram {
     T get_approx_median(size_t sum=0) {
         if (sum==0) sum=std::accumulate(h.begin(), h.end(), static_cast<size_t>(0));
         size_t csum=0;
-        for(size_t i=0;i<N;i++) {
+        for(size_t i=0;i<histosize;i++) {
             csum+=h[i];
             if (csum>sum/2) {
                 return bins[i];

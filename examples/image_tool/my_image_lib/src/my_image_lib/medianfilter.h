@@ -90,9 +90,8 @@ ImageImpl<typename IM::type> medianfilter_par(const IM& im, int n, size_t num_th
     return res;
 }
 
-
-template<size_t histo_N=20, class IM>
-ImageImpl<typename std::remove_const_t<typename IM::type>> medianfilter_approx_par(const IM& im, int n, size_t num_threads=4) {
+template<class IM>
+ImageImpl<typename std::remove_const_t<typename IM::type>> medianfilter_approx_par(const IM& im, int n, size_t histosize, size_t num_threads=4) {
     using T = std::remove_const_t<typename IM::type>;
     int w = im.getWidth()-n+1;
     int h = im.getHeight()-n+1;
@@ -105,7 +104,7 @@ ImageImpl<typename std::remove_const_t<typename IM::type>> medianfilter_approx_p
         int _y0=t*(h/num_threads);
         int _y1=(t+1)*(h/num_threads);
         auto f=[&](auto y0, auto y1){
-            my_image_lib::Histogram<histo_N, T, uint16_t> histogram(im, false);
+            my_image_lib::Histogram<T, uint16_t> histogram(im, histosize, false);
             for (int y=y0;y<y1;y++) {
                 for (int x=0;x<w;x++) {
                     if (x==0) {
