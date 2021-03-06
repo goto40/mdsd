@@ -20,7 +20,26 @@ public:
         const my_image_lib::GrayImage& input, 
         my_image_lib::background_subtraction::BackgroundSubtractionResults& output
     ) {
-        if (params.type==my_image_lib::background_subtraction::MedianType::HISTOGRAMBASED_MEDIAN_APPROX) {
+        if (params.type==my_image_lib::background_subtraction::MedianType::HISTOGRAMBASED_MEDIAN_OPTIMIZED_APPROX) {
+            my_image_lib::Tictoc tictoc{"median optimized approx"};
+            output.threshold.w = input.w;
+            output.threshold.h = input.h;
+            output.threshold._GET_WRAPPER().adjust_array_sizes_and_variants();
+            const my_image_lib::PtrImageImpl<const float> im{
+                input.pixel.data(),
+                static_cast<int>(input.w),
+                static_cast<int>(input.h)
+            };
+            my_image_lib::ImageImpl res = my_image_lib::medianfilter_optimized_approx_par(
+                im,
+                params.n,
+                params.histosize
+            );
+            for (size_t idx=0;idx<output.threshold.pixel.size(); idx++) {
+                output.threshold.pixel[idx] = res.begin()[idx];
+            }
+        }
+        else if (params.type==my_image_lib::background_subtraction::MedianType::HISTOGRAMBASED_MEDIAN_APPROX) {
             my_image_lib::Tictoc tictoc{"median approx"};
             output.threshold.w = input.w;
             output.threshold.h = input.h;
@@ -49,12 +68,24 @@ public:
         output.result.w = output.threshold.w;
         output.result.h = output.threshold.h;
         output.result._GET_WRAPPER().adjust_array_sizes_and_variants();
-        for (size_t idx=0;idx<output.result.pixel.size(); idx++) {
-            if (input.pixel[idx]<output.threshold.pixel[idx]) {
-                output.result.pixel[idx]=0.0;
+        if (params.threshold<0) {
+            for (size_t idx=0;idx<output.result.pixel.size(); idx++) {
+                if (input.pixel[idx]<output.threshold.pixel[idx]) {
+                    output.result.pixel[idx]=0.0;
+                }
+                else {
+                    output.result.pixel[idx]=1.0;
+                }
             }
-            else {
-                output.result.pixel[idx]=1.0;
+        }
+        else {
+            for (size_t idx=0;idx<output.result.pixel.size(); idx++) {
+                if (input.pixel[idx]>output.threshold.pixel[idx]) {
+                    output.result.pixel[idx]=0.0;
+                }
+                else {
+                    output.result.pixel[idx]=1.0;
+                }
             }
         }
     }

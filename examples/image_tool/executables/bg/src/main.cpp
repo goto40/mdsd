@@ -208,6 +208,7 @@ struct MyApp : wxApp
         ctrl->GetImageViewer().BindOnImageChanged([compute](auto &){ compute(); });
         pg->BindOnMessageChanged([compute](auto &){ compute(); });
 
+        f->SetSize( wxSize{1000,600} );
         (void)f->Show(true);
         return true;
     }

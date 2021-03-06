@@ -132,6 +132,48 @@ ImageImpl<typename std::remove_const_t<typename IM::type>> medianfilter_approx_p
     return res;
 }
 
+template<class IM>
+ImageImpl<typename std::remove_const_t<typename IM::type>> medianfilter_optimized_approx_par(const IM& im, int n, size_t histosize, size_t num_threads=4) {
+    using T = std::remove_const_t<typename IM::type>;
+    int w = im.getWidth()-n+1;
+    int h = im.getHeight()-n+1;
+    ImageImpl<T> res{ im.getWidth(), im.getHeight() };
+    std::vector<std::future<void>> futures;
+
+    std::cout << "num threads="<< num_threads << "\n";
+    auto mode = std::launch::deferred;
+    for (size_t t=0;t<num_threads;t++) {
+        int _y0=t*(h/num_threads);
+        int _y1=(t+1)*(h/num_threads);
+        auto f=[&](auto y0, auto y1){
+            my_image_lib::HistogramForQuantile<T, uint16_t> histogram(im, histosize, false);
+            for (int y=y0;y<y1;y++) {
+                for (int x=0;x<w;x++) {
+                    if (x==0) {
+                        auto sel = im.sel(x,y,n,n);
+                        histogram.fill(sel);
+                    }
+                    else {
+                        auto sel_rm = im.sel(x-1,y,1,n);
+                        for (auto v: sel_rm) histogram.dec(v);
+                        auto sel_add = im.sel(x+n-1,y,1,n);
+                        for (auto v: sel_add) histogram.inc(v);
+                    }
+                    auto median = histogram.get_approx_quantile();
+                    res.set(x+n/2, y+n/2, median);
+                }
+            }
+        };
+        futures.push_back(std::async(mode, f,_y0,_y1));
+        mode = std::launch::async;
+    }
+    for (auto &t: futures) {
+        t.wait();
+    }
+
+    return res;
+}
+
 }
 
 #endif
