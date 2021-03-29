@@ -1,8 +1,8 @@
-package fixedpoint_example
+package fixpoint_example
 
 struct Example1 {
-    scalar u: built_in.uint32 (.fixedpointLsbValue=0.1)
-    scalar s: built_in.float32 (.fixedpointLsbValue=0.1) // expected: fixedpoint meta information only possible with integral values
-    array au: built_in.uint32[2] (.fixedpointLsbValue=0.1)
-    array as: built_in.sint16[2] (.fixedpointLsbValue=0.1)
+    scalar u: built_in.uint32 (.fixpointLsbValue=0.1)
+    scalar s: built_in.float32 (.fixpointLsbValue=0.1) // expected: fixpoint meta information only possible with integral values
+    array au: built_in.uint32[2] (.fixpointLsbValue=0.1)
+    array as: built_in.sint16[2] (.fixpointLsbValue=0.1)
 }

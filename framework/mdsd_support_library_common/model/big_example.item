@@ -134,32 +134,32 @@ struct Headers6_noheader {
     scalar header_extra: Header  (.is_payload=true)
 }
 
-struct FixedpointExample {
-    scalar u1: built_in.uint32 (.fixedpointLsbValue=0.1)
-    scalar s1: built_in.sint16 (.fixedpointLsbValue=0.1)
-    array au1: built_in.uint32[2] (.fixedpointLsbValue=0.1)
-    array as1: built_in.sint16[2] (.fixedpointLsbValue=0.1)
+struct FixpointExample {
+    scalar u1: built_in.uint32 (.fixpointLsbValue=0.1)
+    scalar s1: built_in.sint16 (.fixpointLsbValue=0.1)
+    array au1: built_in.uint32[2] (.fixpointLsbValue=0.1)
+    array as1: built_in.sint16[2] (.fixpointLsbValue=0.1)
 
-    scalar u2: built_in.uint32 (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
-    scalar s2: built_in.sint16 (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
-    array au2: built_in.uint32[2] (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
-    array as2: built_in.sint16[2] (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
+    scalar u2: built_in.uint32 (.fixpointLsbValue=0.1, .fixpointOffsetValue=-100.0)
+    scalar s2: built_in.sint16 (.fixpointLsbValue=0.1, .fixpointOffsetValue=-100.0)
+    array au2: built_in.uint32[2] (.fixpointLsbValue=0.1, .fixpointOffsetValue=-100.0)
+    array as2: built_in.sint16[2] (.fixpointLsbValue=0.1, .fixpointOffsetValue=-100.0)
 
-    scalar u3: built_in.uint32 (.fixedpointMsbValue=360.0, .fixedpointOffsetValue=-180.0)
-    scalar s3: built_in.sint16 (.fixedpointMsbValue=360.0, .fixedpointOffsetValue=-180.0)
+    scalar u3: built_in.uint32 (.fixpointMsbValue=360.0, .fixpointOffsetValue=-180.0)
+    scalar s3: built_in.sint16 (.fixpointMsbValue=360.0, .fixpointOffsetValue=-180.0)
 
     scalar c4: built_in.uint32
-    embedded scalar u4: built_in.uint10 (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
-    embedded scalar s4: built_in.sint10 (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
-    embedded array a4: built_in.sint6[2] (.fixedpointLsbValue=0.1, .fixedpointOffsetValue=-100.0)
+    embedded scalar u4: built_in.uint10 (.fixpointLsbValue=0.1, .fixpointOffsetValue=-100.0)
+    embedded scalar s4: built_in.sint10 (.fixpointLsbValue=0.1, .fixpointOffsetValue=-100.0)
+    embedded array a4: built_in.sint6[2] (.fixpointLsbValue=0.1, .fixpointOffsetValue=-100.0)
 }
 
-struct FixedpointExample2 {
-    scalar u1: built_in.uint32 (.fixedpointLsbValue=0.1)
-    scalar s1: built_in.sint16 (.fixedpointLsbValue=0.1)
-    array as1: built_in.sint32[2] (.fixedpointLsbValue=0.1)
+struct FixpointExample2 {
+    scalar u1: built_in.uint32 (.fixpointLsbValue=0.1)
+    scalar s1: built_in.sint16 (.fixpointLsbValue=0.1)
+    array as1: built_in.sint32[2] (.fixpointLsbValue=0.1)
     scalar c4: built_in.uint32
-    embedded scalar u4: built_in.uint10 (.fixedpointLsbValue=0.1)
-    embedded scalar s4: built_in.sint10 (.fixedpointLsbValue=0.1)
-    embedded array a4: built_in.sint6[2] (.fixedpointLsbValue=0.1)
+    embedded scalar u4: built_in.uint10 (.fixpointLsbValue=0.1)
+    embedded scalar s4: built_in.sint10 (.fixpointLsbValue=0.1)
+    embedded array a4: built_in.sint6[2] (.fixpointLsbValue=0.1)
 }

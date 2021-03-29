@@ -255,21 +255,21 @@ def is_applicable_for(parent, definition):
     return False
 
 
-def has_fixedpoint(a):
-    return has_property(a, "fixedpointLsbValue") or has_property(a, "fixedpointMsbValue")
+def has_fixpoint(a):
+    return has_property(a, "fixpointLsbValue") or has_property(a, "fixpointMsbValue")
 
 
-def get_fixedpoint_LSB_value(a):
-    assert has_fixedpoint(a), f"expected fixedpoint infos for {a.name}"
-    if has_property(a, "fixedpointLsbValue"):
-        return get_property(a, "fixedpointLsbValue")
-    elif has_property(a, "fixedpointMsbValue"):
-        return get_property(a, "fixedpointMsbValue")/(2**(a.type.bits-1))  # TBC
+def get_fixpoint_LSB_value(a):
+    assert has_fixpoint(a), f"expected fixpoint infos for {a.name}"
+    if has_property(a, "fixpointLsbValue"):
+        return get_property(a, "fixpointLsbValue")
+    elif has_property(a, "fixpointMsbValue"):
+        return get_property(a, "fixpointMsbValue")/(2**(a.type.bits-1))  # TBC
 
 
-def get_fixedpoint_offset_value(a):
-    assert has_fixedpoint(a), f"expected fixedpoint infos for {a.name}"
-    if has_property(a, "fixedpointOffsetValue"):
-        return get_property(a, "fixedpointOffsetValue")
+def get_fixpoint_offset_value(a):
+    assert has_fixpoint(a), f"expected fixpoint infos for {a.name}"
+    if has_property(a, "fixpointOffsetValue"):
+        return get_property(a, "fixpointOffsetValue")
     else:
         return 0.0

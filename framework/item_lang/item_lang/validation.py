@@ -198,17 +198,17 @@ def check_Property(p):
                 len(prop_value) == 1, p, "only exactly one char is allowed as default"
             )
 
-    if p.definition.name in ["fixedpointLsbValue", "fixedpointMsbValue", "fixedpointOffsetValue"]:
-        a = p.parent  # must be an attribute (restriction of fixedpoint pros)
+    if p.definition.name in ["fixpointLsbValue", "fixpointMsbValue", "fixpointOffsetValue"]:
+        a = p.parent  # must be an attribute (restriction of fixpoint pros)
         textx_assert(
-            not (has_property(a,'fixedpointLsbValue') and has_property(a,'fixedpointMsbValue')),
+            not (has_property(a,'fixpointLsbValue') and has_property(a,'fixpointMsbValue')),
             a, "specify either MSB or LSB (and not both at the same time)")
         textx_assert(
-            has_property(a,'fixedpointLsbValue') or has_property(a,'fixedpointMsbValue'),
-            p, "specify either MSB or LSB (you need at least one of them for fixedpoint values)")
+            has_property(a,'fixpointLsbValue') or has_property(a,'fixpointMsbValue'),
+            p, "specify either MSB or LSB (you need at least one of them for fixpoint values)")
         textx_assert(
             a.type.internaltype in ["UINT","INT"],
-            a, "fixedpoint meta information only possible with integral values")
+            a, "fixpoint meta information only possible with integral values")
 
 
 

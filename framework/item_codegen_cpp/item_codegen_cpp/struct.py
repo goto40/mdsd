@@ -3,9 +3,9 @@ from textx import get_metamodel
 from item_lang.properties import (
     get_all_possible_properties,
     has_property,
-    get_fixedpoint_LSB_value,
-    get_fixedpoint_offset_value,
-    has_fixedpoint
+    get_fixpoint_LSB_value,
+    get_fixpoint_offset_value,
+    has_fixpoint
 )
 from item_lang.common import (
     get_referenced_elements_of_struct,
@@ -334,14 +334,14 @@ def generate_cpp_struct(f, i):
         pdefs = get_all_possible_properties(a)
         pdefs = sorted(pdefs.keys())
 
-        if "fixedpointLsbValue" in pdefs:
-            if has_fixedpoint(a):
-                f.write("      static constexpr bool __is_fixedpoint = true;\n")
-                f.write(f"      static constexpr double __fixedpointLsbValue = {get_fixedpoint_LSB_value(a)};\n")
-                f.write(f"      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) {{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixedpointLsbValue)); }}\n")
-                f.write(f"      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) {{ return static_cast<FLOAT>(i)*__fixedpointLsbValue; }}\n")
+        if "fixpointLsbValue" in pdefs:
+            if has_fixpoint(a):
+                f.write("      static constexpr bool __is_fixpoint = true;\n")
+                f.write(f"      static constexpr double __fixpointLsbValue = {get_fixpoint_LSB_value(a)};\n")
+                f.write(f"      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) {{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixpointLsbValue)); }}\n")
+                f.write(f"      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) {{ return static_cast<FLOAT>(i)*__fixpointLsbValue; }}\n")
             else:
-                f.write("      static constexpr bool __is_fixedpoint = false;\n")
+                f.write("      static constexpr bool __is_fixpoint = false;\n")
 
         for pname in pdefs:
             if has_property(a, pname):
