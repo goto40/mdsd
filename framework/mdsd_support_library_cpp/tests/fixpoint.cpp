@@ -1,11 +1,11 @@
 #include "catch.hpp"
-#include "big_example/FixedpointExample2.h"
+#include "big_example/FixpointExample2.h"
 #include "mdsd/item_support.h"
 #include <sstream>
 
-TEST_CASE( "basic fixedpoint test", "[fixedpoint_tests]" ) {
+TEST_CASE( "basic fixpoint test", "[fixpoint_tests]" ) {
     {
-        big_example::FixedpointExample2 i;
+        big_example::FixpointExample2 i;
         i.u4( 11 );
         CHECK( i.u4() == 11 );
         i.s4( -11 );
@@ -21,7 +21,7 @@ TEST_CASE( "basic fixedpoint test", "[fixedpoint_tests]" ) {
         CHECK( i.s4() == -11 );
         CHECK( i.u4() == 11 );
         std::istringstream s{R"(
-            FixedpointExample2 {
+            FixpointExample2 {
                 u1 = 0.3
                 s1 = -0.4
                 as1 = [-1.1 2.2]
@@ -40,7 +40,7 @@ TEST_CASE( "basic fixedpoint test", "[fixedpoint_tests]" ) {
         CHECK((int)i.a4(0) == -13);
         CHECK((int)i.a4(1) == 12);
 
-        i = big_example::FixedpointExample2(
+        i = big_example::FixpointExample2(
             1, -2, {-3, 4},
             5, -6, {-7, 8}
         );

@@ -74,7 +74,7 @@ struct ScanVisitor {
     if (!suppress_first_name_check) details::__check_name<META>(stream);
     else suppress_first_name_check = false;
     if constexpr (META::__is_embedded) {
-      if constexpr (META::__is_fixedpoint) {
+      if constexpr (META::__is_fixpoint) {
         typename META::__type v;
         double dv;          
         bool ok = details::read_from<META>(stream, dv);
@@ -90,7 +90,7 @@ struct ScanVisitor {
       }
     }
     else { // not embedded
-      if constexpr (META::__is_fixedpoint) {
+      if constexpr (META::__is_fixpoint) {
         double dv;
         bool ok = details::read_from<META>(stream, dv);
         if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading value of ")+META::__name());
@@ -115,7 +115,7 @@ struct ScanVisitor {
     details::__check_char<META>(stream, '[');
     for (size_t i=0;i<x.size();i++) {
       if constexpr (META::__is_embedded) {
-        if constexpr (META::__is_fixedpoint) {
+        if constexpr (META::__is_fixpoint) {
           typename META::__type v;
           double dv;          
           bool ok = details::read_from<META>(stream, dv);
@@ -131,7 +131,7 @@ struct ScanVisitor {
         }
       }
       else {
-        if constexpr (META::__is_fixedpoint) {
+        if constexpr (META::__is_fixpoint) {
           double dv;
           bool ok = details::read_from<META>(stream, dv);
           if (!stream || !ok) throw std::runtime_error(std::string("stream not ok reading ")+std::to_string(i)+ "th value of "+META::__name());
