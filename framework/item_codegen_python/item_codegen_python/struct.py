@@ -18,6 +18,8 @@ from item_lang.properties import (
     get_all_possible_properties,
     has_property,
     get_property_type,
+    has_fixpoint,
+    get_fixpoint_LSB_value
 )
 
 
@@ -34,6 +36,7 @@ from mdsd.item.init_default_values import init_default_values
 from mdsd.common import get_embedded_from_uint, ArrayLike
 from mdsd.common import set_embedded_in_uint
 from mdsd.common import ArrayLike, str2array, array2str
+from mdsd.common import int2float_fixpoint_value, float2int_fixpoint_value
 from typing import Sequence, Union
 from functools import reduce
 """
@@ -45,6 +48,7 @@ from functools import reduce
             f.write("\n@dataclass(eq=False)\n")
             f.write("class {}:\n".format(i.name))
             for a in i.attributes:
+
                 if a.is_embedded():
                     rawtype = a.type
                     if textx_isinstance(a.type, mm["Enum"]):
@@ -174,6 +178,20 @@ from functools import reduce
                         )
                     else:
                         raise Exception("unexpected type")
+
+                pdefs = get_all_possible_properties(a)
+                pdefs = sorted(pdefs.keys())
+
+                if "fixpointLsbValue" in pdefs:
+                    if textx_isinstance(a, mm["ScalarAttribute"]):
+                        if has_fixpoint(a):
+                            f.write(f"    @property\n")
+                            f.write(f"    def {'item_fixpoint_'+a.name}(self):\n")
+                            f.write(f"        return int2float_fixpoint_value(self, '{a.name}', self.{a.name})\n")
+                            f.write(f"    @{'item_fixpoint_'+a.name}.setter\n")
+                            f.write(f"    def {'item_fixpoint_'+a.name}(self, v):\n")
+                            f.write(f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n")
+
             f.write("\n    def __post_init__(self):\n")
             f.write("        init_default_values(self)\n")
             f.write(
@@ -210,6 +228,11 @@ from functools import reduce
             f.write("\n    ]\n")
             f.write("\n    _meta = {\n")
             for a in i.attributes:
+                pdefs = get_all_possible_properties(a)
+                pdefs = sorted(pdefs.keys())
+                if "fixpointLsbValue" in pdefs:
+                    if has_fixpoint(a):
+                        f.write('        "item_fixpoint_{}": {{}},'.format(a.name))
                 if hasattr(a, "type") and a.type.name == "char":
                     f.write(f'        "{a.name}_as_str": {{}},\n')
 
@@ -296,6 +319,13 @@ from functools import reduce
 
                 pdefs = get_all_possible_properties(a)
                 pdefs = sorted(pdefs.keys())
+
+                if "fixpointLsbValue" in pdefs:
+                    if has_fixpoint(a):
+                        f.write(f'"__is_fixpoint":True,')
+                        f.write(f'"__fixpointLsbValue": {get_fixpoint_LSB_value(a)},')
+                    else:
+                        f.write(f'"__is_fixpoint":False,')
 
                 for pname in pdefs:
                     if has_property(a, pname):

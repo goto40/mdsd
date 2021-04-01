@@ -142,3 +142,25 @@ def set_embedded_in_uint(vvalue, cvalue, start_end_bit):
     return ctype(
         (cvalue & get_imask(ctype, start_end_bit[0], start_end_bit[1])) | uintvalue
     )
+
+def is_fixpoint(item, attrname):
+    assert attrname in item._meta, f"{item.__class__.__name__}.{attrname} is not existing"
+    my_meta = item._meta[attrname]
+    return my_meta["__is_fixpoint"]
+
+def get_fixpoint_config(item, attrname):
+    assert is_fixpoint(item, attrname), f"{item.__class__.__name__}.{attrname} is not a fixpoint value"
+    my_meta = item._meta[attrname]
+    fixpointLsbValue = my_meta["__fixpointLsbValue"]
+    fixpointOffsetValue = 0
+    if my_meta["__has_fixpointOffsetValue"]:
+        fixpointOffsetValue = my_meta["fixpointOffsetValue"]()
+    return fixpointLsbValue, fixpointOffsetValue
+
+def int2float_fixpoint_value(item, attrname, intvalue):
+    fixpointLsbValue, fixpointOffsetValue = get_fixpoint_config(item, attrname)
+    return intvalue * fixpointLsbValue + fixpointOffsetValue
+
+def float2int_fixpoint_value(item, attrname, floatvalue):
+    fixpointLsbValue, fixpointOffsetValue = get_fixpoint_config(item, attrname)
+    return round((floatvalue - fixpointOffsetValue) / fixpointLsbValue)
