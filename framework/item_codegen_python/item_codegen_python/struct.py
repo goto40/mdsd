@@ -36,7 +36,7 @@ from mdsd.item.init_default_values import init_default_values
 from mdsd.common import get_embedded_from_uint, ArrayLike
 from mdsd.common import set_embedded_in_uint
 from mdsd.common import ArrayLike, str2array, array2str
-from mdsd.common import int2float_fixpoint_value, float2int_fixpoint_value
+from mdsd.common import int2float_fixpoint_value, float2int_fixpoint_value, FixpointArrayLike
 from typing import Sequence, Union
 from functools import reduce
 """
@@ -195,7 +195,7 @@ from functools import reduce
                         if has_fixpoint(a):
                             f.write(f"    @property\n")
                             f.write(f"    def {'item_fixpoint_'+a.name}(self):\n")
-                            f.write(f"        return int2float_fixpoint_value(self, '{a.name}', self.{a.name})\n")
+                            f.write(f"        return FixpointArrayLike(self, '{a.name}')\n")
                             f.write(f"    @{'item_fixpoint_'+a.name}.setter\n")
                             f.write(f"    def {'item_fixpoint_'+a.name}(self, v):\n")
                             f.write(f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n")

@@ -36,11 +36,15 @@ class ArrayLike:
     def flat(self):
         return self
 
+    @property
+    def shape(self):
+        return self._shape
+
     def __init__(self, getter, setter, mytype=bool, shape=None):
         self.getter = getter
         self.setter = setter
         self.mytype = mytype
-        self.shape = shape
+        self._shape = shape
 
     def _flatten_index(self, idx):
         assert len(idx) == len(self.shape)
@@ -53,6 +57,12 @@ class ArrayLike:
 
     def __len__(self):
         return reduce(lambda a, b: a * b, self.shape)
+
+    def item(self, *idx):
+        return self.__getitem__(*idx)
+
+    def setitem(self, *args):
+        return self.__setitem__(*args)
 
     def __getitem__(self, *idx):
         if len(idx) == 1:
@@ -78,10 +88,31 @@ class ArrayLike:
             assert len(a) == n
             data = a
         else:
-            assert self.shape == a.shape
+            assert self._shape == a.shape
             data = a.flat
         for i in range(n):
             self.flat[i] = data[i]
+
+
+class FixpointArrayLike:
+
+    def __init__(self, item, attrname):
+        self.item = item
+        self.attrname = attrname
+        self.data = getattr(item, attrname)
+
+    @property
+    def shape(self):
+        return self.data.shape
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, *idx):
+        return int2float_fixpoint_value(self.item, self.attrname, self.data.item(*idx))
+
+    def __setitem__(self, *args):
+        self.data.itemset(*(args[:-1]), float2int_fixpoint_value(self.item, self.attrname, args[-1]))
 
 
 _unsigned2signed = {

@@ -162,4 +162,5 @@ struct FixpointExample2 {
     embedded scalar u4: built_in.uint10 (.fixpointLsbValue=0.1)
     embedded scalar s4: built_in.sint10 (.fixpointLsbValue=0.1)
     embedded array a4: built_in.sint6[2] (.fixpointLsbValue=0.1)
+    array md: built_in.sint32[2][3] (.fixpointLsbValue=0.1)
 }
