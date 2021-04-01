@@ -95,7 +95,6 @@ class ArrayLike:
 
 
 class FixpointArrayLike:
-    
     def __init__(self, item, attrname):
         self.item = item
         self.attrname = attrname
