@@ -159,8 +159,12 @@ def get_fixpoint_config(item, attrname):
 
 def int2float_fixpoint_value(item, attrname, intvalue):
     fixpointLsbValue, fixpointOffsetValue = get_fixpoint_config(item, attrname)
+    if isinstance(intvalue, list):
+        floatvalue = np.array(intvalue)
     return intvalue * fixpointLsbValue + fixpointOffsetValue
 
 def float2int_fixpoint_value(item, attrname, floatvalue):
     fixpointLsbValue, fixpointOffsetValue = get_fixpoint_config(item, attrname)
-    return round((floatvalue - fixpointOffsetValue) / fixpointLsbValue)
+    if isinstance(floatvalue, list):
+        floatvalue = np.array(floatvalue)
+    return np.round((floatvalue - fixpointOffsetValue) / fixpointLsbValue)

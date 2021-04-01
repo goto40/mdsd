@@ -191,6 +191,14 @@ from functools import reduce
                             f.write(f"    @{'item_fixpoint_'+a.name}.setter\n")
                             f.write(f"    def {'item_fixpoint_'+a.name}(self, v):\n")
                             f.write(f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n")
+                    elif textx_isinstance(a, mm["ArrayAttribute"]):
+                        if has_fixpoint(a):
+                            f.write(f"    @property\n")
+                            f.write(f"    def {'item_fixpoint_'+a.name}(self):\n")
+                            f.write(f"        return int2float_fixpoint_value(self, '{a.name}', self.{a.name})\n")
+                            f.write(f"    @{'item_fixpoint_'+a.name}.setter\n")
+                            f.write(f"    def {'item_fixpoint_'+a.name}(self, v):\n")
+                            f.write(f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n")
 
             f.write("\n    def __post_init__(self):\n")
             f.write("        init_default_values(self)\n")
