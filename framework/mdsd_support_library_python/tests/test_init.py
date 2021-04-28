@@ -1,4 +1,4 @@
-from mdsd.item.init_default_values import init_default_values
+from mdsd.item.init_values import init_default_values
 from big_example.Info import Info
 
 

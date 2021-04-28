@@ -20,6 +20,7 @@ import big_example.FixpointExample2
 
 from mdsd.item.io import copy_to_mem, count_bytes
 from os.path import join, dirname,exists
+from mdsd.item.init_values import init_max_values, init_default_values, init_min_values
 import os
 import shutil
 
@@ -54,15 +55,18 @@ def test_io_bin_output():
     print(path)
 
     def init_default(o):
-        return o;
+        init_default_values(o)
+        return o
 
     def init_min(o):
-        return o;
+        init_min_values(o)
+        return o
 
     def init_max(o):
-        return o;
+        init_max_values(o)
+        return o
 
-    def create_and_save(t, func, name):
+    def create_and_save(t, func, fname):
         obj = t()
         obj = func(obj)
         n = count_bytes(obj)
@@ -72,7 +76,7 @@ def test_io_bin_output():
         filename = join(
             dirname(__file__),
             'output',
-            name+f"_{name}.bin"
+            name+f"_{fname}.bin"
         )
         with open(filename,"wb") as f:
             f.write(mem)

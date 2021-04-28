@@ -32,7 +32,7 @@ def generate_py_for_struct(struct_obj, output_file):
 from dataclasses import dataclass, field
 import numpy as np
 import mdsd.item_support as support
-from mdsd.item.init_default_values import init_default_values
+from mdsd.item.init_values import init_default_values
 from mdsd.common import get_embedded_from_uint, ArrayLike
 from mdsd.common import set_embedded_in_uint
 from mdsd.common import ArrayLike, str2array, array2str
