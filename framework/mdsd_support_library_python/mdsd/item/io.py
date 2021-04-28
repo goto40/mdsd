@@ -44,6 +44,8 @@ class copy_to_mem_visitor:
         self.pos = 0
 
     def visit_scalar(self, struct, attr, meta):
+        if meta["_is_embedded"]:
+            return
         t = meta["_get_type"]()
         n = np.dtype(t).itemsize
         if self.pos + n > len(self.mem):
@@ -58,6 +60,8 @@ class copy_to_mem_visitor:
         accept(getattr(struct, attr), self)
 
     def visit_array(self, struct, attr, meta):
+        if meta["_is_embedded"]:
+            return
         t = meta["_get_type"]()
         d = meta["_get_dim"](struct)
         n = np.dtype(t).itemsize

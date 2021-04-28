@@ -1,0 +1,9 @@
+package test
+
+struct Info {
+    scalar x: built_in.uint32
+    embedded scalar r: built_in.uint2
+    embedded array c: built_in.uint3[3][2] // expected: no multidimensional embedded arrays allowed
+    embedded scalar d: built_in.uint12
+    array ok: built_in.float[r]
+}

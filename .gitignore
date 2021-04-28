@@ -25,3 +25,4 @@ test_results.xml
 .ipynb_checkpoints
 swig_proj
 *.html
+**/output/*.bin

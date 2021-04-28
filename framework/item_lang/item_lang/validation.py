@@ -247,6 +247,8 @@ def check_ArrayAttribute(a):
 
     if a.type.name == "char":
         textx_assert(len(a.dims) == 1, a, "no multidimensional strings allowed")
+    if a.is_embedded():
+        textx_assert(len(a.dims) == 1, a, "no multidimensional embedded arrays allowed")
 
 
 def check_VariantMapping(mapping):

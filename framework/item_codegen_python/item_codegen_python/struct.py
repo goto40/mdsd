@@ -45,6 +45,10 @@ from functools import reduce
                 f.write("import {}\n".format(module_name(r)))
             f.write("\n")
             i = struct_obj
+
+            for c in i.constant_entries:
+                f.write(f"{c.name} = {fqn(c.type)}({c.value.render_formula(**fp(i))})\n")
+
             f.write("\n@dataclass(eq=False)\n")
             f.write("class {}:\n".format(i.name))
             for a in i.attributes:
