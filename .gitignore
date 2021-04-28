@@ -26,3 +26,5 @@ test_results.xml
 swig_proj
 *.html
 **/output/*.bin
+**/output/*.txt
+

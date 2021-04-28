@@ -80,6 +80,11 @@ def test_io_bin_output():
             'output',
             name+f"_{fname}.bin"
         )
+        filename_txt = join(
+            dirname(__file__),
+            'output',
+            name+f"_{fname}.txt"
+        )
         with StringIO() as f:
             printto(obj,f)
             text_version = f.getvalue()
@@ -94,6 +99,8 @@ def test_io_bin_output():
                 printto(obj, f2)
                 text_version = f2.getvalue()
                 read_back_text_version = f2.getvalue()
+        with open(filename_txt,"w") as f:
+            f.write(text_version)
 
         assert len(text_version)>0
         assert text_version == read_back_text_version

@@ -93,6 +93,13 @@ class ArrayLike:
         for i in range(n):
             self.flat[i] = data[i]
 
+    def __repr__(self):
+        res="["
+        for idx in range(len(self)):
+            res+= " " + str(self.flat[idx])
+        res+=" ]"
+        return res
+
 
 class FixpointArrayLike:
     
@@ -113,6 +120,13 @@ class FixpointArrayLike:
 
     def __setitem__(self, *args):
         self.data.itemset(*(args[:-1]), float2int_fixpoint_value(self.item, self.attrname, args[-1]))
+
+    def __repr__(self):
+        res="["
+        for idx in range(len(self)):
+            res+= " " + str(self[idx])
+        res+=" ]"
+        return res
 
 
 _unsigned2signed = {
