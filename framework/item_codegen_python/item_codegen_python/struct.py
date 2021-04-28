@@ -68,7 +68,7 @@ from functools import reduce
                             f"        ret = get_embedded_from_uint({fqn(rawtype)}, self.{c.name},[{start_end_bit[0]},{start_end_bit[1]}])\n"
                         )
                         if textx_isinstance(a.type, mm["Enum"]):
-                            f.write(f"        v = {fqn(a.type)}(v)\n")
+                            f.write(f"        ret = {fqn(a.type)}(ret)\n")
                         f.write(f"        return ret\n")
                         f.write(f"\n")
                         f.write(f"    @{a.name}.setter\n")
@@ -271,6 +271,7 @@ from functools import reduce
                     f.write('"_is_variant":True,')
                     f.write('"_is_array":False,')
                     f.write('"_is_rawtype":False,')
+                    f.write('"_is_enum":False,')
                     f.write('"_is_struct":True,')
                     f.write('"_is_embedded":False,')
                     f.write('"_get_type": lambda: ({}), '.format(get_variant_types(a)))
@@ -278,16 +279,22 @@ from functools import reduce
                     f.write('"_is_scalar":True,')
                     f.write('"_is_variant":False,')
                     f.write('"_is_array":False,')
-                    if textx_isinstance(a.type, mm["RawType"]) or textx_isinstance(
-                        a.type, mm["Enum"]
-                    ):
+                    if textx_isinstance(a.type, mm["RawType"]):
                         f.write('"_is_rawtype":True,')
-                        f.write('"_is_struct":False,')
                     else:
                         f.write('"_is_rawtype":False,')
+                    if textx_isinstance(a.type, mm["Struct"]):
                         f.write('"_is_struct":True,')
+                    else:
+                        f.write('"_is_struct":False,')
+                    if textx_isinstance(a.type, mm["Enum"]):
+                        f.write('"_is_enum":True,')
+                    else:
+                        f.write('"_is_enum":False,')
                     f.write(f'"_is_embedded":{tf(a.is_embedded())},')
                     f.write('"_get_type": lambda: {}, '.format(fqn(a.type)))
+                    if textx_isinstance(a.type, mm["Enum"]):
+                        f.write('"_get_underlying_type": lambda: {}, '.format(fqn(a.type.type)))
                     if hasattr(a, "type") and a.type.name == "char":
                         f.write('"_has_char_content":True,')
                     else:
@@ -312,16 +319,22 @@ from functools import reduce
                             )
                         )
                     )
-                    if textx_isinstance(a.type, mm["RawType"]) or textx_isinstance(
-                        a.type, mm["Enum"]
-                    ):
+                    if textx_isinstance(a.type, mm["RawType"]):
                         f.write('"_is_rawtype":True,')
-                        f.write('"_is_struct":False,')
                     else:
                         f.write('"_is_rawtype":False,')
+                    if textx_isinstance(a.type, mm["Struct"]):
                         f.write('"_is_struct":True,')
+                    else:
+                        f.write('"_is_struct":False,')
+                    if textx_isinstance(a.type, mm["Enum"]):
+                        f.write('"_is_enum":True,')
+                    else:
+                        f.write('"_is_enum":False,')
                     f.write(f'"_is_embedded":{tf(a.is_embedded())},')
                     f.write('"_get_type": lambda: {}, '.format(fqn(a.type)))
+                    if textx_isinstance(a.type, mm["Enum"]):
+                        f.write('"_get_underlying_type": lambda: {}, '.format(fqn(a.type.type)))
                     if hasattr(a, "type") and a.type.name == "char":
                         f.write('"_has_char_content":True,')
                     else:

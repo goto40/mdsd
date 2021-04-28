@@ -18,11 +18,13 @@ import big_example.Headers6_noheader
 import big_example.FixpointExample
 import big_example.FixpointExample2
 
-from mdsd.item.io import copy_to_mem, count_bytes
+from mdsd.item.io import copy_to_mem, count_bytes, copy_from_mem
 from os.path import join, dirname,exists
 from mdsd.item.init_values import init_max_values, init_default_values, init_min_values
 import os
 import shutil
+from io import StringIO
+from mdsd.item.printto import printto
 
 Types= [
     big_example.Header.Header,
@@ -66,7 +68,7 @@ def test_io_bin_output():
         init_max_values(o)
         return o
 
-    def create_and_save(t, func, fname):
+    def create_and_save_and_reload(t, func, fname):
         obj = t()
         obj = func(obj)
         n = count_bytes(obj)
@@ -78,10 +80,25 @@ def test_io_bin_output():
             'output',
             name+f"_{fname}.bin"
         )
+        with StringIO() as f:
+            printto(obj,f)
+            text_version = f.getvalue()
+
         with open(filename,"wb") as f:
             f.write(mem)
+        with open(filename,"rb") as f:
+            read_back_data = bytearray(f.read())
+            read_back_obj = t()
+            copy_from_mem(read_back_data, read_back_obj)
+            with StringIO() as f2:
+                printto(obj, f2)
+                text_version = f2.getvalue()
+                read_back_text_version = f2.getvalue()
+
+        assert len(text_version)>0
+        assert text_version == read_back_text_version
 
     for t in Types:
-        create_and_save(t, init_default, "default")
-        create_and_save(t, init_min, "min")
-        create_and_save(t, init_max, "max")
+        create_and_save_and_reload(t, init_default, "default")
+        create_and_save_and_reload(t, init_min, "min")
+        create_and_save_and_reload(t, init_max, "max")

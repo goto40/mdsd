@@ -9,19 +9,32 @@ class copy_from_mem_visitor:
         self.pos = 0
 
     def visit_scalar(self, struct, attr, meta):
+        if meta["_is_embedded"]:
+            return
         t = meta["_get_type"]()
+        real_t = meta["_get_type"]()
+        if meta["_is_enum"]:
+            t = meta["_get_underlying_type"]()
+        else:
+            t = real_t
         n = np.dtype(t).itemsize
         if self.pos + n > len(self.mem):
             raise Exception("out of mem")
         value = np.frombuffer(self.mem, t, 1, self.pos)[0]
-        setattr(struct, attr, value)
+        setattr(struct, attr, real_t(value))
         self.pos += n
 
     def visit_scalar_struct(self, struct, attr, meta):
         accept(getattr(struct, attr), self)
 
     def visit_array(self, struct, attr, meta):
-        t = meta["_get_type"]()
+        if meta["_is_embedded"]:
+            return
+        real_t = meta["_get_type"]()
+        if meta["_is_enum"]:
+            t = meta["_get_underlying_type"]()
+        else:
+            t = real_t
         d = meta["_get_dim"](struct)
         n = np.dtype(t).itemsize
         if self.pos + d * n > len(self.mem):
@@ -29,7 +42,7 @@ class copy_from_mem_visitor:
         value = np.reshape(
             np.frombuffer(self.mem, t, d, self.pos), meta["_get_dim_nd"](struct)
         )
-        setattr(struct, attr, value)
+        setattr(struct, attr, np.array(value, dtype=real_t))
         self.pos += d * n
 
     def visit_array_struct(self, struct, attr, meta):
@@ -48,9 +61,13 @@ class copy_to_mem_visitor:
             return
         t = meta["_get_type"]()
         n = np.dtype(t).itemsize
+        if meta["_is_enum"]:
+            n = np.dtype(meta["_get_underlying_type"]()).itemsize
         if self.pos + n > len(self.mem):
             raise Exception("out of mem")
-        value = np.array(getattr(struct, attr))  # , dtype=meta['_get_type']()
+        value = getattr(struct, attr)  # , dtype=meta['_get_type']()
+        if meta["_is_enum"]:
+            value = value.value
         b = value.tobytes()
         assert len(b) == n
         self.mem[self.pos : self.pos + n] = b
@@ -65,10 +82,16 @@ class copy_to_mem_visitor:
         t = meta["_get_type"]()
         d = meta["_get_dim"](struct)
         n = np.dtype(t).itemsize
+        if meta["_is_enum"]:
+            n = np.dtype(meta["_get_underlying_type"]()).itemsize
         if self.pos + d * n > len(self.mem):
             raise Exception("out of mem")
         value = getattr(struct, attr)
-        self.mem[self.pos : self.pos + d * n] = value.tobytes()
+        if meta["_is_enum"]:
+            value = np.array(value, dtype=meta["_get_underlying_type"]())
+        b = value.tobytes()
+        assert len(b) == d * n
+        self.mem[self.pos : self.pos + d * n] = b
         self.pos += d * n
 
     def visit_array_struct(self, struct, attr, meta):
