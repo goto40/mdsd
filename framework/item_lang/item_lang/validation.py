@@ -198,18 +198,30 @@ def check_Property(p):
                 len(prop_value) == 1, p, "only exactly one char is allowed as default"
             )
 
-    if p.definition.name in ["fixpointLsbValue", "fixpointMsbValue", "fixpointOffsetValue"]:
+    if p.definition.name in [
+        "fixpointLsbValue",
+        "fixpointMsbValue",
+        "fixpointOffsetValue",
+    ]:
         a = p.parent  # must be an attribute (restriction of fixpoint pros)
         textx_assert(
-            not (has_property(a,'fixpointLsbValue') and has_property(a,'fixpointMsbValue')),
-            a, "specify either MSB or LSB (and not both at the same time)")
+            not (
+                has_property(a, "fixpointLsbValue")
+                and has_property(a, "fixpointMsbValue")
+            ),
+            a,
+            "specify either MSB or LSB (and not both at the same time)",
+        )
         textx_assert(
-            has_property(a,'fixpointLsbValue') or has_property(a,'fixpointMsbValue'),
-            p, "specify either MSB or LSB (you need at least one of them for fixpoint values)")
+            has_property(a, "fixpointLsbValue") or has_property(a, "fixpointMsbValue"),
+            p,
+            "specify either MSB or LSB (you need at least one of them for fixpoint values)",
+        )
         textx_assert(
-            a.type.internaltype in ["UINT","INT"],
-            a, "fixpoint meta information only possible with integral values")
-
+            a.type.internaltype in ["UINT", "INT"],
+            a,
+            "fixpoint meta information only possible with integral values",
+        )
 
 
 def check_ScalarAttribute(a):

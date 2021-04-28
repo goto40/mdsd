@@ -19,7 +19,7 @@ from item_lang.properties import (
     has_property,
     get_property_type,
     has_fixpoint,
-    get_fixpoint_LSB_value
+    get_fixpoint_LSB_value,
 )
 
 
@@ -47,7 +47,9 @@ from functools import reduce
             i = struct_obj
 
             for c in i.constant_entries:
-                f.write(f"{c.name} = {fqn(c.type)}({c.value.render_formula(**fp(i))})\n")
+                f.write(
+                    f"{c.name} = {fqn(c.type)}({c.value.render_formula(**fp(i))})\n"
+                )
 
             f.write("\n@dataclass(eq=False)\n")
             f.write("class {}:\n".format(i.name))
@@ -134,8 +136,10 @@ from functools import reduce
                             if textx_isinstance(a.type, mm["Enum"]):
                                 f.write(
                                     "    {} : {} = {}.{}\n".format(
-                                        a.name, fqn(a.type), fqn(a.type),
-                                        a.type.enum_entries[0].name
+                                        a.name,
+                                        fqn(a.type),
+                                        fqn(a.type),
+                                        a.type.enum_entries[0].name,
                                     )
                                 )
                             else:
@@ -191,18 +195,26 @@ from functools import reduce
                         if has_fixpoint(a):
                             f.write(f"    @property\n")
                             f.write(f"    def {'item_fixpoint_'+a.name}(self):\n")
-                            f.write(f"        return int2float_fixpoint_value(self, '{a.name}', self.{a.name})\n")
+                            f.write(
+                                f"        return int2float_fixpoint_value(self, '{a.name}', self.{a.name})\n"
+                            )
                             f.write(f"    @{'item_fixpoint_'+a.name}.setter\n")
                             f.write(f"    def {'item_fixpoint_'+a.name}(self, v):\n")
-                            f.write(f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n")
+                            f.write(
+                                f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n"
+                            )
                     elif textx_isinstance(a, mm["ArrayAttribute"]):
                         if has_fixpoint(a):
                             f.write(f"    @property\n")
                             f.write(f"    def {'item_fixpoint_'+a.name}(self):\n")
-                            f.write(f"        return FixpointArrayLike(self, '{a.name}')\n")
+                            f.write(
+                                f"        return FixpointArrayLike(self, '{a.name}')\n"
+                            )
                             f.write(f"    @{'item_fixpoint_'+a.name}.setter\n")
                             f.write(f"    def {'item_fixpoint_'+a.name}(self, v):\n")
-                            f.write(f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n")
+                            f.write(
+                                f"        self.{a.name} = float2int_fixpoint_value(self, '{a.name}', v)\n"
+                            )
 
             f.write("\n    def __post_init__(self):\n")
             f.write("        init_default_values(self)\n")
@@ -294,7 +306,11 @@ from functools import reduce
                     f.write(f'"_is_embedded":{tf(a.is_embedded())},')
                     f.write('"_get_type": lambda: {}, '.format(fqn(a.type)))
                     if textx_isinstance(a.type, mm["Enum"]):
-                        f.write('"_get_underlying_type": lambda: {}, '.format(fqn(a.type.type)))
+                        f.write(
+                            '"_get_underlying_type": lambda: {}, '.format(
+                                fqn(a.type.type)
+                            )
+                        )
                     if hasattr(a, "type") and a.type.name == "char":
                         f.write('"_has_char_content":True,')
                     else:
@@ -334,7 +350,11 @@ from functools import reduce
                     f.write(f'"_is_embedded":{tf(a.is_embedded())},')
                     f.write('"_get_type": lambda: {}, '.format(fqn(a.type)))
                     if textx_isinstance(a.type, mm["Enum"]):
-                        f.write('"_get_underlying_type": lambda: {}, '.format(fqn(a.type.type)))
+                        f.write(
+                            '"_get_underlying_type": lambda: {}, '.format(
+                                fqn(a.type.type)
+                            )
+                        )
                     if hasattr(a, "type") and a.type.name == "char":
                         f.write('"_has_char_content":True,')
                     else:

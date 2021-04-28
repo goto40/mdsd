@@ -8,4 +8,4 @@ def test_regression_instance_check():
     b = Headers1()
     assert id(a.header) != id(a.header_extra)
     assert id(a.header) != id(b.header)  # this can fail, if the "default" value
-                                         # in dataclasses are not created by a factory
+    # in dataclasses are not created by a factory

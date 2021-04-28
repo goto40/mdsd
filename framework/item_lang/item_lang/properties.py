@@ -264,7 +264,7 @@ def get_fixpoint_LSB_value(a):
     if has_property(a, "fixpointLsbValue"):
         return get_property(a, "fixpointLsbValue")
     elif has_property(a, "fixpointMsbValue"):
-        return get_property(a, "fixpointMsbValue")/(2**(a.type.bits-1))  # TBC
+        return get_property(a, "fixpointMsbValue") / (2 ** (a.type.bits - 1))  # TBC
 
 
 def get_fixpoint_offset_value(a):

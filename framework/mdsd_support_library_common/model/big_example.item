@@ -38,7 +38,7 @@ struct Point {
 }
 
 struct Polygon {
-    scalar n: built_in.uint32
+    scalar n: built_in.uint32 (.maxValue=7)
     array p: Point[n]
     array info: built_in.char[256] (.defaultStringValue="your favorite polygon")
 }
@@ -85,7 +85,7 @@ struct EmbeddedArrayDim2 {
     scalar container1: built_in.uint64
     embedded scalar s2_1: built_in.uint2
     embedded array a3_1: built_in.uint3[16]
-    embedded scalar s14_1: built_in.uint14
+    embedded scalar s14_1: built_in.uint14 (.minValue=1, .maxValue=7)
     array ok: built_in.float[s2_1]
     scalar container2: built_in.uint64
     embedded scalar s2_2: built_in.sint2

@@ -36,7 +36,9 @@ def generate_cpp_enum(f, e):
     for ee in e.enum_entries:
         f.write(f'  {elseif}(txt == "{ee.name}") {{ ret = {e.name}::{ee.name}; }}\n')
         elseif = "else if"
-    f.write(f'  else {{ throw std::runtime_error(std::string("unknown {e.name}: ")+txt); }}\n')
+    f.write(
+        f'  else {{ throw std::runtime_error(std::string("unknown {e.name}: ")+txt); }}\n'
+    )
     f.write("  return i;\n")
     f.write("}\n")
 

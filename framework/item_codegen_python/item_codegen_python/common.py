@@ -4,6 +4,7 @@ from item_lang.properties import get_property_type, get_property
 from item_lang.common import get_package_names_of_obj
 from item_lang.metamodel_formula import FormulaBase
 
+
 def module_name(obj):
     return ".".join(get_package_names_of_obj(obj) + [obj.name])
 
@@ -65,10 +66,13 @@ def get_variant_types(a):
 def _id2code(id):
     return id.render_formula(**fp(None))
 
+
 def get_variant_type_map(a):
     return (
         "{"
-        + ",".join(map(lambda m: "{}:".format(_id2code(m.id)) + fqn(m.type), a.mappings))
+        + ",".join(
+            map(lambda m: "{}:".format(_id2code(m.id)) + fqn(m.type), a.mappings)
+        )
         + "}"
     )
 

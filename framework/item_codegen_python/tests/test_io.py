@@ -19,14 +19,14 @@ import big_example.FixpointExample
 import big_example.FixpointExample2
 
 from mdsd.item.io import copy_to_mem, count_bytes, copy_from_mem
-from os.path import join, dirname,exists
+from os.path import join, dirname, exists
 from mdsd.item.init_values import init_max_values, init_default_values, init_min_values
 import os
 import shutil
 from io import StringIO
 from mdsd.item.printto import printto
 
-Types= [
+Types = [
     big_example.Header.Header,
     big_example.Point.Point,
     big_example.Polygon.Polygon,
@@ -50,7 +50,7 @@ Types= [
 
 
 def test_io_bin_output():
-    path = join(dirname(__file__), 'output')
+    path = join(dirname(__file__), "output")
     if exists(path):
         shutil.rmtree(path)
     os.mkdir(path)
@@ -73,25 +73,17 @@ def test_io_bin_output():
         obj = func(obj)
         n = count_bytes(obj)
         mem = bytearray(n)
-        copy_to_mem(obj,mem)
+        copy_to_mem(obj, mem)
         name = obj.__class__.__name__
-        filename = join(
-            dirname(__file__),
-            'output',
-            name+f"_{fname}.bin"
-        )
-        filename_txt = join(
-            dirname(__file__),
-            'output',
-            name+f"_{fname}.txt"
-        )
+        filename = join(dirname(__file__), "output", name + f"_{fname}.bin")
+        filename_txt = join(dirname(__file__), "output", name + f"_{fname}.txt")
         with StringIO() as f:
-            printto(obj,f)
+            printto(obj, f)
             text_version = f.getvalue()
 
-        with open(filename,"wb") as f:
+        with open(filename, "wb") as f:
             f.write(mem)
-        with open(filename,"rb") as f:
+        with open(filename, "rb") as f:
             read_back_data = bytearray(f.read())
             read_back_obj = t()
             copy_from_mem(read_back_data, read_back_obj)
@@ -99,10 +91,10 @@ def test_io_bin_output():
                 printto(obj, f2)
                 text_version = f2.getvalue()
                 read_back_text_version = f2.getvalue()
-        with open(filename_txt,"w") as f:
+        with open(filename_txt, "w") as f:
             f.write(text_version)
 
-        assert len(text_version)>0
+        assert len(text_version) > 0
         assert text_version == read_back_text_version
 
     for t in Types:

@@ -4,9 +4,8 @@ from item_lang.properties import (
     get_all_possible_properties,
     has_property,
     get_fixpoint_LSB_value,
-    get_fixpoint_offset_value,
-    has_fixpoint
-)
+    has_fixpoint,
+)  # TODO: why is the offset value function not used?
 from item_lang.common import (
     get_referenced_elements_of_struct,
     get_start_end_bit,
@@ -117,7 +116,8 @@ def _get_ctor_body(i):
     for a in i.attributes:
         if a.is_embedded():
             if a.is_array():
-                res += f"for(size_t __idx=0;__idx<_p_{a.name}.size();__idx++) {{ {a.name}(__idx, _p_{a.name}[__idx]); }} "
+                res += f"for(size_t __idx=0;__idx<_p_{a.name}.size();__idx++) "\
+                       f"{{ {a.name}(__idx, _p_{a.name}[__idx]); }} "
             else:
                 res += f"{a.name}(_p_{a.name}); "
         elif not a.is_container():
@@ -337,9 +337,17 @@ def generate_cpp_struct(f, i):
         if "fixpointLsbValue" in pdefs:
             if has_fixpoint(a):
                 f.write("      static constexpr bool __is_fixpoint = true;\n")
-                f.write(f"      static constexpr double __fixpointLsbValue = {get_fixpoint_LSB_value(a)};\n")
-                f.write(f"      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) {{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixpointLsbValue)); }}\n")
-                f.write(f"      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) {{ return static_cast<FLOAT>(i)*__fixpointLsbValue; }}\n")
+                f.write(
+                    f"      static constexpr double __fixpointLsbValue = {get_fixpoint_LSB_value(a)};\n"
+                )
+                f.write(
+                    f"      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) "
+                    f"{{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixpointLsbValue)); }}\n"
+                )
+                f.write(
+                    f"      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) "
+                    f"{{ return static_cast<FLOAT>(i)*__fixpointLsbValue; }}\n"
+                )
             else:
                 f.write("      static constexpr bool __is_fixpoint = false;\n")
 

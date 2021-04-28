@@ -40,7 +40,7 @@ def test_fixpoint2_arrays():
 
 def test_fixpoint3_arrays():
     x = FixpointExample2()
-    assert x.md.shape == (2,3)
-    x.md = np.array([[20,21,22],[30,31,32]])
+    assert x.md.shape == (2, 3)
+    x.md = np.array([[20, 21, 22], [30, 31, 32]])
     complete_array = x.item_fixpoint_md
-    assert complete_array[0,0] == pytest.approx(2.0)
+    assert complete_array[0, 0] == pytest.approx(2.0)

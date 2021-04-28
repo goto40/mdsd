@@ -41,7 +41,7 @@ class VariantAttribute(object):
         return False
 
     def is_array(self):
-        return False;
+        return False
 
     def __str__(self):
         return self.parent.name + "." + self.name
@@ -72,7 +72,7 @@ class ScalarAttribute(object):
         return result
 
     def is_array(self):
-        return False;
+        return False
 
     def __str__(self):
         return self.parent.name + "." + self.name
@@ -173,7 +173,7 @@ class ArrayAttribute(object):
         return self.embedded
 
     def is_array(self):
-        return True;
+        return True
 
     def __str__(self):
         return self.parent.name + "." + self.name
