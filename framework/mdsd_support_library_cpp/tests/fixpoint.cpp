@@ -28,6 +28,7 @@ TEST_CASE( "basic fixpoint test", "[fixpoint_tests]" ) {
                 u4 = 1.3
                 s4 = -1.4
                 a4 = [-1.3 1.2]
+                md = [0.1 0.2 0.3 0.4 0.5 0.6]
             }
         )"};
         mdsd::scan(i, s);
@@ -42,7 +43,7 @@ TEST_CASE( "basic fixpoint test", "[fixpoint_tests]" ) {
 
         i = big_example::FixpointExample2(
             1, -2, {-3, 4},
-            5, -6, {-7, 8}
+            5, -6, {-7, 8}, {1,2,3,4,5,6}
         );
 
         CHECK(i.u1 == 1);
