@@ -77,5 +77,7 @@ def test_io_bin_output():
             read_back_text_version = f2.getvalue()
     assert read_back_obj.header.length > 0
     assert read_back_obj.header.length == len(read_back_data)
+    # next line is fo rbugfixing (if the model change, the value changes...)
+    # assert read_back_obj.header.length == 342
     assert read_back_obj.header.length == compute_length(read_back_obj)
     assert "ON" in read_back_text_version

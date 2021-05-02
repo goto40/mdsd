@@ -117,17 +117,25 @@ class count_bytes_visitor:
         self.count = 0
 
     def visit_scalar(self, struct, attr, meta):
+        if meta["_is_embedded"]:
+            return
         t = meta["_get_type"]()
         n = np.dtype(t).itemsize
+        if meta["_is_enum"]:
+            n = np.dtype(meta["_get_underlying_type"]()).itemsize
         self.count += n
 
     def visit_scalar_struct(self, struct, attr, meta):
         accept(getattr(struct, attr), self)
 
     def visit_array(self, struct, attr, meta):
+        if meta["_is_embedded"]:
+            return
         t = meta["_get_type"]()
         d = meta["_get_dim"](struct)
         n = np.dtype(t).itemsize
+        if meta["_is_enum"]:
+            n = np.dtype(meta["_get_underlying_type"]()).itemsize
         self.count += d * n
 
     def visit_array_struct(self, struct, attr, meta):
