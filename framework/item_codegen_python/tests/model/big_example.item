@@ -28,8 +28,8 @@ enum ABC : built_in.int2 (.description="test") {
 
 struct Header {
     constant three: built_in.uint32 = 6/2
-    scalar id: TypeSelector (.defaultValue=TRIANGLE, .is_message_id_field=true)
-    scalar length: built_in.uint32 (.maxValue=MyOtherConstants.maxlen)
+    scalar id: TypeSelector (.defaultValue=POLY, .is_message_id_field=true)
+    scalar length: built_in.uint32 (.is_message_length_field=true)
 }
 
 struct Point {
@@ -38,7 +38,7 @@ struct Point {
 }
 
 struct Polygon {
-    scalar n: built_in.uint32 (.maxValue=7)
+    scalar n: built_in.uint32 (.maxValue=7, .defaultValue=3)
     array p: Point[n]
     array info: built_in.char[256] (.defaultStringValue="your favorite polygon")
 }
@@ -166,6 +166,12 @@ struct FixpointExample2 {
 }
 
 struct AllInOne {
+    scalar header: Header
+    variant payload: header.id -> {
+        POINT: Point
+        TypeSelector.POLY: Polygon
+        big_example.TypeSelector.TRIANGLE: big_example.Triangle
+   }
     scalar fixpoint_u32:                    built_in.uint32       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=21)
     scalar fixpoint_s16:                    built_in.sint16       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-21)
     array fixpoint_array_s32:               built_in.sint32[2]    (.fixpointLsbValue=0.01, .fixpointOffsetValue=100, .defaultValue=11)

@@ -51,15 +51,28 @@ def test_io_bin_output():
             read_back_obj = t()
             copy_from_mem(read_back_data, read_back_obj)
             with StringIO() as f2:
-                printto(obj, f2)
+                printto(read_back_obj, f2)
                 read_back_text_version = f2.getvalue()
         with open(filename_txt, "w") as f:
             f.write(text_version)
 
         assert len(text_version) > 0
         assert text_version == read_back_text_version
+        return text_version
 
     for t in get_all_test_structs():
         create_and_save_and_reload(t, init_default, "default")
         create_and_save_and_reload(t, init_min, "min")
         create_and_save_and_reload(t, init_max, "max")
+
+    # individual test
+    from big_example.AllInOne import AllInOne
+    filename = join(dirname(__file__), "output", "AllInOne_default.bin")
+    with open(filename, "rb") as f:
+        read_back_data = bytearray(f.read())
+        read_back_obj = AllInOne()
+        copy_from_mem(read_back_data, read_back_obj)
+        with StringIO() as f2:
+            printto(read_back_obj, f2)
+            text_version = f2.getvalue()
+    assert "ON" in text_version

@@ -24,3 +24,5 @@ from enum import Enum
                 f.write(f"    {ev.name} = {t}({v})\n")
             f.write("    def __repr__(self):\n")
             f.write("        return self.name\n")
+            f.write("    def __str__(self):\n")
+            f.write("        return self.name\n")
