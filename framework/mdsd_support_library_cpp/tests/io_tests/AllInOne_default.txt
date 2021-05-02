@@ -1,0 +1,29 @@
+AllInOne
+    Header
+      id=POLY
+      length=398
+  version=1
+    Polygon
+      n=3
+        Point
+          x=0.0
+          y=0.0
+        Point
+          x=0.0
+          y=0.0
+        Point
+          x=0.0
+          y=0.0
+      info_as_str="your favorite polygon"
+  fixpoint_u32=102.1
+  fixpoint_s16=97.9
+  fixpoint_array_s32=[ 100.11 100.11 ]
+  fixpoint_u10_embedded=102.1
+  fixpoint_s10_embedded=97.9
+  fixpoint_array_s6=[ 100.11 100.11 ]
+  fixpoint_marray_s32=[ 99.89 99.89 ]
+  embedded_enum_on=ON
+  embedded_enum_off=OFF
+  embedded_enum_array=[ OFF OFF OFF ]
+  embedded_minus22=-22
+  embedded_plus22=22

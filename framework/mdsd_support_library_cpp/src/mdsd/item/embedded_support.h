@@ -52,6 +52,22 @@ constexpr auto makeCRef(TGetter _getter) {
   return CRef<T,TGetter>{_getter};
 }
 
+template<class ArrayRefType>
+struct ArrayRefIterator {
+  ArrayRefType& a;
+  size_t idx;
+
+  ArrayRefIterator(ArrayRefType &_a, size_t _idx=0) : a{_a}, idx{_idx} {}
+
+  ArrayRefIterator& operator++() {
+    idx++;
+    return *this;
+  }
+  bool operator!=(const ArrayRefIterator &x) { return idx != x.idx; }
+  auto operator*() { return a[idx]; }
+  auto operator*() const { return a[idx]; }
+};
+
 template<class T,class TGetter, class TSetter>
 struct ArrayRef {
   TGetter getter;
@@ -64,7 +80,9 @@ struct ArrayRef {
       [&setter=setter,idx](T x){ setter(idx,x); }
     );
   }
-  size_t size() const { return sz; } 
+  size_t size() const { return sz; }
+  auto begin() { return ArrayRefIterator{*this, 0}; }
+  auto end() { return ArrayRefIterator{*this, sz}; }
 };
 
 template<class T,class TGetter>
@@ -78,6 +96,8 @@ struct CArrayRef {
     );
   }
   size_t size() const { return sz; } 
+  const auto begin() { return ArrayRefIterator{*this, 0}; }
+  const auto end() { return ArrayRefIterator{*this, sz}; }
 };
 
 template<class T,class TGetter, class TSetter>

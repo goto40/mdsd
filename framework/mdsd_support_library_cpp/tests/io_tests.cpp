@@ -3,9 +3,11 @@
 #include "items/VariantExample.h"
 #include "items/Polygon.h"
 #include "big_example/MultiMessage.h"
+#include "big_example/AllInOne.h"
 #include "mdsd/item_support.h"
 #include "mdsd/item_io.h"
 #include "mdsd/virtual_struct.h"
+#include <fstream>
 
 using namespace items;
 using namespace mdsd;
@@ -93,7 +95,7 @@ TEST_CASE( "virtual struct io", "[io_tests]" ) {
   REQUIRE( q.data.header.n == p.data.header.n );
 }
 
-TEST_CASE( "file io", "[io_tests]" ) {
+TEST_CASE( "file io, embedded1", "[io_tests]" ) {
   std::array<std::byte, 10000> mem;
   mdsd::Struct<big_example::MultiMessage> p;
   p.data.header.id = big_example::TypeSelector::POLY;
@@ -109,3 +111,34 @@ TEST_CASE( "file io", "[io_tests]" ) {
   std::cout << "-----IO-----------\n";
 }
 
+TEST_CASE( "file io, embedded2", "[io_tests]" ) {
+  std::array<std::byte, 10000> mem;
+  mdsd::Struct<big_example::MultiMessage> p;
+  p.data.header.id = big_example::TypeSelector::POLY;
+  p.adjust_array_sizes_and_variants();
+  std::get<big_example::Polygon>(p.data.payload).n = 4;
+  p.adjust_array_sizes_and_variants();
+  p.data.code(44);
+  REQUIRE( p.data.code() == 44);
+  p.data.code(-33);
+  REQUIRE( p.data.code() == -33);
+  std::cout << "-----IO-----------\n";
+  print(p.data,std::cout);
+  std::cout << "-----IO-----------\n";
+}
+
+TEST_CASE( "file_io_AllInOne_default", "[io_tests]" ) {
+  std::vector<std::byte> mem;
+  std::ifstream f("tests/io_tests/AllInOne_default.bin", std::ios::binary);
+  REQUIRE(f);
+  while(f) {
+    char c;
+    f.read(c,1);
+    if (f) mem.push_back(static_cast<std::byte>(c));
+  }
+  big_example::AllInOne obj;
+  mdsd::copy_from_mem(mem.data(), mem.size(), obj);
+  std::cout << "-----IO AllInOne_default.bin -----------\n";
+  print(obj,std::cout);
+  std::cout << "-----IO AllInOne_default.bin-----------\n";
+}
