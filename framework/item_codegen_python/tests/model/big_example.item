@@ -166,12 +166,16 @@ struct FixpointExample2 {
 }
 
 struct AllInOne {
+    // header (inner structure with unique properties, enums, variant with poly inside/dyn length)
     scalar header: Header
-    variant payload: header.id -> {
+    scalar version : built_in.uint32 (.maxValue=1, .defaultValue=1)
+    if (version>0) variant payload: header.id -> {
         POINT: Point
         TypeSelector.POLY: Polygon
         big_example.TypeSelector.TRIANGLE: big_example.Triangle
-   }
+    }
+
+    // fixpoint stuff (normal and embedded)
     scalar fixpoint_u32:                    built_in.uint32       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=21)
     scalar fixpoint_s16:                    built_in.sint16       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-21)
     array fixpoint_array_s32:               built_in.sint32[2]    (.fixpointLsbValue=0.01, .fixpointOffsetValue=100, .defaultValue=11)
@@ -180,9 +184,12 @@ struct AllInOne {
     embedded scalar fixpoint_s10_embedded:  built_in.sint10       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-21)
     embedded array fixpoint_array_s6:       built_in.sint6[2]     (.fixpointLsbValue=0.01, .fixpointOffsetValue=100, .defaultValue=11)
     array fixpoint_marray_s32:              built_in.sint32[2][3] (.fixpointLsbValue=0.01, .fixpointOffsetValue=100, .defaultValue=-11)
+
+    // embedded enum and uint, sint
     scalar c5:                              built_in.uint32
     embedded scalar embedded_enum_on:       OnOff                 (.defaultValue=ON)
     embedded scalar embedded_enum_off:      OnOff                 (.defaultValue=OFF)
     embedded array embedded_enum_array:     OnOff[3]              (.defaultValue=OFF)
-    embedded scalar reserved5:              built_in.uint27
+    embedded scalar embedded_minus22:       built_in.sint17       (.defaultValue=-22)
+    embedded scalar embedded_plus22:        built_in.uint10       (.defaultValue=22)
 }
