@@ -133,7 +133,7 @@ TEST_CASE( "file_io_AllInOne_default", "[io_tests]" ) {
   REQUIRE(f);
   while(f) {
     char c;
-    f.read(c,1);
+    f.read(&c,1);
     if (f) mem.push_back(static_cast<std::byte>(c));
   }
   big_example::AllInOne obj;

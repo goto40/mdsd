@@ -350,6 +350,8 @@ def generate_cpp_struct(f, i):
                 )
             else:
                 f.write("      static constexpr bool __is_fixpoint = false;\n")
+        else:
+            f.write("      static constexpr bool __is_fixpoint = false;\n")
 
         for pname in pdefs:
             if has_property(a, pname):

@@ -42,9 +42,15 @@ struct PrintVisitor {
   template<class META, class T>
   void visit_scalar(T& x) {
     static_assert(!META::__is_struct);
+    if constexpr (META::__is_container) return;
     if (!suppress_first_name) stream << std::string(spaces, ' ') << META::__name() << " = ";
     else suppress_first_name = false;
-    details::print_to<META>(stream, x);
+    if constexpr (META::__is_fixpoint) {
+      stream << META::__integral2float(x);
+    }
+    else {
+      details::print_to<META>(stream, x);
+    }
     stream << "\n";
   }
   template<class META, class T>
@@ -60,7 +66,12 @@ struct PrintVisitor {
     stream << "[";
     for (size_t i=0;i<x.size();i++) {
       stream << " ";
-      details::print_to<META>(stream, x[i]);
+      if constexpr (META::__is_fixpoint) {
+        stream << META::__integral2float(x[i]);
+      }
+      else {
+        details::print_to<META>(stream, x[i]);
+      }
     }
     stream << " ]\n";
   }
