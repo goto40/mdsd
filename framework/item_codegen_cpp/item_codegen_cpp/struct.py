@@ -346,7 +346,8 @@ def generate_cpp_struct(f, i):
                 )
                 f.write(
                     f"      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) "
-                    f"{{ return static_cast<{fqn(a.type)}>(std::llround((f-__fixpointOffsetValue)/__fixpointLsbValue)); }}\n"
+                    f"{{ return static_cast<{fqn(a.type)}>(std::llround((f-__fixpointOffsetValue)"
+                    f"/__fixpointLsbValue)); }}\n"
                 )
                 f.write(
                     f"      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) "
