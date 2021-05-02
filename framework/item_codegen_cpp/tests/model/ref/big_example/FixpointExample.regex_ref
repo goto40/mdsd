@@ -1,8 +1,8 @@
     struct u1 {
       static constexpr bool __is_fixpoint = true;
       static constexpr double __fixpointLsbValue = 0.1;
-      template<class FLOAT=double> static constexpr uint32_t __float2integral\(FLOAT f\) \{ return static_cast<uint32_t>\(std::llround\(f/__fixpointLsbValue\)\); \}
-      template<class FLOAT=double> static constexpr FLOAT __integral2float\(uint32_t i\) \{ return static_cast<FLOAT>\(i\)\*__fixpointLsbValue; \}
+      template<class FLOAT=double> static constexpr uint32_t __float2integral\(FLOAT f\) \{ return static_cast<uint32_t>\(std::llround\(\(f-__fixpointOffsetValue\)/__fixpointLsbValue\)\); \}
+      template<class FLOAT=double> static constexpr FLOAT __integral2float\(uint32_t i\) \{ return static_cast<FLOAT>\(i\)\*__fixpointLsbValue\+__fixpointOffsetValue; \}
       static constexpr bool __has_fixpointLsbValue = true;
       static constexpr double fixpointLsbValue\(\) { return double{ 0.1 };}
       static constexpr bool __has_fixpointMsbValue = false;

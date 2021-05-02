@@ -1,5 +1,4 @@
 [anywhere] #include "big_example/TypeSelector.h"
-[anywhere] #include "big_example/MyOtherConstants.h"
 
 struct Header {
   big_example::TypeSelector id = {};

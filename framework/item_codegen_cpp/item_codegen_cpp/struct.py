@@ -4,6 +4,7 @@ from item_lang.properties import (
     get_all_possible_properties,
     has_property,
     get_fixpoint_LSB_value,
+    get_fixpoint_offset_value,
     has_fixpoint,
 )  # TODO: why is the offset value function not used?
 from item_lang.common import (
@@ -341,12 +342,15 @@ def generate_cpp_struct(f, i):
                     f"      static constexpr double __fixpointLsbValue = {get_fixpoint_LSB_value(a)};\n"
                 )
                 f.write(
+                    f"      static constexpr double __fixpointOffsetValue = {get_fixpoint_offset_value(a)};\n"
+                )
+                f.write(
                     f"      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) "
-                    f"{{ return static_cast<{fqn(a.type)}>(std::llround(f/__fixpointLsbValue)); }}\n"
+                    f"{{ return static_cast<{fqn(a.type)}>(std::llround((f-__fixpointOffsetValue)/__fixpointLsbValue)); }}\n"
                 )
                 f.write(
                     f"      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) "
-                    f"{{ return static_cast<FLOAT>(i)*__fixpointLsbValue; }}\n"
+                    f"{{ return static_cast<FLOAT>(i)*__fixpointLsbValue+__fixpointOffsetValue; }}\n"
                 )
             else:
                 f.write("      static constexpr bool __is_fixpoint = false;\n")
