@@ -75,7 +75,8 @@ class ArrayLike:
         assert len(args) >= 2
         value = args[-1]
         idx = args[0:-1]
-        assert isinstance(value, self.mytype)
+        mytype = self.mytype
+        assert isinstance(value, mytype)
         if len(idx) == 1:
             idx0 = idx[0]
         else:

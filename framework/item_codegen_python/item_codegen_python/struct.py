@@ -114,7 +114,7 @@ from functools import reduce
                             f"            self.{c.name} = set_embedded_in_uint(v, self.{c.name},[{start_end_bit[0]}-idx*{rawtype.bits},{start_end_bit[0]}+1-(idx+1)*{rawtype.bits}])\n"
                         )
                         f.write(
-                            f"        return ArrayLike( getter=getter, setter=setter, mytype={fqn(rawtype)}, shape={i.name}._meta['{a.name}']['_get_dim_nd'](self) )\n"
+                            f"        return ArrayLike( getter=getter, setter=setter, mytype={fqn(a.type)}, shape={i.name}._meta['{a.name}']['_get_dim_nd'](self) )\n"
                         )
                         f.write(f"\n")
                         f.write(f"    @{a.name}.setter\n")
@@ -374,6 +374,8 @@ from functools import reduce
                         f.write(f'"_fixpointOffsetValue": {get_fixpoint_offset_value(a)},')
                     else:
                         f.write(f'"_is_fixpoint":False,')
+                else:
+                    f.write(f'"_is_fixpoint":False,')
 
                 for pname in pdefs:
                     if has_property(a, pname):

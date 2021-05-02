@@ -22,3 +22,5 @@ from enum import Enum
             for ev in enum_obj.enum_entries:
                 v = ev.value.render_formula(**fp(enum_obj))
                 f.write(f"    {ev.name} = {t}({v})\n")
+            f.write("    def __repr__(self):\n")
+            f.write("        return self.name\n")
