@@ -20,6 +20,7 @@ from item_lang.properties import (
     get_property_type,
     has_fixpoint,
     get_fixpoint_LSB_value,
+    get_fixpoint_offset_value,
 )
 
 
@@ -288,6 +289,7 @@ from functools import reduce
                     f.write('"_is_embedded":False,')
                     f.write('"_get_type": lambda: ({}), '.format(get_variant_types(a)))
                 elif textx_isinstance(a, mm["ScalarAttribute"]):
+                    f.write(f'"_is_container":{a.is_container()},')
                     f.write('"_is_scalar":True,')
                     f.write('"_is_variant":False,')
                     f.write('"_is_array":False,')
@@ -367,10 +369,11 @@ from functools import reduce
 
                 if "fixpointLsbValue" in pdefs:
                     if has_fixpoint(a):
-                        f.write(f'"__is_fixpoint":True,')
-                        f.write(f'"__fixpointLsbValue": {get_fixpoint_LSB_value(a)},')
+                        f.write(f'"_is_fixpoint":True,')
+                        f.write(f'"_fixpointLsbValue": {get_fixpoint_LSB_value(a)},')
+                        f.write(f'"_fixpointOffsetValue": {get_fixpoint_offset_value(a)},')
                     else:
-                        f.write(f'"__is_fixpoint":False,')
+                        f.write(f'"_is_fixpoint":False,')
 
                 for pname in pdefs:
                     if has_property(a, pname):

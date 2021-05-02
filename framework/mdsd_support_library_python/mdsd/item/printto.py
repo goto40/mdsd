@@ -9,13 +9,20 @@ class print_visitor:
         self.indent = indent
 
     def visit_scalar(self, struct, attr, meta):
-        self.f.write(" " * self.indent + f"{attr}={getattr(struct, attr)}\n")
+        if not meta['_is_container']:
+            if meta['_is_fixpoint']:
+                self.f.write(" " * self.indent + f"{attr}={getattr(struct, 'item_fixpoint_'+attr)}\n")
+            else:
+                self.f.write(" " * self.indent + f"{attr}={getattr(struct, attr)}\n")
 
     def visit_scalar_struct(self, struct, attr, meta):
         printto(getattr(struct, attr), self.f, self.indent + 2)
 
     def visit_array(self, struct, attr, meta):
-        self.f.write(" " * self.indent + f"{attr}={str(getattr(struct, attr))}\n")
+        if meta['_is_fixpoint']:
+            self.f.write(" " * self.indent + f"{attr}={str(getattr(struct, 'item_fixpoint_'+attr))}\n")
+        else:
+            self.f.write(" " * self.indent + f"{attr}={str(getattr(struct, attr))}\n")
 
     def visit_string(self, struct, attr, rawattr, meta):
         val = getattr(struct, attr).replace(r'"', r"\"")

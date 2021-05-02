@@ -166,12 +166,12 @@ struct FixpointExample2 {
 }
 
 struct AllInOne {
-    scalar fixpoint_u32:                    built_in.uint32       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=20)
-    scalar fixpoint_s16:                    built_in.sint16       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-20)
-    array fixpoint_array_s32:               built_in.sint32[2]    (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=10)
+    scalar fixpoint_u32:                    built_in.uint32       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=21)
+    scalar fixpoint_s16:                    built_in.sint16       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-21)
+    array fixpoint_array_s32:               built_in.sint32[2]    (.fixpointLsbValue=0.01, .fixpointOffsetValue=100, .defaultValue=11)
     scalar c4:                              built_in.uint32
-    embedded scalar fixpoint_u10_embedded:  built_in.uint10       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=20)
-    embedded scalar fixpoint_s10_embedded:  built_in.sint10       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-20)
-    embedded array fixpoint_array_s6:       built_in.sint6[2]     (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=10)
-    array fixpoint_marray_s32:              built_in.sint32[2][3] (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-10)
+    embedded scalar fixpoint_u10_embedded:  built_in.uint10       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=21)
+    embedded scalar fixpoint_s10_embedded:  built_in.sint10       (.fixpointLsbValue=0.1, .fixpointOffsetValue=100, .defaultValue=-21)
+    embedded array fixpoint_array_s6:       built_in.sint6[2]     (.fixpointLsbValue=0.01, .fixpointOffsetValue=100, .defaultValue=11)
+    array fixpoint_marray_s32:              built_in.sint32[2][3] (.fixpointLsbValue=0.01, .fixpointOffsetValue=100, .defaultValue=-11)
 }

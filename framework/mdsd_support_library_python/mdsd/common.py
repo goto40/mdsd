@@ -192,13 +192,13 @@ def set_embedded_in_uint(vvalue, cvalue, start_end_bit):
 def is_fixpoint(item, attrname):
     assert attrname in item._meta, f"{item.__class__.__name__}.{attrname} is not existing"
     my_meta = item._meta[attrname]
-    return my_meta["__is_fixpoint"]
+    return my_meta["_is_fixpoint"]
 
 
 def get_fixpoint_config(item, attrname):
     assert is_fixpoint(item, attrname), f"{item.__class__.__name__}.{attrname} is not a fixpoint value"
     my_meta = item._meta[attrname]
-    fixpointLsbValue = my_meta["__fixpointLsbValue"]
+    fixpointLsbValue = my_meta["_fixpointLsbValue"]
     fixpointOffsetValue = 0
     if my_meta["__has_fixpointOffsetValue"]:
         fixpointOffsetValue = my_meta["fixpointOffsetValue"]()
