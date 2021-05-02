@@ -52,7 +52,6 @@ def test_io_bin_output():
             copy_from_mem(read_back_data, read_back_obj)
             with StringIO() as f2:
                 printto(obj, f2)
-                text_version = f2.getvalue()
                 read_back_text_version = f2.getvalue()
         with open(filename_txt, "w") as f:
             f.write(text_version)
