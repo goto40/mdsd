@@ -21,7 +21,8 @@ class init_default_values_visitor:
 
     def visit_array(self, struct, attr, meta):
         if meta["__has_defaultValue"]:
-            v = np.fill(getattr(struct, attr).shape, dtype=meta["_get_type"](meta["defaultValue"]()))
+            v = np.zeros(getattr(struct, attr).shape, dtype=meta["_get_type"]())
+            v.fill(meta["defaultValue"]())
             setattr(struct, attr, v)
 
     def visit_string(self, struct, attr, rawattr, meta):
