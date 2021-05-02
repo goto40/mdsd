@@ -53,7 +53,7 @@ TEST_CASE( "Simple.pprint with string", "[string basic test]" ) {
   mdsd::init_default_values(i);
   {
     std::ostringstream stream;
-    mdsd::print(i, std::cout);
+    //mdsd::print(i, std::cout);
     mdsd::print(i, stream);
     REQUIRE(stream.str() == R"(Info {
   text1 = "This is text1"
@@ -77,7 +77,7 @@ TEST_CASE( "Simple.scan with string", "[string basic test]" ) {
     }
     )");
     mdsd::scan(i, stream);
-    mdsd::print(i, std::cout);
+    //mdsd::print(i, std::cout);
     REQUIRE(mdsd::String(i.text1).strv() == std::string("Hallo"));
     REQUIRE(mdsd::String(i.text2).strv() == std::string("We"));
     REQUIRE(i.c == '+');

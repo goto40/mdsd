@@ -28,30 +28,31 @@ TEST_CASE( "Simple.pprint", "[print_tests]" ) {
 }
 )");
   }
-  print(l);
-  print(c);
-  print(t);
+  std::ostringstream dummy;
+  print(l,dummy);
+  print(c,dummy);
+  print(t,dummy);
 
   Polygon poly;
   poly.header.n = 3;
   adjust_array_sizes_and_variants(poly);
-  print(poly);
+  print(poly,dummy);
 
   Polygon poly2;
   poly2.header = Header{2};
   adjust_array_sizes_and_variants(poly2);
   poly2.points = { Point{1,2}, Point{3,4} };
-  print(poly2);
+  print(poly2,dummy);
 
   Polygon poly3err;
   poly3err.header = Header{3};
   adjust_array_sizes_and_variants(poly3err);
   poly3err.points = { Point{1,2}, Point{3,4} };
   try {
-    print(poly3err);
+    print(poly3err,dummy);
   }
   catch(std::exception &e) {
-    std::cout << "an execption as expected: " << e.what() << "\n";
+    //std::cout << "an execption as expected: " << e.what() << "\n";
   }
 
   VariantExample v;
@@ -99,7 +100,7 @@ TEST_CASE( "Simple.pprint", "[print_tests]" ) {
   VariantExample vp;
   vp.selector = 10;
   vp.payload = Point{1,2};
-  print(vp);
+  print(vp,dummy);
 
   VariantExample vp_err;
   vp_err.selector = 10;

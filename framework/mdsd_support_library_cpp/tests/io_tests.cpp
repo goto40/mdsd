@@ -2,6 +2,7 @@
 #include "items/Point.h"
 #include "items/VariantExample.h"
 #include "items/Polygon.h"
+#include "big_example/Polygon.h"
 #include "big_example/MultiMessage.h"
 #include "big_example/AllInOne.h"
 #include "mdsd/item_support.h"
@@ -73,7 +74,7 @@ TEST_CASE( "Simple.io2", "[io_tests]" ) {
 
 }
 
-TEST_CASE( "virtual struct io", "[io_tests]" ) {
+TEST_CASE( "virtual_struct_io", "[io_tests]" ) {
   std::array<std::byte, 10000> mem;
   mdsd::Struct<Polygon> p;
   p.data.header.n = 2;
@@ -93,6 +94,12 @@ TEST_CASE( "virtual struct io", "[io_tests]" ) {
 
   q.copy_from_mem(mem.data(),n2);
   REQUIRE( q.data.header.n == p.data.header.n );
+
+  big_example::Polygon be_p;
+  be_p.n = 2;
+  mdsd::adjust_array_sizes_and_variants(be_p);
+  REQUIRE( mdsd::count_bytes(be_p) == 4+8*2+256 );
+
 }
 
 TEST_CASE( "file io, embedded1", "[io_tests]" ) {
@@ -106,9 +113,9 @@ TEST_CASE( "file io, embedded1", "[io_tests]" ) {
   REQUIRE( p.data.code() == 44);
   p.data.code(-33);
   REQUIRE( p.data.code() == -33);
-  std::cout << "-----IO-----------\n";
-  print(p.data,std::cout);
-  std::cout << "-----IO-----------\n";
+  //std::cout << "-----IO-----------\n";
+  //print(p.data,std::cout);
+  //std::cout << "-----IO-----------\n";
 }
 
 TEST_CASE( "file io, embedded2", "[io_tests]" ) {
@@ -122,9 +129,9 @@ TEST_CASE( "file io, embedded2", "[io_tests]" ) {
   REQUIRE( p.data.code() == 44);
   p.data.code(-33);
   REQUIRE( p.data.code() == -33);
-  std::cout << "-----IO-----------\n";
-  print(p.data,std::cout);
-  std::cout << "-----IO-----------\n";
+  //std::cout << "-----IO-----------\n";
+  //print(p.data,std::cout);
+  //std::cout << "-----IO-----------\n";
 }
 
 TEST_CASE( "file_io_AllInOne_default", "[io_tests]" ) {
@@ -138,7 +145,9 @@ TEST_CASE( "file_io_AllInOne_default", "[io_tests]" ) {
   }
   big_example::AllInOne obj;
   mdsd::copy_from_mem(mem.data(), mem.size(), obj);
-  std::cout << "-----IO AllInOne_default.bin -----------\n";
-  print(obj,std::cout);
-  std::cout << "-----IO AllInOne_default.bin-----------\n";
+  //std::cout << "-----IO AllInOne_default.bin -----------\n";
+  //print(obj,std::cout);
+  //std::cout << "-----IO AllInOne_default.bin-----------\n";
+
+  CHECK( obj.header.length == mdsd::count_bytes(obj) );
 }

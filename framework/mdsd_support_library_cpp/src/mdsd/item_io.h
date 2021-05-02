@@ -114,11 +114,13 @@ struct ByteCountVisitor {
   size_t count=0;
   template<class META, class T>
   void visit_scalar(const T&) {
-    count += sizeof(T);
+    if constexpr (META::__is_embedded) return;
+    count += sizeof(typename META::__type);
   }
   template<class META, class T>
   void visit_array(const T& x) {
-    count += sizeof(T)*x.size();
+    if constexpr (META::__is_embedded) return;
+    count += sizeof(typename META::__type)*x.size();
   }
   template<class META, class T>
   void visit_string(const T& x) {
