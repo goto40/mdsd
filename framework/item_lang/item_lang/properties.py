@@ -13,6 +13,27 @@ from item_lang.common import (
 from functools import reduce
 
 
+def get_all_unique_properties(struct_obj):
+    """
+    :param struct_obj: the struct obj
+    :return: a list of pairs (property_definition, [path to obj as list of attributes])
+    """
+    mm = get_metamodel(struct_obj)
+    ret = []
+    for a in struct_obj.attributes:
+        for p in a.properties:
+            if p.definition.numberOfPropRestriction is not None:
+                if p.definition.numberOfPropRestriction.max==1:
+                    ret.append( (p.definition, [a]) )
+        if textx_isinstance(a, mm["ScalarAttribute"]) and textx_isinstance(a.type, mm["Struct"]):
+            do_break = get_property(a, "is_payload")  # None or bool
+            if do_break is None or not do_break:
+                ret += map(
+                    lambda x: (x[0], [a]+x[1]),
+                    get_all_unique_properties(a.type)
+                )
+    return ret
+
 def get_property(attr, prop_name):
     def get_value(res, internaltype):
         if internaltype == "STRING":

@@ -1,5 +1,6 @@
 from mdsd.item_support import init_visitor
 from mdsd.item_support import accept
+from mdsd.item.io import set_length_field
 import numpy as np
 
 
@@ -39,7 +40,7 @@ class init_default_values_visitor:
 def init_default_values(s):
     v = init_default_values_visitor()
     accept(s, v)
-
+    set_length_field(s)
 
 @init_visitor
 class set_max_values_visitor:
@@ -72,6 +73,7 @@ def init_max_values(s):
     init_default_values(s)
     v = set_max_values_visitor()
     accept(s, v)
+    set_length_field(s)
 
 
 @init_visitor
@@ -105,3 +107,5 @@ def init_min_values(s):
     init_default_values(s)
     v = set_min_values_visitor()
     accept(s, v)
+    set_length_field(s)
+

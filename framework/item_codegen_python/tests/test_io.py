@@ -1,4 +1,4 @@
-from mdsd.item.io import copy_to_mem, count_bytes, copy_from_mem
+from mdsd.item.io import copy_to_mem, count_bytes, copy_from_mem, compute_length
 from os.path import join, dirname, exists
 from mdsd.item.init_values import init_max_values, init_default_values, init_min_values
 import os
@@ -74,5 +74,8 @@ def test_io_bin_output():
         copy_from_mem(read_back_data, read_back_obj)
         with StringIO() as f2:
             printto(read_back_obj, f2)
-            text_version = f2.getvalue()
-    assert "ON" in text_version
+            read_back_text_version = f2.getvalue()
+    assert read_back_obj.header.length > 0
+    assert read_back_obj.header.length == len(read_back_data)
+    assert read_back_obj.header.length == compute_length(read_back_obj)
+    assert "ON" in read_back_text_version

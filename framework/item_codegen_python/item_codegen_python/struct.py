@@ -21,6 +21,7 @@ from item_lang.properties import (
     has_fixpoint,
     get_fixpoint_LSB_value,
     get_fixpoint_offset_value,
+    get_all_unique_properties,
 )
 
 
@@ -391,4 +392,9 @@ from functools import reduce
                         f.write(f'"__has_{pname}":False,')
 
                 f.write("},\n")
-            f.write("    } # end of _meta\n")
+            f.write("    }  # end of _meta\n")
+            f.write("    _meta_struct={\n")
+            for up in get_all_unique_properties(i):
+               f.write(f"        'item_get_unique_{up[0].name}':lambda i:i.{'.'.join(map(lambda x:x.name, up[1]))},\n")
+               f.write(f"        'item_set_unique_{up[0].name}':lambda i,v:setattr({'.'.join(['i']+list(map(lambda x: x.name, up[1][:-1])))}, '{up[1][-1].name}',v),\n")
+            f.write("    }  # end of _meta_struct\n")
