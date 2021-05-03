@@ -491,6 +491,15 @@ def generate_cpp_struct(f, i):
                     a.render_formula(prefix="s."),
                 )
             )
+            txt = f"      static constexpr size_t __get_dim([[maybe_unused]] const {i.name}"
+            txt += f"&{'s' if not a.has_fixed_size() else ''}, size_t _idx) {{\n"
+            txt += "            switch(_idx) {\n"
+            for idx in range(len(a.dims)):
+                txt += f"                  case {idx}: return {a.dims[idx].dim.render_formula(prefix='s.')};\n"
+            txt += '                 default: throw std::runtime_error("unexpected dimension");\n'
+            txt += "            }\n"
+            txt += "      }\n"
+            f.write(txt)
             if textx.textx_isinstance(a.type, mm["Enum"]):
                 f.write("      static constexpr bool __is_enumtype = true;\n")
             else:
