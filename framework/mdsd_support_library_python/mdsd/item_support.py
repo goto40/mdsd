@@ -32,13 +32,13 @@ def init_visitor(c):
                     self.visit_scalar(struct, attr, meta)
             elif meta["_is_array"]:
                 if meta["_is_struct"]:
-                    if getattr(struct, attr) is None or len(
-                        getattr(struct, attr).flat
-                    ) != meta["_get_dim"](struct):
+                    if getattr(struct, attr) is None or getattr(struct, attr
+                                                                ).shape != meta["_get_dim_nd"](struct):
                         setattr(
                             struct,
                             attr,
-                            [get_type(struct, attr, meta)() for k in range(meta["_get_dim"](struct))]
+                            np.reshape(np.array([get_type(struct, attr, meta)() for k in range(meta["_get_dim"](struct))]),
+                                     meta["_get_dim_nd"](struct))
                         )
                 else:
                     if getattr(struct, attr) is None or getattr(
@@ -53,7 +53,7 @@ def init_visitor(c):
                             ),
                         )
                 if meta["_is_struct"]:
-                    for x in getattr(struct, attr):
+                    for x in getattr(struct, attr).flatten():
                         if x is not None and not isinstance(x, meta["_get_type"]()):
                             raise Exception(
                                 "unexpected type {} found in field {} of {}".format(
@@ -100,26 +100,16 @@ def const_visitor(c):
             elif meta["_is_array"]:
                 if getattr(struct, attr) is None:
                     raise Exception("array {} is None.".format(attr))
-                if meta["_is_struct"]:
-                    if len(getattr(struct, attr)) != meta["_get_dim"](struct):
-                        raise Exception(
-                            "array {} is has wrong length. Expected {} got {}.".format(
-                                attr,
-                                meta["_get_dim"](struct),
-                                len(getattr(struct, attr)),
-                            )
+                if getattr(struct, attr).shape != meta["_get_dim_nd"](struct):
+                    raise Exception(
+                        "array {} is has wrong length. Expected {} got {}.".format(
+                            attr,
+                            meta["_get_dim_nd"](struct),
+                            getattr(struct, attr).shape,
                         )
-                else:
-                    if getattr(struct, attr).shape != meta["_get_dim_nd"](struct):
-                        raise Exception(
-                            "array {} is has wrong length. Expected {} got {}.".format(
-                                attr,
-                                meta["_get_dim_nd"](struct),
-                                getattr(struct, attr).shape,
-                            )
-                        )
+                    )
                 if meta["_is_struct"]:
-                    for x in getattr(struct, attr):
+                    for x in getattr(struct, attr).flatten():
                         if x is not None and not isinstance(x, meta["_get_type"]()):
                             raise Exception(
                                 "unexpected type {} found in field {} of {}".format(
@@ -161,7 +151,7 @@ class empty_init_visitor:
         pass
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 
@@ -180,7 +170,7 @@ class empty_const_visitor:
         pass
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 

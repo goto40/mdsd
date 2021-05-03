@@ -172,4 +172,6 @@ TEST_CASE( "file_io_AllInOne_demo", "[io_tests]" ) {
   CHECK( MDSD_get_Polygon_from_AllInOne_payload(obj).n == 4 );
   CHECK( MDSD_get_Polygon_from_AllInOne_payload(obj).p[0].y == 20 );
   CHECK( MDSD_get_Polygon_from_AllInOne_payload(obj).p[3].y == 23 );
+  CHECK( obj.m == 2 );
+  CHECK( obj.headers.size() == 3*2 );
 }

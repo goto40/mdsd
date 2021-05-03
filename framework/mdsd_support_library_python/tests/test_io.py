@@ -74,9 +74,12 @@ def test_io_bin_output():
     from mdsd.item_support import adjust_array_sizes_and_variants
     demo = AllInOne()
     for k in range(len(demo.embedded_enum_array)):
-        demo.embedded_enum_array[k] = OnOff.ON if k%2==0 else OnOff.OFF
+        demo.embedded_enum_array[k] = OnOff.ON if k%2 == 0 else OnOff.OFF
     demo.payload.n = 4
+    demo.m = 2
     adjust_array_sizes_and_variants(demo)
+
+    assert demo.headers.shape == (2,3)
 
     for k in range(len(demo.payload.p)):
         if k<2:

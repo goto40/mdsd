@@ -46,7 +46,7 @@ class copy_from_mem_visitor:
         self.pos += d * n
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 
@@ -95,7 +95,7 @@ class copy_to_mem_visitor:
         self.pos += d * n
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 
@@ -139,7 +139,7 @@ class count_bytes_visitor:
         self.count += d * n
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 

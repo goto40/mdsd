@@ -30,8 +30,7 @@ class print_visitor:
 
     def visit_array_struct(self, struct, attr, meta):
         v = print_visitor(self.f, self.indent + 2)
-        lst = getattr(struct, attr)
-        for s in lst:
+        for s in getattr(struct, attr).flatten():
             printto(s, self.f, self.indent + 2)
 
 

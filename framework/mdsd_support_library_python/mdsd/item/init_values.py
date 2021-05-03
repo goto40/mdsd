@@ -33,7 +33,7 @@ class init_default_values_visitor:
             self.visit_array(struct, rawattr, meta)
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 
@@ -65,7 +65,7 @@ class set_max_values_visitor:
         pass
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 
@@ -99,7 +99,7 @@ class set_min_values_visitor:
         pass
 
     def visit_array_struct(self, struct, attr, meta):
-        for s in getattr(struct, attr):
+        for s in getattr(struct, attr).flatten():
             accept(s, self)
 
 

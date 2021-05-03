@@ -3,6 +3,7 @@ from os.path import abspath, join, dirname, exists
 from shutil import rmtree
 from os import mkdir
 from glob import glob
+import sys
 
 
 def pytest_configure(config):
@@ -11,10 +12,11 @@ def pytest_configure(config):
     assert mm is not None
     inpath = join(this_folder, "../mdsd_support_library_common/model/**/*.item")
 
-    outpath = join(this_folder, "../mdsd_support_library_common/src-gen")
+    outpath = join(this_folder, "src-gen")
     if exists(outpath):
         rmtree(outpath)
     mkdir(outpath)
+    sys.path.append(outpath)  # add generated code to python path
 
     for f in glob(inpath, recursive=True):
         model = mm.model_from_file(f)
