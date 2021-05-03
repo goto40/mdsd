@@ -38,7 +38,7 @@ def init_visitor(c):
                         setattr(
                             struct,
                             attr,
-                            [get_type(struct, attr, meta)()] * meta["_get_dim"](struct),
+                            [get_type(struct, attr, meta)() for k in range(meta["_get_dim"](struct))]
                         )
                 else:
                     if getattr(struct, attr) is None or getattr(
@@ -184,8 +184,24 @@ class empty_const_visitor:
             accept(s, self)
 
 
+def compute_length(s):
+    from mdsd.item.io import count_bytes
+    # todo: use unit of length
+    return count_bytes(s)
+
+
+def set_length_field(obj):
+    """
+    Set the length field of a telegram if such a field is defined (.is_message_length_field=true)
+    :param obj: message
+    """
+    if 'item_get_unique_is_message_length_field' in obj._meta_struct:
+        obj._meta_struct['item_set_unique_is_message_length_field'](obj,compute_length(obj))
+
+
 def adjust_array_sizes_and_variants(s):
     accept(s, empty_init_visitor())
+    set_length_field(s)
 
 
 def check_array_sizes_and_variants(s):

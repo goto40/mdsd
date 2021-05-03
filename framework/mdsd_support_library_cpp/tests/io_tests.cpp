@@ -151,3 +151,25 @@ TEST_CASE( "file_io_AllInOne_default", "[io_tests]" ) {
 
   CHECK( obj.header.length == mdsd::count_bytes(obj) );
 }
+
+
+TEST_CASE( "file_io_AllInOne_demo", "[io_tests]" ) {
+  std::vector<std::byte> mem;
+  std::ifstream f("tests/io_tests/AllInOne_demo.bin", std::ios::binary);
+  REQUIRE(f);
+  while(f) {
+    char c;
+    f.read(&c,1);
+    if (f) mem.push_back(static_cast<std::byte>(c));
+  }
+  big_example::AllInOne obj;
+  mdsd::copy_from_mem(mem.data(), mem.size(), obj);
+  //std::cout << "-----IO AllInOne_default.bin -----------\n";
+  //print(obj,std::cout);
+  //std::cout << "-----IO AllInOne_default.bin-----------\n";
+
+  CHECK( obj.header.length == mdsd::count_bytes(obj) );
+  CHECK( MDSD_get_Polygon_from_AllInOne_payload(obj).n == 4 );
+  CHECK( MDSD_get_Polygon_from_AllInOne_payload(obj).p[0].y == 20 );
+  CHECK( MDSD_get_Polygon_from_AllInOne_payload(obj).p[3].y == 23 );
+}

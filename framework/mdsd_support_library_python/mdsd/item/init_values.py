@@ -1,6 +1,6 @@
 from mdsd.item_support import init_visitor
 from mdsd.item_support import accept
-from mdsd.item.io import set_length_field
+from mdsd.item_support import set_length_field
 import numpy as np
 
 

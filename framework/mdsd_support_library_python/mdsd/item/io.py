@@ -149,16 +149,6 @@ def count_bytes(s):
     return v.count
 
 
-def compute_length(s):
-    # todo: use unit of length
-    return count_bytes(s)
-
-
-def set_length_field(obj):
-    if 'item_get_unique_is_message_length_field' in obj._meta_struct:
-        obj._meta_struct['item_set_unique_is_message_length_field'](obj,compute_length(obj))
-
-
 def copy(a, b):
     """
     copies a to b and returns b
