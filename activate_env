@@ -41,6 +41,8 @@ source ${VIRTUAL_ENV}/bin/custom_settings.sh
 if $my_firsttime ;
 then
 {
+	./install_all_exernals.sh || exit 1
+
     rm -rf framework/mdsd_support_library_cpp/build
     mkdir framework/mdsd_support_library_cpp/build
     cd framework/mdsd_support_library_cpp/build
