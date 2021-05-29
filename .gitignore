@@ -27,4 +27,5 @@ swig_proj
 *.html
 **/output/*.bin
 **/output/*.txt
+external
 
