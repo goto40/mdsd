@@ -1,0 +1,8 @@
+#ifndef XTENSOR_TOOLS_TOOLS_H
+#define XTENSOR_TOOLS_TOOLS_H
+
+namespace xtensor_tools {
+
+}
+
+#endif
