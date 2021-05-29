@@ -8,6 +8,10 @@ FIND_PROGRAM(TEXTX_PATH textx)
 message("textx found at ${TEXTX_PATH}")
 message("catch found at ${CATCH_INCLUDE_PATH}")
 
+find_library(OPENIMAGEIO_LIB_PATH OpenImageIO REQUIRED)
+find_path(OPENIMAGEIO_INCLUDE_PATH OpenImageIO/imageio.h REQUIRED)
+message("openimageio found at ${OPENIMAGEIO_INCLUDE_PATH} + ${OPENIMAGEIO_LIB_PATH}")
+
 set(TARGET_NAME Tester.exe)
 
 # set compiler flags
@@ -30,8 +34,8 @@ include_directories(src)
 include_directories(${SRCGEN})
 file(GLOB_RECURSE INC "src/*.h")
 
-add_library(mdsd_support_library INTERFACE)
-target_include_directories(mdsd_support_library INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
+add_library(xtensor-tools INTERFACE)
+target_include_directories(xtensor-tools  INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src/)
 
 install(DIRECTORY src/ DESTINATION include FILES_MATCHING PATTERN "*.h")
 # -------------------------------------------------------------
@@ -40,8 +44,8 @@ set(TSTSRC tests)
 file(GLOB_RECURSE TSTFILES "${TSTSRC}/*.cpp")
 add_executable(${TARGET_NAME} ${TSTFILES})
 target_sources(${TARGET_NAME} PUBLIC ${INC})
-target_link_libraries(${TARGET_NAME})
-target_include_directories(${TARGET_NAME} SYSTEM PRIVATE ${CATCH_INCLUDE_PATH})
+target_link_libraries(${TARGET_NAME} ${OPENIMAGEIO_LIB_PATH})
+target_include_directories(${TARGET_NAME} SYSTEM PRIVATE ${CATCH_INCLUDE_PATH} ${OPENIMAGEIO_INCLUDE_PATH})
 add_dependencies(${TARGET_NAME} mdsd_support_library_cpp_item_code)
 
 
