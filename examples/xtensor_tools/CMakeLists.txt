@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
+set(XTENSOR_USE_XSIMD 1)
+
 project(xtensor_tools)
 FIND_PROGRAM(LCOV_PATH lcov)
 FIND_PROGRAM(GENHTML_PATH genhtml)
@@ -46,6 +48,7 @@ add_executable(${TARGET_NAME} ${TSTFILES})
 target_sources(${TARGET_NAME} PUBLIC ${INC})
 target_link_libraries(${TARGET_NAME} ${OPENIMAGEIO_LIB_PATH})
 target_include_directories(${TARGET_NAME} SYSTEM PRIVATE ${CATCH_INCLUDE_PATH} ${OPENIMAGEIO_INCLUDE_PATH})
+target_compile_options(${TARGET_NAME} PRIVATE -march=native)
 add_dependencies(${TARGET_NAME} mdsd_support_library_cpp_item_code)
 
 
