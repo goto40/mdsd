@@ -14,6 +14,7 @@ TEST_CASE("first steps: read_im", "[xtensor]")
 
     xt::xarray<float> mask = {-1.0f, 0.0f, 1.0f};
     xtensor_tools::conv2d_1d_x(im, mask);
+    //xtensor_tools::conv2d_1d_y(im, mask);
 
     xt::dump_image("test2.png", im); // should not throw
 }
