@@ -1,7 +1,14 @@
 #ifndef XTENSOR_TOOLS_TOOLS_H
 #define XTENSOR_TOOLS_TOOLS_H
 
+#include <xt
+
 namespace xtensor_tools {
+
+    void conv1d(
+    ) {
+
+    }
 
 }
 
