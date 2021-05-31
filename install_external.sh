@@ -1,7 +1,10 @@
 #!/bin/bash
 mkdir -p external
 cd external
-git clone $1 $2 || exit 1
+REPOSRC=$1
+LOCALREPO=$2
+[ -d $LOCALREPO ] || git clone $REPOSRC $LOCALREPO || exit 1
+(cd $LOCALREPO; git pull $REPOSRC) || exit 1
 cd $2
 mkdir -p build
 cd build
