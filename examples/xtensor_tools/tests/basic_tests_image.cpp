@@ -18,3 +18,14 @@ TEST_CASE("first steps: read_im", "[xtensor]")
 
     xt::dump_image("test2.png", im); // should not throw
 }
+
+TEST_CASE("read imagepair collector", "[xtensor]")
+{
+    xtensor_tools::ImagePairCollector pc("../tests/data/exampleD/exampleD_%03u.png", 0, 10);
+    size_t cnt = 0;
+    while (pc.read_next())
+    {
+        cnt++;
+    }
+    CHECK(cnt == 9);
+}

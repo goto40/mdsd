@@ -21,6 +21,4 @@ TEST_CASE("first steps: static dim", "[xtensor]")
     CHECK(a2(0, 0) == Approx(1.0));
     CHECK(a2(0, 1) == Approx(2.0));
     CHECK(a2(1, 2) == Approx(6.0));
-    std::cout << a3 << "\n";
-    CHECK(a3(1, 2) == Approx(0.0));
 }
