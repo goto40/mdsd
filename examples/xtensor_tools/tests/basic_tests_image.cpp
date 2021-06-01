@@ -8,15 +8,15 @@
 TEST_CASE("first steps: read_im", "[xtensor]")
 {
     auto im0 = xt::load_image("../tests/data/blume2.png"); // should not throw
-    auto im = xt::eval(xt::cast<float>(im0));
+    auto im = xtensor_tools::rgb2gray(im0);
     std::cout << "shape: " << xt::adapt(im.shape()) << "\n";
-    xt::dump_image("test.png", im); // should not throw
+    xt::dump_image("test.png", xtensor_tools::gray2rgb(im)); // should not throw
 
     xt::xarray<float> mask = {-1.0f, 0.0f, 1.0f};
     xtensor_tools::conv2d_1d_x(im, mask);
     //xtensor_tools::conv2d_1d_y(im, mask);
 
-    xt::dump_image("test2.png", im); // should not throw
+    xt::dump_image("test2.png", xtensor_tools::gray2rgb(im)); // should not throw
 }
 
 TEST_CASE("read imagepair collector", "[xtensor]")

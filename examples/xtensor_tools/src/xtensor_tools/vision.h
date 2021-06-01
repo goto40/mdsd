@@ -3,9 +3,38 @@
 
 #include <xtensor/xview.hpp>
 #include <type_traits>
+#include <stdexcept>
 
 namespace xtensor_tools
 {
+
+    xt::xarray<float> rgb2gray(const xt::xarray<unsigned char> &rgb)
+    {
+        if (rgb.shape().size() != 3 || rgb.shape()[2] != 3)
+        {
+            throw std::runtime_error("no rgb image");
+        }
+        auto im = xt::sum(xt::cast<float>(rgb), 2) / 3.0 / 255.0;
+        return xt::eval(im);
+    }
+
+    xt::xarray<unsigned char> gray2rgb(const xt::xarray<float> &gray)
+    {
+        if (gray.shape().size() != 2)
+        {
+            throw std::runtime_error("no gray image");
+        }
+        float mi = xt::amin(gray)[0];
+        float ma = xt::amax(gray)[0];
+        float norm = ma - mi;
+        if (norm < 1e-10)
+        {
+            norm = 1;
+        }
+        auto im256 = xt::cast<unsigned char>((gray - mi) / norm * 255.0);
+        auto im = xt::stack(xt::xtuple(im256, im256, im256), 2);
+        return xt::eval(im);
+    }
 
     template <class T, class U, class V>
     void conv1d(T &&im, U &&mask, V &&a)
@@ -61,6 +90,11 @@ namespace xtensor_tools
     template <class T, class U>
     void conv2d_1d_x(T &im, U &mask)
     {
+        if (im.shape().size() != 2)
+        {
+            throw std::runtime_error("no gray image");
+        }
+
         size_t h = im.shape()[0];
         size_t w = im.shape()[1];
         size_t n = mask.size();
@@ -73,17 +107,19 @@ namespace xtensor_tools
         }
         for (size_t y = 0; y < h; y++)
         {
-            for (size_t c = 0; c < 3; c++)
-            {
-                conv1d(xt::view(im, y, xt::all(), c), mask, a);
-                xt::view(im, y, xt::all(), c).assign(a);
-            }
+            conv1d(xt::view(im, y, xt::all()), mask, a);
+            xt::view(im, y, xt::all()).assign(a);
         }
     }
 
     template <class T, class U>
     void conv2d_1d_y(T &im, U &mask)
     {
+        if (im.shape().size() != 2)
+        {
+            throw std::runtime_error("no gray image");
+        }
+
         size_t h = im.shape()[0];
         size_t w = im.shape()[1];
         size_t n = mask.size();
@@ -96,11 +132,8 @@ namespace xtensor_tools
         }
         for (size_t x = 0; x < w; x++)
         {
-            for (size_t c = 0; c < 3; c++)
-            {
-                conv1d(xt::view(im, xt::all(), x, c), mask, a);
-                xt::view(im, xt::all(), x, c).assign(a);
-            }
+            conv1d(xt::view(im, xt::all(), x), mask, a);
+            xt::view(im, xt::all(), x).assign(a);
         }
     }
 }
