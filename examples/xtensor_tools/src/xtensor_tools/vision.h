@@ -2,23 +2,35 @@
 #define XTENSOR_TOOLS_VISION_H
 
 #include <xtensor/xview.hpp>
+#include <xtensor/xadapt.hpp>
 #include <type_traits>
 #include <stdexcept>
+#include <sstream>
 
 namespace xtensor_tools
 {
 
-    xt::xarray<float> rgb2gray(const xt::xarray<unsigned char> &rgb)
+    inline xt::xarray<float> rgb2gray(const xt::xarray<unsigned char> &rgb)
     {
-        if (rgb.shape().size() != 3 || rgb.shape()[2] != 3)
+        if (rgb.shape().size() == 3 || rgb.shape()[2] == 3) // rgb
         {
-            throw std::runtime_error("no rgb image");
+            auto im = xt::sum(xt::cast<float>(rgb), 2) / 3.0 / 255.0;
+            return xt::eval(im);
         }
-        auto im = xt::sum(xt::cast<float>(rgb), 2) / 3.0 / 255.0;
-        return xt::eval(im);
+        else if (rgb.shape().size() == 3 || rgb.shape()[2] == 1) // gray
+        {
+            auto im = xt::sum(xt::cast<float>(rgb), 2) / 3.0 / 255.0;
+            return xt::eval(im);
+        }
+        else
+        {
+            std::ostringstream o;
+            o << "no rgb/gray image: shape = " << xt::adapt(rgb.shape());
+            throw std::runtime_error(o.str());
+        }
     }
 
-    xt::xarray<unsigned char> gray2rgb(const xt::xarray<float> &gray)
+    inline xt::xarray<unsigned char> gray2rgb(const xt::xarray<float> &gray)
     {
         if (gray.shape().size() != 2)
         {
@@ -135,6 +147,23 @@ namespace xtensor_tools
             conv1d(xt::view(im, xt::all(), x), mask, a);
             xt::view(im, xt::all(), x).assign(a);
         }
+    }
+
+    template <class T>
+    xt::xarray<T> hanning1d(size_t n)
+    {
+        return -xt::cos(2.0 * (xt::arange<T>(n) + 1.0) * M_PI / (static_cast<T>(n) + 1.0)) + 1.0;
+    }
+
+    template <class T>
+    void center_surround(const T &im, size_t sourround_size, T &res)
+    {
+        auto mask = hanning1d<typename T::value_type>(sourround_size);
+        res = im;
+        conv2d_1d_x(res, mask);
+        conv2d_1d_y(res, mask);
+        T norm = xt::sum(mask);
+        res = im - res / (norm * norm);
     }
 }
 
