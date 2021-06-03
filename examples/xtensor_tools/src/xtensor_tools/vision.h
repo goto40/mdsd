@@ -156,14 +156,24 @@ namespace xtensor_tools
     }
 
     template <class T>
+    void blur_inplace(T &im, size_t n, bool norm = true)
+    {
+        auto mask = hanning1d<typename T::value_type>(n);
+        conv2d_1d_x(im, mask);
+        conv2d_1d_y(im, mask);
+        if (norm)
+        {
+            T norm = xt::sum(mask);
+            im = im / (norm * norm);
+        }
+    }
+
+    template <class T>
     void center_surround(const T &im, size_t sourround_size, T &res)
     {
-        auto mask = hanning1d<typename T::value_type>(sourround_size);
         res = im;
-        conv2d_1d_x(res, mask);
-        conv2d_1d_y(res, mask);
-        T norm = xt::sum(mask);
-        res = im - res / (norm * norm);
+        blur_inplace(res, sourround_size);
+        res = im - res;
     }
 }
 
