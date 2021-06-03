@@ -20,13 +20,13 @@ namespace xtensor_tools
         {
             throw std::runtime_error("unexpected image size");
         }
-        size_t h = shape[0];
-        size_t w = shape[1];
+        size_t h = im_shape[0];
+        size_t w = im_shape[1];
         size_t ivyn = motion_hw_vyvx.shape()[2];
         size_t ivxn = motion_hw_vyvx.shape()[3];
-        if (motion.shape()[0] != h || motion.shape()[1] != w)
+        if (motion_hw_vyvx.shape()[0] != h || motion_hw_vyvx.shape()[1] != w)
         {
-            motion_hw_vyvx = xt::zeros({h, w, ivyn, ivxn});
+            motion_hw_vyvx = xt::zeros<U::value_type>({h, w, ivyn, ivxn});
         }
         else
         {
@@ -81,7 +81,7 @@ namespace xtensor_tools
                 auto tmp = xt::eval(sel1 * sel2);
                 xtensor_tools::blur_inplace(tmp, patch_size, false);
                 auto out = xt::view(motion_hw_vyvx, xt::range(yo0, yo0 + eh), xt::range(xo0, xo0 + ew), ivy, ivx);
-                out = xt::eval(xt::min(0.0f, tmp / (sele1 * sele2 + 0.0001)));
+                out = xt::eval(xt::minimum(0.0f, tmp / (sele1 * sele2 + 0.0001)));
             }
         }
     }

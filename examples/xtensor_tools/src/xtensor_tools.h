@@ -3,5 +3,6 @@
 
 #include "xtensor_tools/imagepair_collector.h"
 #include "xtensor_tools/vision.h"
+#include "xtensor_tools/simple_correlation.h"
 
 #endif
