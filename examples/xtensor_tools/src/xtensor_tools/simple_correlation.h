@@ -26,7 +26,7 @@ namespace xtensor_tools
         size_t ivxn = motion_hw_vyvx.shape()[3];
         if (motion_hw_vyvx.shape()[0] != h || motion_hw_vyvx.shape()[1] != w)
         {
-            motion_hw_vyvx = xt::zeros<U::value_type>({h, w, ivyn, ivxn});
+            motion_hw_vyvx = xt::zeros<typename U::value_type>({h, w, ivyn, ivxn});
         }
         else
         {
