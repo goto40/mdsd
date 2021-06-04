@@ -10,6 +10,7 @@ namespace xtensor_tools
     template <class T, class U>
     void simple_correlation(const T &gray1, const T &gray2, size_t patch_size, U &motion_hw_vyvx)
     {
+        return;
         // prepare/check memory
         auto im_shape = gray1.shape();
         if (motion_hw_vyvx.shape().size() != 4)
@@ -40,7 +41,6 @@ namespace xtensor_tools
         xtensor_tools::blur_inplace(e2, patch_size, false);
         e1 = xt::sqrt(e1);
         e2 = xt::sqrt(e2);
-
         size_t ivyn2 = ivyn / 2;
         size_t ivxn2 = ivyn / 2;
         for (size_t ivy = 0; ivy < ivyn; ivy++)

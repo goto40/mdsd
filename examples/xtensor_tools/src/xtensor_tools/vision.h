@@ -163,13 +163,13 @@ namespace xtensor_tools
         conv2d_1d_y(im, mask);
         if (norm)
         {
-            T norm = xt::sum(mask);
+            typename T::value_type norm = xt::sum(mask)[0];
             im = im / (norm * norm);
         }
     }
 
-    template <class T>
-    void center_surround(const T &im, size_t sourround_size, T &res)
+    template <class T, class U>
+    void center_surround(const T &im, size_t sourround_size, U &res)
     {
         res = im;
         blur_inplace(res, sourround_size);
