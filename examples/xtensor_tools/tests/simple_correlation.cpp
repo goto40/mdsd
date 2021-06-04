@@ -41,4 +41,7 @@ TEST_CASE("simple_correlation", "[xtensor]")
     CHECK(sum_vyvx(v0 + 0, v0 - 3) > 0.01);
     CHECK(sum_vyvx(v0 + 0, v0 - 3) > sum_vyvx(v0 + 0, v0 - 4));
     CHECK(sum_vyvx(v0 + 0, v0 - 3) > sum_vyvx(v0 + 0, v0 - 2));
+
+    auto hsv = xtensor_tools::motion2hsv(im2, motion);
+    xt::dump_image("simple_correlation_hsv.png", xtensor_tools::hsv2rgb(hsv)); // should not throw
 }
