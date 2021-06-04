@@ -30,7 +30,8 @@ namespace xtensor_tools
         }
     }
 
-    inline xt::xarray<unsigned char> gray2rgb(const xt::xarray<float> &gray)
+    template <class T>
+    inline xt::xarray<unsigned char> gray2rgb(const T &gray)
     {
         if (gray.shape().size() != 2)
         {

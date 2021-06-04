@@ -10,7 +10,6 @@ namespace xtensor_tools
     template <class T, class U>
     void simple_correlation(const T &gray1, const T &gray2, size_t patch_size, U &motion_hw_vyvx)
     {
-        return;
         // prepare/check memory
         auto im_shape = gray1.shape();
         if (motion_hw_vyvx.shape().size() != 4)
@@ -81,7 +80,7 @@ namespace xtensor_tools
                 auto tmp = xt::eval(sel1 * sel2);
                 xtensor_tools::blur_inplace(tmp, patch_size, false);
                 auto out = xt::view(motion_hw_vyvx, xt::range(yo0, yo0 + eh), xt::range(xo0, xo0 + ew), ivy, ivx);
-                out = xt::eval(xt::minimum(0.0f, tmp / (sele1 * sele2 + 0.0001)));
+                out = xt::eval(xt::maximum(0.0f, tmp / (sele1 * sele2 + 0.0001)));
             }
         }
     }
