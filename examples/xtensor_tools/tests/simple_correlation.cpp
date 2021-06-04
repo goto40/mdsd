@@ -29,7 +29,7 @@ TEST_CASE("simple_correlation", "[xtensor]")
     // eval global likelihoods
     auto sum_vyvx = xt::sum(motion, {0, 1});
     //std::cout << "sum_vyvx: " << sum_vyvx << "\n";
-    xt::dump_image("sum_vyvx.png", xtensor_tools::gray2rgb(sum_vyvx)); // should not throw
+    xt::dump_image("simple_correlation_sum_vyvx.png", xtensor_tools::gray2rgb(sum_vyvx)); // should not throw
 
     // box is moving right/downwards +3,+3
     CHECK(sum_vyvx(v0 + 3, v0 + 3) > 0.01);
