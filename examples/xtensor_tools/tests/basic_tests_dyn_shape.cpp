@@ -4,6 +4,21 @@
 #include <xtensor/xio.hpp>
 #include <xtensor/xview.hpp>
 
+TEST_CASE("first steps: rgb array", "[xtensor]")
+{
+  xt::xarray<float> rgb = xt::zeros<float>({10, 10, 3});
+  auto r = xt::view(rgb, xt::all(), xt::all(), 0);
+  auto g = xt::view(rgb, xt::all(), xt::all(), 1);
+  auto b = xt::view(rgb, xt::all(), xt::all(), 2);
+  r(0, 0) = 1;
+  g(0, 0) = 0.75;
+  b(0, 0) = 0.5;
+
+  CHECK(rgb(0, 0, 0) == Approx(1.0));
+  CHECK(rgb(0, 0, 1) == Approx(0.75));
+  CHECK(rgb(0, 0, 2) == Approx(0.5));
+}
+
 TEST_CASE("first steps: dynamic shape", "[xtensor]")
 {
   xt::xarray<double>::shape_type shape = {2, 3};
