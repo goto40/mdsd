@@ -1,10 +1,9 @@
 #ifndef XTENSOR_TOOLS_TOOLS_H
 #define XTENSOR_TOOLS_TOOLS_H
 
+#include <xtensor/xarray.hpp>
 #include <xtensor/xview.hpp>
 #include <xtensor/xadapt.hpp>
-#include <xtensor/xarray.hpp>
-#include <xtensor/xbuilder.hpp> // zeros
 #include <type_traits>
 #include <stdexcept>
 #include <sstream>
@@ -80,6 +79,10 @@ namespace xtensor_tools
         auto h = xt::view(hsv, xt::all(), xt::all(), 0);
         auto s = xt::view(hsv, xt::all(), xt::all(), 1);
         auto v = xt::view(hsv, xt::all(), xt::all(), 2);
+
+        /*        float xxx = h(0, 0);
+        r(1, 1) = 1;
+*/
         auto hi = xt::floor(h * 360.0 / 60.0);
         auto f = (h * 360.0 / 60.0) - hi;
         auto p = v * (1.0 - s);
@@ -89,7 +92,7 @@ namespace xtensor_tools
         for (size_t y = 0; y < shape[0]; y++)
         {
             for (size_t x = 0; x < shape[1]; x++)
-            {
+            { /*
                 switch (static_cast<int>(hi(y, x)))
                 {
                 case 0:
@@ -125,7 +128,11 @@ namespace xtensor_tools
                     break;
                 default:
                     throw std::runtime_error("unexpected hi");
-                };
+                };*/
+                /*
+                r(y, x) = 1;
+                g(y, x) = 0;
+                b(y, x) = 0;*/
             }
         }
         return xt::cast<unsigned char>(rgb * 255.0);
@@ -143,7 +150,7 @@ namespace xtensor_tools
         size_t w = shape[1];
         size_t ivyn = shape[2];
         size_t ivxn = shape[3];
-        auto hsv = xt::zeros<float>({h, w, static_cast<size_t>(3)});
+        xt::xarray<float> hsv = xt::zeros<float>({h, w, static_cast<size_t>(3)});
         float ivy2 = (ivyn / 2); // integer round!
         float ivx2 = (ivxn / 2);
         float global_maxv = std::max(0.0001f, static_cast<float>(xt::amax(motion_hw_vyvx)[0]));
@@ -181,7 +188,7 @@ namespace xtensor_tools
 
         xt::view(hsv, xt::all(), xt::all(), 0) = a;
         xt::view(hsv, xt::all(), xt::all(), 1) = pow(speed / max_speed, 0.25);
-        xt::view(hsv, xt::all(), xt::all(), 2) = (0.5 + (im2 - mi) / norm * 0.5) * (maxv / pow(global_maxv + 0.00001, 0.5));
+        xt::view(hsv, xt::all(), xt::all(), 2) = (0.5 + (im2 - mi) / norm * 0.5); // * (maxv / pow(global_maxv + 0.00001, 0.5));
 
         return hsv;
     }

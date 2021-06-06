@@ -37,7 +37,7 @@ TEST_CASE("simple_correlation", "[xtensor]")
     CHECK(sum_vyvx(v0 + 3, v0 + 3) == xt::eval(xt::amax(xt::view(sum_vyvx, xt::all(), xt::all())))[0]);
 
     // stick is moving leftwards 0,-3
-    std::cout << "sum_vyvx[0,:]: " << sum_vyvx << "\n";
+    //std::cout << "sum_vyvx[0,:]: " << sum_vyvx << "\n";
     CHECK(sum_vyvx(v0 + 0, v0 - 3) > 0.01);
     CHECK(sum_vyvx(v0 + 0, v0 - 3) > sum_vyvx(v0 + 0, v0 - 4));
     CHECK(sum_vyvx(v0 + 0, v0 - 3) > sum_vyvx(v0 + 0, v0 - 2));

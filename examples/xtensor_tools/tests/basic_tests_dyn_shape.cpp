@@ -2,6 +2,7 @@
 
 #include <xtensor/xarray.hpp>
 #include <xtensor/xio.hpp>
+#include <xtensor/xview.hpp>
 
 TEST_CASE("first steps: dynamic shape", "[xtensor]")
 {
@@ -23,4 +24,10 @@ TEST_CASE("first steps: dynamic shape", "[xtensor]")
   CHECK(a2(1, 2) == Approx(6.0));
   //std::cout << a3 << "\n";
   CHECK(a3(1, 2) == Approx(0.0));
+
+  auto v2 = xt::view(a2, 1, xt::all());
+  CHECK(v2(1, 2) == Approx(6.0));
+  v2(1, 2) = 1.2;
+  CHECK(v2(1, 2) == Approx(1.2));
+  CHECK(a2(1, 2) == Approx(1.2));
 }
