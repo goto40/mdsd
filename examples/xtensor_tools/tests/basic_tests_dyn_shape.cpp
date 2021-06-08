@@ -1,22 +1,22 @@
 #include "catch.hpp"
 
-#include <xtensor/xarray.hpp>
 #include <xtensor/xio.hpp>
+#include <xtensor/xarray.hpp>
 #include <xtensor/xview.hpp>
 
-TEST_CASE("first steps: rgb array", "[xtensor]")
+TEST_CASE("first steps: a3d array", "[xtensor]")
 {
-  xt::xarray<float> rgb = xt::zeros<float>({10, 10, 3});
-  auto r = xt::view(rgb, xt::all(), xt::all(), 0);
-  auto g = xt::view(rgb, xt::all(), xt::all(), 1);
-  auto b = xt::view(rgb, xt::all(), xt::all(), 2);
-  r(0, 0) = 1;
-  g(0, 0) = 0.75;
-  b(0, 0) = 0.5;
+  xt::xarray<float> a3d = xt::zeros<float>({10, 10, 10});
+  auto a0 = xt::view(a3d, 0, xt::all(), xt::all());
+  auto a1 = xt::view(a3d, xt::all(), 1, xt::all());
+  auto a2 = xt::view(a3d, xt::all(), xt::all(), 2);
+  a0(0, 0) = 1;    // ok
+  a1(0, 0) = 0.75; // ok
+  a2(0, 0) = 0.5;  // produces "static_assert(I < sizeof...(Args), "I should be lesser than sizeof...(Args)");"
 
-  CHECK(rgb(0, 0, 0) == Approx(1.0));
-  CHECK(rgb(0, 0, 1) == Approx(0.75));
-  CHECK(rgb(0, 0, 2) == Approx(0.5));
+  CHECK(a3d(0, 0, 0) == Approx(1.0));
+  CHECK(a3d(0, 1, 0) == Approx(0.75));
+  CHECK(a3d(0, 0, 2) == Approx(0.5));
 }
 
 TEST_CASE("first steps: dynamic shape", "[xtensor]")
@@ -41,8 +41,8 @@ TEST_CASE("first steps: dynamic shape", "[xtensor]")
   CHECK(a3(1, 2) == Approx(0.0));
 
   auto v2 = xt::view(a2, 1, xt::all());
-  CHECK(v2(1, 2) == Approx(6.0));
-  v2(1, 2) = 1.2;
-  CHECK(v2(1, 2) == Approx(1.2));
+  CHECK(v2(2) == Approx(6.0));
+  v2(2) = 1.2;
+  CHECK(v2(2) == Approx(1.2));
   CHECK(a2(1, 2) == Approx(1.2));
 }
