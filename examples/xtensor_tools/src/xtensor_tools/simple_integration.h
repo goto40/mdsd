@@ -29,21 +29,21 @@ template<class T>
 void softmax_norm_vxvy(T& motion, size_t blurn, float pow_value=1.0f, float eps=0.0001f) {
     using VType = typename std::remove_reference_t<T>::value_type;
     auto [h,w,ivyn, ivxn] = motion.shape();
-    xt::xarray<VType> sumof = xt::zeros<VType>({h, w});
+    xt::xarray<VType> norm = xt::zeros<VType>({h, w});
     for (size_t y=0; y<h; y++) {
         for (size_t x=0; x<w; x++) {
             auto data = xt::view(motion, y, x, xt::all(), xt::all());
             data = pow(data, pow_value);
-            sumof(y, x) = 1; //xt::sum(data)[0];
+            norm(y, x) = 1; //xt::sum(data)[0];
         }
     }
-    // let norm = create_corr2_1d(&sumof.slice(s![.., ..]), &mask);
-    // for y in 0..shape[0] {
-    //     for x in 0..shape[1] {
-    //         let mut data = motion.motion_hw_vyvx.slice_mut(s![y, x, .., ..]);
-    //         data /= norm[[y, x]] + eps;
-    //     }
-    // }
+    xtensor_tools::blur_inplace(norm, blurn);
+    for (size_t y=0; y<h; y++) {
+        for (size_t x=0; x<w; x++) {
+            auto data = xt::view(motion, y, x, xt::all(), xt::all());
+            data /= norm(y, x) + eps;
+        }
+    }
 }
 
 } // end namespace

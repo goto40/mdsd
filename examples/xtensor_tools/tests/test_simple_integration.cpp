@@ -39,12 +39,6 @@ TEST_CASE("simple_integration", "[xtensor]")
     //CHECK(sum_vyvx(v0 + 3, v0 + 3) == xt::eval(xt::amax(xt::view(sum_vyvx, xt::range(v0 + 0, _), xt::all())))[0]);
     CHECK(sum_vyvx(v0 + 3, v0 + 3) == xt::eval(xt::amax(xt::view(sum_vyvx, xt::all(), xt::all())))[0]);
 
-    // stick is moving leftwards 0,-3
-    //std::cout << "sum_vyvx[0,:]: " << sum_vyvx << "\n";
-    CHECK(sum_vyvx(v0 + 0, v0 - 3) > 0.01);
-    CHECK(sum_vyvx(v0 + 0, v0 - 3) > sum_vyvx(v0 + 0, v0 - 4));
-    CHECK(sum_vyvx(v0 + 0, v0 - 3) > sum_vyvx(v0 + 0, v0 - 2));
-
     auto hsv = xtensor_tools::motion2hsv(im2, motion);
     xt::dump_image("simple_intgeration_fine_hsv.png", xtensor_tools::hsv2rgb(hsv)); // should not throw
 
