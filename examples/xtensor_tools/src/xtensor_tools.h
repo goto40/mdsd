@@ -5,5 +5,6 @@
 #include "xtensor_tools/vision.h"
 #include "xtensor_tools/tools.h"
 #include "xtensor_tools/simple_correlation.h"
+#include "xtensor_tools/simple_integration.h"
 
 #endif

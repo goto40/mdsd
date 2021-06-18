@@ -80,9 +80,6 @@ namespace xtensor_tools
         auto s = xt::view(hsv, xt::all(), xt::all(), 1);
         auto v = xt::view(hsv, xt::all(), xt::all(), 2);
 
-        /*        float xxx = h(0, 0);
-        r(1, 1) = 1;
-*/
         auto hi = xt::floor(h * 360.0 / 60.0);
         auto f = (h * 360.0 / 60.0) - hi;
         auto p = v * (1.0 - s);
@@ -92,7 +89,7 @@ namespace xtensor_tools
         for (size_t y = 0; y < shape[0]; y++)
         {
             for (size_t x = 0; x < shape[1]; x++)
-            { /*
+            { 
                 switch (static_cast<int>(hi(y, x)))
                 {
                 case 0:
@@ -128,7 +125,7 @@ namespace xtensor_tools
                     break;
                 default:
                     throw std::runtime_error("unexpected hi");
-                };*/
+                };
                 /*
                 r(y, x) = 1;
                 g(y, x) = 0;

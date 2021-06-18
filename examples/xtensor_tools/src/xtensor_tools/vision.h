@@ -117,16 +117,23 @@ namespace xtensor_tools
     }
 
     template <class T>
-    void blur_inplace(T &im, size_t n, bool norm = true)
+    void blur_inplace(T &&im, size_t n, bool norm = true)
     {
-        auto mask = hanning1d<typename T::value_type>(n);
+        auto mask = hanning1d<typename std::remove_reference_t<T>::value_type>(n);
         conv2d_1d_x(im, mask);
         conv2d_1d_y(im, mask);
         if (norm)
         {
-            typename T::value_type norm = xt::sum(mask)[0];
+            typename std::remove_reference_t<T>::value_type norm = xt::sum(mask)[0];
             im = im / (norm * norm);
         }
+    }
+
+    template <class T, class U>
+    void blur(const T &im, U &&im_out, size_t n, bool norm = true)
+    {
+        im_out = im;
+        blur_inplace(im_out, n, norm);
     }
 
     template <class T, class U>
