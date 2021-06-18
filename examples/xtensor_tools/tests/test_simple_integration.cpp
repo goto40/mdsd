@@ -5,7 +5,7 @@
 #include <xtensor/xio.hpp>
 #include <xtensor/xview.hpp>
 
-TEST_CASE("simple_integration", "[xtensor]")
+TEST_CASE("simple_integration1", "[xtensor]")
 {
     auto im1 = xtensor_tools::rgb2gray(xt::load_image("../tests/data/exampleD/exampleD_000.png"));
     auto im2 = xtensor_tools::rgb2gray(xt::load_image("../tests/data/exampleD/exampleD_001.png"));
