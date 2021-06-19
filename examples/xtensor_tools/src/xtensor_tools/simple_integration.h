@@ -26,9 +26,9 @@ void integrate_vxvy(const T &input, T& output, size_t n=7) {
 }
 
 template<class T>
-void softmax_norm_vxvy(T& motion, size_t blurn, float pow_value=1.0f, float eps=0.0001f) {
+void softmax_norm_vxvy(T& motion, size_t blurn, float pow_value=2.0f, float eps=0.00001f) {
     using VType = typename std::remove_reference_t<T>::value_type;
-    auto [h,w,ivyn, ivxn] = motion.shape();
+    auto [h, w, ivyn, ivxn] = motion.shape();
     xt::xarray<VType> norm = xt::zeros<VType>({h, w});
     for (size_t y=0; y<h; y++) {
         for (size_t x=0; x<w; x++) {
@@ -46,67 +46,54 @@ void softmax_norm_vxvy(T& motion, size_t blurn, float pow_value=1.0f, float eps=
     }
 }
 
-/*
-pub fn blur_vxvy(motion: &mut MotionBlock, blurn: usize) {
-    let shape = motion.motion_hw_vyvx.raw_dim();
-    let mask = hanningmask1d(blurn);
-    for y in 0..shape[0] {
-        for x in 0..shape[1] {
-            let blurred = create_corr2_1d(&motion.motion_hw_vyvx.slice(s![y, x, .., ..]), &mask);
-            motion
-                .motion_hw_vyvx
-                .slice_mut(s![y, x, .., ..])
-                .assign(&blurred);
+template<class T>
+void blur_vxvy(T& motion, size_t blurn) {
+    auto [h, w, ivyn, ivxn] = motion.shape();
+    for (size_t y=0;y<h;y++) {
+        for (size_t x=0;x<w;x++) {
+            blur_inplace(xt::view(motion, y, x, xt::all(), xt::all()), blurn);
         }
     }
 }
 
-pub fn modulate_motion(v1: &mut MotionBlock, mt: &mut MotionBlock, c: f32, f: f32, pow: f32) {
-    let shape = v1.motion_hw_vyvx.raw_dim();
-    if shape != mt.motion_hw_vyvx.raw_dim() {
-        mt.motion_hw_vyvx = Array4::zeros(shape);
+/** Note: mt is initialized with 0 in case its shape is not matching v1
+ */
+template<class T, class U>
+void modulate_motion(T& v1, U& mt, float c, float f=1.0f, float p=2.0f) {
+    auto [h, w, ivyn, ivxn] = v1.shape();
+    if (v1.shape() != mt.shape()) {
+        mt = xt::zeros<typename U::value_type>({h, w, ivyn, ivxn});
     }
-    Zip::from(&mut v1.motion_hw_vyvx)
-        .and(&mt.motion_hw_vyvx)
-        .for_each(|v1v, mtv| {
-            *v1v *= c + f * mtv.powf(pow);
-        });
+    v1 *= c + f*pow(mt,p);
 }
 
-pub fn predict_motion(motion: &mut MotionBlock) {
-    let shape = motion.motion_hw_vyvx.raw_dim();
-    for ivy in 0..shape[2] {
-        let sivy = ivy as i32;
-        let shift_y = sivy - shape[2] as i32 / 2;
-        let h = shape[0] - shift_y.abs() as usize;
-        let (ys0, yd0) = if shift_y < 0 {
-            (-shift_y as usize, 0)
-        } else {
-            (0, shift_y as usize)
-        };
+template<class T>
+void predict_motion(T &motion) {
+    using VType = typename std::remove_reference_t<T>::value_type;
+    auto [full_h, full_w, ivyn, ivxn] = motion.shape();
+    for (size_t ivy=0; ivy<ivyn; ivy++) {
+        ssize_t sivy = static_cast<ssize_t>(ivy);
+        ssize_t shift_y = sivy - static_cast<ssize_t>(ivyn) / 2;
+        size_t h = full_h - static_cast<size_t>(std::abs(shift_y));
+        size_t ys0 = static_cast<size_t>(-shift_y); // may be ununsed
+        size_t yd0 = 0;
+        if (shift_y>=0) { ys0 = 0; yd0 = static_cast<size_t>(shift_y); }
 
-        for ivx in 0..shape[3] {
-            let sivx = ivx as i32;
-            let shift_x = sivx - shape[3] as i32 / 2;
-            let w = shape[1] - shift_x.abs() as usize;
-            let (xs0, xd0) = if shift_x < 0 {
-                (-shift_x as usize, 0)
-            } else {
-                (0, shift_x as usize)
-            };
-            let tmp = motion
-                .motion_hw_vyvx
-                .slice(s![ys0..ys0 + h, xs0..xs0 + w, ivy, ivx])
-                .to_owned(); // copy
-            motion
-                .motion_hw_vyvx
-                .slice_mut(s![yd0..yd0 + h, xd0..xd0 + w, ivy, ivx])
-                .assign(&tmp);
+        for (size_t ivx=0; ivx<ivxn; ivx++) {
+            ssize_t sivx = static_cast<ssize_t>(ivx);
+            ssize_t shift_x = sivx - static_cast<ssize_t>(ivxn) / 2;
+            size_t w = full_w - static_cast<size_t>(std::abs(shift_x));
+            size_t xs0 = static_cast<size_t>(-shift_x); // may be ununsed
+            size_t xd0 = 0;
+            if (shift_x>=0) { xs0 = 0; xd0 = static_cast<size_t>(shift_x); }
+
+            xt::xarray<VType> tmp = xt::zeros<VType>({full_h, full_w});
+            xt::view(tmp, xt::range(yd0, yd0+h), xt::range(xd0,xd0+w)) = 
+                xt::view(motion, xt::range(ys0, ys0+h), xt::range(xs0,xs0+w), ivy, ivx);
+            xt::view(motion, xt::all(), xt::all(), ivy, ivx) = tmp;
         }
     }
 }
-
-*/
 
 } // end namespace
 #endif
