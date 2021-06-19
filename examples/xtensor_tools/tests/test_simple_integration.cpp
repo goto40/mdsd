@@ -48,8 +48,12 @@ TEST_CASE("simple_integration1", "[xtensor]")
 
 TEST_CASE("simple_integration2", "[xtensor]")
 {
-    xt::xtensor<float, 4> v1;
+    xt::xtensor<float, 4> v1, v1_raw;
     xt::xtensor<float, 4> mt;
+
+    constexpr size_t v_n = 15;
+    constexpr size_t v0 = v_n / 2;
+    v1_raw.resize({1, 1, v_n, v_n});
 
     for (size_t idx=0;idx<8;idx++) {
         char fname[1000];
@@ -62,12 +66,10 @@ TEST_CASE("simple_integration2", "[xtensor]")
         xtensor_tools::center_surround(im1, 3, cs1);
         xtensor_tools::center_surround(im2, 3, cs2);
 
-        constexpr size_t v_n = 15;
-        constexpr size_t v0 = v_n / 2;
-        v1.resize({1, 1, v_n, v_n});
+        xtensor_tools::simple_correlation(cs1, cs2, 5, v1_raw);
 
-        for (size_t k=0;k<3;k++) {
-            xtensor_tools::simple_correlation(cs1, cs2, 5, v1);
+        for (size_t k=0;k<10;k++) {
+            v1 = v1_raw;
 
             xtensor_tools::modulate_motion(v1, mt, 1.0, 1000.0, 1.0);
             xtensor_tools::softmax_norm_vxvy(v1, 3, 2.0, 0.00001);
@@ -79,11 +81,11 @@ TEST_CASE("simple_integration2", "[xtensor]")
             CHECK(xt::eval(xt::amin(mt))[0] >= 0.0);
 
             auto hsv = xtensor_tools::motion2hsv(im2, v1);
-            sprintf(fname, "simple_correlation_test2_v1_%03lu_%lu.png", idx+1,k);
+            sprintf(fname, "simple_correlation_test2_v1_%03lu_%02lu.png", idx+1,k);
             xt::dump_image(fname, xtensor_tools::hsv2rgb(hsv)); // should not throw
 
             hsv = xtensor_tools::motion2hsv(im2, mt);
-            sprintf(fname, "simple_correlation_test2_mt_%03lu_%lu.png", idx+1,k);
+            sprintf(fname, "simple_correlation_test2_mt_%03lu_%02lu.png", idx+1,k);
             xt::dump_image(fname, xtensor_tools::hsv2rgb(hsv)); // should not throw        
         }
         xtensor_tools::predict_motion(mt);
