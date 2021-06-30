@@ -2,6 +2,7 @@ import click
 from big_example.Polygon import Polygon
 from mdsd.item.printto import printto
 from mdsd.item.io import copy_to_mem, count_bytes
+from mdsd.item_support import adjust_array_sizes_and_variants
 import sys
 import socket
 
@@ -18,8 +19,11 @@ def send_via_udp(count, host, port):
 
     for x in range(count):
         data = Polygon()
-        data.p[2].x=1.2
-        data.p[2].y=3.4
+        data.n=3+x
+        adjust_array_sizes_and_variants(data)
+        for p in range(data.n):
+            data.p[p].x=  p+0.99
+            data.p[p].y= -p-.33
         n = count_bytes(data)
         click.echo(f"send {x}: {n} bytes...")
         #printto(data, sys.stdout)
