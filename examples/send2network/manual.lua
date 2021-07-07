@@ -13,7 +13,7 @@ field_y = ProtoField.float("y", "y", base.DEC)
 point_fields = { field_x, field_y }
 
 field_n = ProtoField.uint32("n", "n", base.DEC)
-field_c = ProtoField.uint8("c", "c", base.DEC)
+field_c = ProtoField.uint8("c", "c", base.ENC_ASCII)
 polygon_fields = { field_c, field_n }
 
 manual_protocol.fields = {}
@@ -55,7 +55,7 @@ function dissector_polygon(proto, buffer, pos, tree)
     pos = dissector_point(proto, buffer, pos, subtree_p)
   end
 
-  local subtree_c = subtree:add(proto, buffer(), "xxx")
+  local subtree_c = subtree:add(proto, buffer(), "string=" .. buffer(pos,4):stringz())
   for k = 1, 100 do
     subtree_c:add_le(field_c, buffer(pos,1))
     pos = pos+1
