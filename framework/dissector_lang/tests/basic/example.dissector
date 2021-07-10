@@ -1,0 +1,10 @@
+import "example.item"
+
+dissector MyDissector {
+    parse 
+        items.VariantExample
+    for
+        udp 50000
+        tcp 50001
+        udp 50002
+}
