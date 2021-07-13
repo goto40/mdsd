@@ -2,7 +2,7 @@ from functools import reduce
 import sys
 import inspect
 import item_lang.metamodel_formula as f
-
+from textx import textx_isinstance, get_children_of_type, get_metamodel
 
 def get_all_classes():
     res = []
@@ -20,7 +20,16 @@ class RawType(object):
             
     def get_size_in_bytes(self):
         assert self.bits % 8 == 0
-        return self.bits//8    
+        return self.bits//8
+
+    def is_rawtype(self):
+        return True
+
+    def is_enum(self):
+        return False
+
+    def is_struct(self):
+        return False
 
 
 class Enum(object):
@@ -32,6 +41,31 @@ class Enum(object):
 
     def get_size_in_bytes(self):
         return self.type.get_size_in_bytes()    
+
+    def is_rawtype(self):
+        return False
+
+    def is_enum(self):
+        return True
+
+    def is_struct(self):
+        return False
+
+
+class Constants(object):
+    def __init__(self, **kwargs):
+        setattr(self, "parent", None)
+        for k in kwargs.keys():
+            setattr(self, k, kwargs[k])
+
+    def is_rawtype(self):
+        return False
+
+    def is_enum(self):
+        return False
+
+    def is_struct(self):
+        return False
 
 
 class VariantAttribute(object):
@@ -52,6 +86,12 @@ class VariantAttribute(object):
 
     def __str__(self):
         return self.parent.name + "." + self.name
+
+    def has_rawtype(self):
+        return False
+
+    def has_enum(self):
+        return False
 
 
 class ScalarAttribute(object):
@@ -83,6 +123,12 @@ class ScalarAttribute(object):
 
     def __str__(self):
         return self.parent.name + "." + self.name
+
+    def has_rawtype(self):
+        return self.type.is_rawtype()
+
+    def has_enum(self):
+        return self.type.is_enum()
 
 
 class Struct(object):
@@ -117,6 +163,15 @@ class Struct(object):
 
     def __str__(self):
         return self.name
+
+    def is_rawtype(self):
+        return False
+
+    def is_enum(self):
+        return False
+
+    def is_struct(self):
+        return True
 
 
 class Package(object):
@@ -159,6 +214,18 @@ class ArrayAttribute(object):
             lambda a, b: a * b, map(lambda x: x.dim.compute_formula(), self.dims), 1
         )
 
+    def get_referenceed_dim_attributes(self):
+        mm = get_metamodel(self)
+        l = []
+        for d in self.dims:
+            l = l + list(
+                filter(
+                    lambda x: textx_isinstance(x.ref, mm["Attribute"]),
+                    get_children_of_type("AttrRef", self),
+                )
+            )
+        return l
+
     def render_formula(self, **kwargs):
         return reduce(
             lambda a, b: "{}*{}".format(a, b),
@@ -184,3 +251,9 @@ class ArrayAttribute(object):
 
     def __str__(self):
         return self.parent.name + "." + self.name
+
+    def has_rawtype(self):
+        return self.type.is_rawtype()
+
+    def has_enum(self):
+        return self.type.is_enum()

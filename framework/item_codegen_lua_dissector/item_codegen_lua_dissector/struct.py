@@ -34,13 +34,24 @@ def generate_lua_struct(f, i):
     f.write(f"-- lua code for {i.name}\n")
 
     for r in get_referenced_elements_of_struct(i):
-        f.write(f'local {modname(r)} = require("{fqn(r)}")\n')
+        if r.is_struct():
+            f.write(f'local {modname(r)} = require("{fqn(r)}")\n')
     f.write("\n")
 
-    mm = get_metamodel(i)
+
+    dim_variables = []
+    for a in i.attributes:
+        if a.is_array():
+            l = a.get_referenceed_dim_attributes()
+            dim_variables = dim_variables + l
+    dim_variable_names = list(map(lambda x: x.ref._tx_path, dim_variables))
+    for n in dim_variable_names:
+        f.write(f"-- dim variable: {'.'.join(map(lambda x:x.name, n))}\n")
+
+
     fields = []
     for a in i.attributes:
-        if not a.is_embedded() and not textx_isinstance(a, mm["VariantAttribute"]) and textx_isinstance(a.type, mm["RawType"]):
+        if not a.is_embedded() and (a.has_enum() or a.has_rawtype()):
             fields.append(a)
     for a in fields:
         f.write(f"local field_{a.name} = Protofield.{fqn(a.type)}(\"{a.name}\",\"{a.name}\", base.DEC)\n")
@@ -64,7 +75,7 @@ def generate_lua_struct(f, i):
             f.write(f"  subtree:add_le(field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
             f.write(f"  pos = pos+{a.type.get_size_in_bytes()}\n")
         else:
-            f.write(f"  todo {a.name}")
+            f.write(f"  todo {a.name}\n")
     
     f.write("  return pos\n")
     f.write("end\n")

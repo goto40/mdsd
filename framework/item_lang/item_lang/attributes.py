@@ -30,12 +30,7 @@ def is_dynamic(a):
     if textx_isinstance(a, mm["ScalarAttribute"]):
         return False
     if textx_isinstance(a, mm["ArrayAttribute"]):
-        attr_refs = list(
-            filter(
-                lambda x: textx_isinstance(x.ref, mm["Attribute"]),
-                get_children_of_type("AttrRef", a),
-            )
-        )
+        attr_refs = a.get_referenceed_dim_attributes()
         if len(attr_refs) > 0:
             return True
         else:
