@@ -1,0 +1,6 @@
+pytest
+flake8
+coverage
+textx
+black
+item_lang
