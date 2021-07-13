@@ -17,6 +17,10 @@ class RawType(object):
         setattr(self, "parent", None)
         for k in kwargs.keys():
             setattr(self, k, kwargs[k])
+            
+    def get_size_in_bytes(self):
+        assert self.bits % 8 == 0
+        return self.bits//8    
 
 
 class Enum(object):
@@ -25,6 +29,9 @@ class Enum(object):
         for k in kwargs.keys():
             setattr(self, k, kwargs[k])
         setattr(self, "internaltype", "ENUM")
+
+    def get_size_in_bytes(self):
+        return self.type.get_size_in_bytes()    
 
 
 class VariantAttribute(object):

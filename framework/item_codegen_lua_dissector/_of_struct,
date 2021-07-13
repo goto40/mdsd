@@ -1,0 +1,640 @@
+[38;5;28;01mimport[39;00m [38;5;21;01mtextx[39;00m
+[38;5;28;01mfrom[39;00m [38;5;21;01mtextx[39;00m [38;5;28;01mimport[39;00m get_metamodel
+[38;5;28;01mfrom[39;00m [38;5;21;01mitem_lang.properties[39;00m [38;5;28;01mimport[39;00m (
+    get_all_possible_properties,
+    has_property,
+    get_fixpoint_LSB_value,
+    get_fixpoint_offset_value,
+    has_fixpoint,
+)  [38;5;66m# TODO: why is the offset value function not used?[39m
+[38;5;28;01mfrom[39;00m [38;5;21;01mitem_lang.common[39;00m [38;5;28;01mimport[39;00m (
+    get_referenced_elements_of_struct,
+    get_start_end_bit,
+    get_bits,
+    get_container,
+    obj_is_newer_than_file,
+)
+[38;5;28;01mfrom[39;00m [38;5;21;01mitem_lang.attributes[39;00m [38;5;28;01mimport[39;00m is_dynamic
+[38;5;28;01mfrom[39;00m [38;5;21;01mitem_codegen_cpp.common[39;00m [38;5;28;01mimport[39;00m (
+    get_package_names_of_obj,
+    output_filename,
+    get_variant_types,
+    get_cpp_return_type,
+    fqn,
+    tf,
+    get_open_namespace_for_obj,
+    define_swig_array,
+    define_swig_variant_access,
+    define_swig_vector,
+    get_property_type,
+    get_property_constexpr,
+    get_signed_or_unsigned,
+)
+[38;5;28;01mfrom[39;00m [38;5;21;01mos.path[39;00m [38;5;28;01mimport[39;00m exists
+
+
+[38;5;28;01mdef[39;00m [38;5;21mgenerate_cpp_for_struct[39m(struct_obj, output_file, overwrite):
+    [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m exists(output_file) [38;5;129;01mor[39;00m (
+        overwrite [38;5;129;01mand[39;00m obj_is_newer_than_file(struct_obj, output_file)
+    ):
+        [38;5;28;01mwith[39;00m [38;5;28mopen[39m(output_file, [38;5;124m"[39m[38;5;124mw[39m[38;5;124m"[39m) [38;5;28;01mas[39;00m f:
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m#ifndef __{}_{}_H[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    [38;5;124m"[39m[38;5;124m_[39m[38;5;124m"[39m[38;5;241m.[39mjoin(get_package_names_of_obj(struct_obj)),
+                    struct_obj[38;5;241m.[39mname[38;5;241m.[39mupper(),
+                )
+            )
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m#define __{}_{}_H[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    [38;5;124m"[39m[38;5;124m_[39m[38;5;124m"[39m[38;5;241m.[39mjoin(get_package_names_of_obj(struct_obj)),
+                    struct_obj[38;5;241m.[39mname[38;5;241m.[39mupper(),
+                )
+            )
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m// ACTIVATE FOR SWIG[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#include <cstdint>[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#include <vector>[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#include <array>[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#include <variant>[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#include <memory>[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#include <stdexcept>[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#include <type_traits>[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m#include [39m[38;5;124m"[39m[38;5;124mmdsd/item_support.h[39m[38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m)
+            f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m#include [39m[38;5;124m"[39m[38;5;124mmdsd/virtual_struct.h[39m[38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m)
+            f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m#include [39m[38;5;124m"[39m[38;5;124mmdsd/item/init_default_values.h[39m[38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+            [38;5;28;01mfor[39;00m r [38;5;129;01min[39;00m get_referenced_elements_of_struct(struct_obj):
+                f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m#include [39m[38;5;124m"[39m[38;5;124m{}[39m[38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m[38;5;241m.[39mformat(output_filename([38;5;28mNone[39m, r)))
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+            generate_cpp_struct(f, struct_obj)
+
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m#endif // __{}_{}_H[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    [38;5;124m"[39m[38;5;124m_[39m[38;5;124m"[39m[38;5;241m.[39mjoin(get_package_names_of_obj(struct_obj)),
+                    struct_obj[38;5;241m.[39mname[38;5;241m.[39mupper(),
+                )
+            )
+
+
+[38;5;28;01mdef[39;00m [38;5;21m_extra_init_required[39m(i):
+    [38;5;28;01mreturn[39;00m [38;5;129;01mnot[39;00m is_dynamic(i)
+
+
+[38;5;28;01mdef[39;00m [38;5;21m_get_ctor_param_type[39m(a):
+    mm [38;5;241m=[39m get_metamodel(a)
+    [38;5;28;01mif[39;00m a[38;5;241m.[39mis_embedded():
+        [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+            [38;5;28;01mreturn[39;00m get_cpp_return_type(a[38;5;241m.[39mtype)
+        [38;5;28;01melif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mArrayAttribute[39m[38;5;124m"[39m]):
+            [38;5;28;01mreturn[39;00m f[38;5;124m"[39m[38;5;124mstd::array<{get_cpp_return_type(a.type)},{a.compute_formula()}>[39m[38;5;124m"[39m
+    [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+        [38;5;28;01mreturn[39;00m fqn(a[38;5;241m.[39mtype)
+    [38;5;28;01melif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mArrayAttribute[39m[38;5;124m"[39m]):
+        [38;5;28;01mif[39;00m a[38;5;241m.[39mhas_fixed_size():
+            [38;5;28;01mreturn[39;00m f[38;5;124m"[39m[38;5;124mstd::array<{fqn(a.type)},{a.compute_formula()}>[39m[38;5;124m"[39m
+        [38;5;28;01melse[39;00m:
+            [38;5;28;01mreturn[39;00m f[38;5;124m"[39m[38;5;124mstd::vector<{fqn(a.type)}>[39m[38;5;124m"[39m
+    [38;5;28;01melif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mVariantAttribute[39m[38;5;124m"[39m]):
+        [38;5;28;01mreturn[39;00m f[38;5;124m"[39m[38;5;124mstd::variant<{get_variant_types(a)}>[39m[38;5;124m"[39m
+    [38;5;28;01melse[39;00m:
+        [38;5;28;01mraise[39;00m [38;5;167;01mException[39;00m([38;5;124m"[39m[38;5;124munexpected type[39m[38;5;124m"[39m)
+
+
+[38;5;28;01mdef[39;00m [38;5;21m_get_ctor_params[39m(i):
+    res [38;5;241m=[39m [38;5;124m"[39m[38;5;124m"[39m
+    comma [38;5;241m=[39m [38;5;124m"[39m[38;5;124m"[39m
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m a[38;5;241m.[39mis_container():
+            res [38;5;241m+[39m[38;5;241m=[39m comma [38;5;241m+[39m f[38;5;124m"[39m[38;5;124mconst {_get_ctor_param_type(a)} &_p_{a.name}[39m[38;5;124m"[39m
+            comma [38;5;241m=[39m [38;5;124m"[39m[38;5;124m,[39m[38;5;124m"[39m
+    [38;5;28;01mreturn[39;00m res
+
+
+[38;5;28;01mdef[39;00m [38;5;21m_get_ctor_body[39m(i):
+    res [38;5;241m=[39m [38;5;124m"[39m[38;5;124m"[39m
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        [38;5;28;01mif[39;00m a[38;5;241m.[39mis_embedded():
+            [38;5;28;01mif[39;00m a[38;5;241m.[39mis_array():
+                res [38;5;241m+[39m[38;5;241m=[39m f[38;5;124m"[39m[38;5;124mfor(size_t __idx=0;__idx<_p_{a.name}.size();__idx++) [39m[38;5;124m"[39m\
+                       f[38;5;124m"[39m[38;5;124m{{ {a.name}(__idx, _p_{a.name}[__idx]); }} [39m[38;5;124m"[39m
+            [38;5;28;01melse[39;00m:
+                res [38;5;241m+[39m[38;5;241m=[39m f[38;5;124m"[39m[38;5;124m{a.name}(_p_{a.name}); [39m[38;5;124m"[39m
+        [38;5;28;01melif[39;00m [38;5;129;01mnot[39;00m a[38;5;241m.[39mis_container():
+            res [38;5;241m+[39m[38;5;241m=[39m f[38;5;124m"[39m[38;5;124m{a.name} = _p_{a.name}; [39m[38;5;124m"[39m
+    [38;5;28;01mreturn[39;00m res
+
+
+[38;5;28;01mdef[39;00m [38;5;21mgenerate_cpp_struct[39m(f, i):
+    [38;5;124m"""[39m
+[38;5;124m    :param f: output file obj[39m
+[38;5;124m    :param i: item to be generated (the struct)[39m
+[38;5;124m    """[39m
+    mm [38;5;241m=[39m textx[38;5;241m.[39mget_metamodel(i)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m//---------------------------[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#ifdef SWIG[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;132;01m%s[39;00m[38;5;124mhared_ptr({});[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(fqn(i)))
+    f[38;5;241m.[39mwrite(
+        [38;5;124m"[39m[38;5;124m%[39m[38;5;124mtemplate(MDSD_StructFunctions_{}) mdsd::StructFunctions<{}>;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+            i[38;5;241m.[39mname, fqn(i)
+        )
+    )
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m%[39m[38;5;124mtemplate(MDSD_Struct_{}) mdsd::Struct<{}>;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(i[38;5;241m.[39mname, fqn(i)))
+    f[38;5;241m.[39mwrite(
+        [38;5;124m"[39m[38;5;124m%[39m[38;5;124mtemplate(MDSD_StructWrapper_{}) mdsd::StructWrapper<{}>;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+            i[38;5;241m.[39mname, fqn(i)
+        )
+    )
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mArrayAttribute[39m[38;5;124m"[39m]):
+            [38;5;28;01mif[39;00m a[38;5;241m.[39mhas_fixed_size():
+                f[38;5;241m.[39mwrite(define_swig_array(a[38;5;241m.[39mtype, a[38;5;241m.[39mcompute_formula(), mm))
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite(define_swig_vector(a[38;5;241m.[39mtype, mm))
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#endif[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m//---------------------------[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite(get_open_namespace_for_obj(i))
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124mstruct {} {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(i[38;5;241m.[39mname))
+
+    [38;5;28;01mfor[39;00m c [38;5;129;01min[39;00m i[38;5;241m.[39mconstant_entries:
+        f[38;5;241m.[39mwrite(
+            [38;5;124m"[39m[38;5;124m  static constexpr {} {} = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                fqn(c[38;5;241m.[39mtype), c[38;5;241m.[39mname, c[38;5;241m.[39mvalue[38;5;241m.[39mrender_formula()
+            )
+        )
+
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        [38;5;28;01mif[39;00m a[38;5;241m.[39mis_embedded():
+            value_type [38;5;241m=[39m get_cpp_return_type(a[38;5;241m.[39mtype)
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  inline {} {}() const;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(value_type, a[38;5;241m.[39mname))
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m  inline {} {}(size_t idx) const;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(value_type, a[38;5;241m.[39mname)
+                )
+
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  inline void {}({} val);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname, value_type))
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m  inline void {}(size_t idx, {} val);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname, value_type)
+                )
+            [38;5;28;01mcontinue[39;00m
+
+        [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  {} {} = {{}};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(fqn(a[38;5;241m.[39mtype), a[38;5;241m.[39mname))
+        [38;5;28;01melif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mArrayAttribute[39m[38;5;124m"[39m]):
+            [38;5;28;01mif[39;00m a[38;5;241m.[39mhas_fixed_size():
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m  std::array<{},{}> {} = {{}};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        fqn(a[38;5;241m.[39mtype), a[38;5;241m.[39mcompute_formula(), a[38;5;241m.[39mname
+                    )
+                )
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  std::vector<{}> {} = {{}};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(fqn(a[38;5;241m.[39mtype), a[38;5;241m.[39mname))
+        [38;5;28;01melif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mVariantAttribute[39m[38;5;124m"[39m]):
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m  std::variant<{}> {} = {{}};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(get_variant_types(a), a[38;5;241m.[39mname)
+            )
+        [38;5;28;01melse[39;00m:
+            [38;5;28;01mraise[39;00m [38;5;167;01mException[39;00m([38;5;124m"[39m[38;5;124munexpected type[39m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite(
+        [38;5;124m"[39m[38;5;124m  mdsd::StructWrapper<{0}> _GET_WRAPPER() {{ return mdsd::StructWrapper<{0}>{{this}}; }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+            i[38;5;241m.[39mname
+        )
+    )
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;130;01m\n[39;00m[38;5;124m#ifndef SWIG[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  struct META {[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    [38;5;66m# ----------------------------------------[39m
+    f[38;5;241m.[39mwrite(
+        [38;5;124m"[39m[38;5;124m    template<class STRUCT,class VISITOR, class ...T> // enable accept for this struct: [39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+    )
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m    static void __accept_varargs(VISITOR &&v, T&... s) {[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      v.template visit<{}::META::{}>(s...);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(i[38;5;241m.[39mname, a[38;5;241m.[39mname))
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m    }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    [38;5;66m# ----------------------------------------[39m
+
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m    static constexpr const char* __name() [39m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m{{ return [39m[38;5;124m"[39m[38;5;124m{}[39m[38;5;124m"[39m[38;5;124m; }}[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m[38;5;241m.[39mformat(i[38;5;241m.[39mname))
+    f[38;5;241m.[39mwrite(f[38;5;124m"[39m[38;5;124m    static constexpr bool __is_dynamic = {tf(is_dynamic(i))};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m    struct {} {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname))
+        f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      using STRUCT={};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(i[38;5;241m.[39mname))
+        f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr const char* __name() [39m[38;5;124m"[39m)
+        f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m{{ return [39m[38;5;124m"[39m[38;5;124m{}[39m[38;5;124m"[39m[38;5;124m; }}[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname))
+        [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mVariantAttribute[39m[38;5;124m"[39m]):
+            f[38;5;241m.[39mwrite(f[38;5;124m"[39m[38;5;124m      using __type = {fqn(a.type)};[39m[38;5;124m"[39m)
+        f[38;5;241m.[39mwrite(f[38;5;124m"[39m[38;5;124m      static constexpr bool __is_dynamic = {tf(is_dynamic(a))};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+        [38;5;28;01mif[39;00m [38;5;28mhasattr[39m(a, [38;5;124m"[39m[38;5;124mtype[39m[38;5;124m"[39m) [38;5;129;01mand[39;00m a[38;5;241m.[39mtype[38;5;241m.[39mname [38;5;241m==[39m [38;5;124m"[39m[38;5;124mchar[39m[38;5;124m"[39m:
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __has_char_content = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+        [38;5;28;01melse[39;00m:
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __has_char_content = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+        [38;5;28;01mif[39;00m a[38;5;241m.[39mif_attr [38;5;129;01mis[39;00m [38;5;28mNone[39m:
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __has_if_restriction = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __if_restriction(const STRUCT &) { return true; }[39m[38;5;130;01m\n[39;00m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            )
+        [38;5;28;01melse[39;00m:
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __has_if_restriction = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __if_restriction(const STRUCT &s) {{ return {}; }}[39m[38;5;130;01m\n[39;00m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    a[38;5;241m.[39mif_attr[38;5;241m.[39mpredicate[38;5;241m.[39mrender_formula(prefix[38;5;241m=[39m[38;5;124m"[39m[38;5;124ms.[39m[38;5;124m"[39m)
+                )
+            )
+
+        [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m (a[38;5;241m.[39mis_embedded()):
+            [38;5;28;01mif[39;00m (
+                textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mArrayAttribute[39m[38;5;124m"[39m])
+                [38;5;129;01mand[39;00m a[38;5;241m.[39mtype[38;5;241m.[39mname [38;5;241m==[39m [38;5;124m"[39m[38;5;124mchar[39m[38;5;124m"[39m
+            ):
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr auto __get_ref(STRUCT &s) {{ return mdsd::String(s.{}); }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        a[38;5;241m.[39mname
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr const auto __get_ref(const STRUCT &s)[39m[38;5;124m"[39m
+                    [38;5;124m"[39m[38;5;124m {{ return mdsd::String(s.{}); }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname)
+                )
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr auto& __get_ref(STRUCT &s) {{ return s.{}; }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        a[38;5;241m.[39mname
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr const auto& __get_ref(const STRUCT &s) {{ return s.{}; }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        a[38;5;241m.[39mname
+                    )
+                )
+        [38;5;28;01melse[39;00m:
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr auto& __get_ref_of_container(STRUCT &s) {{ return s.{}; }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    get_container(a)[38;5;241m.[39mname
+                )
+            )
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr const auto& __get_ref_of_container(const STRUCT &s)[39m[38;5;124m"[39m
+                [38;5;124m"[39m[38;5;124m {{ return s.{}; }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(get_container(a)[38;5;241m.[39mname)
+            )
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mArrayAttribute[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr auto __get_ref(STRUCT &s) {{ return mdsd::makeArrayRef<{}>([39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        fqn(a[38;5;241m.[39mtype)
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m          [&s](size_t idx){{ return s.{}(idx); }},[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        a[38;5;241m.[39mname
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m          [&s](size_t idx, {} x){{ return s.{}(idx, x); }},[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        fqn(a[38;5;241m.[39mtype), a[38;5;241m.[39mname
+                    )
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m          {}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mcompute_formula()))
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      ); }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr auto __get_ref(const STRUCT &s)[39m[38;5;124m"[39m
+                    [38;5;124m"[39m[38;5;124m {{ return mdsd::makeCArrayRef<{}>([39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(fqn(a[38;5;241m.[39mtype))
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m          [&s](size_t idx){{ return s.{}(idx); }},[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        a[38;5;241m.[39mname
+                    )
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m          {}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mcompute_formula()))
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      ); }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr auto __get_ref(STRUCT &s) {{ return mdsd::makeRef<{}>([39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        fqn(a[38;5;241m.[39mtype)
+                    )
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m          [&s](){{ return s.{}(); }},[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname))
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m          [&s]({} x){{ return s.{}(x); }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        fqn(a[38;5;241m.[39mtype), a[38;5;241m.[39mname
+                    )
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      ); }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr auto __get_ref(const STRUCT &s) {{ return mdsd::makeCRef<{}>([39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        fqn(a[38;5;241m.[39mtype)
+                    )
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m          [&s](){{ return s.{}(); }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname))
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      ); }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+        pdefs [38;5;241m=[39m get_all_possible_properties(a)
+        pdefs [38;5;241m=[39m [38;5;28msorted[39m(pdefs[38;5;241m.[39mkeys())
+
+        [38;5;28;01mif[39;00m [38;5;124m"[39m[38;5;124mfixpointLsbValue[39m[38;5;124m"[39m [38;5;129;01min[39;00m pdefs:
+            [38;5;28;01mif[39;00m has_fixpoint(a):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_fixpoint = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m      static constexpr double __fixpointLsbValue = {get_fixpoint_LSB_value(a)};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m      static constexpr double __fixpointOffsetValue = {get_fixpoint_offset_value(a)};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m      template<class FLOAT=double> static constexpr {fqn(a.type)} __float2integral(FLOAT f) [39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m{{ return static_cast<{fqn(a.type)}>(std::llround((f-__fixpointOffsetValue)[39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m/__fixpointLsbValue)); }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m      template<class FLOAT=double> static constexpr FLOAT __integral2float({fqn(a.type)} i) [39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m{{ return static_cast<FLOAT>(i)*__fixpointLsbValue+__fixpointOffsetValue; }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_fixpoint = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+        [38;5;28;01melse[39;00m:
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_fixpoint = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+        [38;5;28;01mfor[39;00m pname [38;5;129;01min[39;00m pdefs:
+            [38;5;28;01mif[39;00m has_property(a, pname):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __has_{} = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(pname))
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr {} {}() {{ return {};}}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        get_cpp_return_type(get_property_type(a, pname)),
+                        pname,
+                        get_property_constexpr(a, pname),
+                    )
+                )
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __has_{} = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(pname))
+
+        [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mVariantAttribute[39m[38;5;124m"[39m]):
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      template<class S, class F> // S may also be const[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static void __call_function_on_concrete_variant_type(S &s, F f) {[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            )
+
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m        switch(s.{}) {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mvariant_selector[38;5;241m.[39mrender_formula())
+            )
+            [38;5;28;01mfor[39;00m m [38;5;129;01min[39;00m a[38;5;241m.[39mmappings:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m          case {}: [39m[38;5;124m"[39m[38;5;241m.[39mformat(m[38;5;241m.[39mid))
+                [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(m[38;5;241m.[39mtype, mm[[38;5;124m"[39m[38;5;124mRawType[39m[38;5;124m"[39m]):
+                    f[38;5;241m.[39mwrite(
+                        [38;5;124m"[39m[38;5;124mf(std::get<{}>(s.{})); break;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(fqn(m[38;5;241m.[39mtype), a[38;5;241m.[39mname)
+                    )
+                [38;5;28;01melse[39;00m:
+                    f[38;5;241m.[39mwrite(
+                        [38;5;124m"[39m[38;5;124mf(std::get<{}>(s.{})); break;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(fqn(m[38;5;241m.[39mtype), a[38;5;241m.[39mname)
+                    )
+            f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m          default: throw std::runtime_error([39m[38;5;124m"[39m[38;5;124m(unexpected id)[39m[38;5;124m"[39m[38;5;124m);[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m        }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      template<class S> // S may also be const[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static void __init_variant_type_if_type_is_not_matching(S &s) {[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            )
+
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m        switch(s.{}) {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mvariant_selector[38;5;241m.[39mrender_formula())
+            )
+            [38;5;28;01mfor[39;00m m [38;5;129;01min[39;00m a[38;5;241m.[39mmappings:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m          case {}: [39m[38;5;124m"[39m[38;5;241m.[39mformat(m[38;5;241m.[39mid))
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124mif (not std::holds_alternative<{}>(s.{})) {{ s.{}={}{{}}; }} break;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        fqn(m[38;5;241m.[39mtype),
+                        a[38;5;241m.[39mname,
+                        a[38;5;241m.[39mname,
+                        fqn(m[38;5;241m.[39mtype),
+                    )
+                )
+            f[38;5;241m.[39mwrite([38;5;124m'[39m[38;5;124m          default: throw std::runtime_error([39m[38;5;124m"[39m[38;5;124munexpected id[39m[38;5;124m"[39m[38;5;124m);[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m        }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_scalar = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_variant = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_array = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_enumtype = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_rawtype = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_struct = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __is_container = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    tf(a[38;5;241m.[39mis_container())
+                )
+            )
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __is_embedded = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    tf(a[38;5;241m.[39mis_embedded())
+                )
+            )
+        [38;5;28;01melif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_scalar = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_variant = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_array = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a[38;5;241m.[39mtype, mm[[38;5;124m"[39m[38;5;124mEnum[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_enumtype = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_enumtype = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a[38;5;241m.[39mtype, mm[[38;5;124m"[39m[38;5;124mRawType[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_rawtype = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_rawtype = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a[38;5;241m.[39mtype, mm[[38;5;124m"[39m[38;5;124mStruct[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_struct = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_struct = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __is_container = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    tf(a[38;5;241m.[39mis_container())
+                )
+            )
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __is_embedded = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    tf(a[38;5;241m.[39mis_embedded())
+                )
+            )
+            [38;5;28;01mif[39;00m a[38;5;241m.[39mis_embedded():
+                start_end_bit [38;5;241m=[39m get_start_end_bit(a)
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr size_t __embedded_bits = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        get_bits(a[38;5;241m.[39mtype)
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr size_t __embedded_start_bit = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        start_end_bit[[38;5;241m0[39m]
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr size_t __embedded_end_bit = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        start_end_bit[[38;5;241m1[39m]
+                    )
+                )
+        [38;5;28;01melif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mArrayAttribute[39m[38;5;124m"[39m]):
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_scalar = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_variant = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_array = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01mif[39;00m a[38;5;241m.[39mhas_fixed_size():
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_dynamic_array = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_dynamic_array = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr size_t __get_dim([[maybe_unused]] const {} &{}) {{ return {};}}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    i[38;5;241m.[39mname,
+                    [38;5;124m"[39m[38;5;124ms[39m[38;5;124m"[39m [38;5;28;01mif[39;00m [38;5;129;01mnot[39;00m a[38;5;241m.[39mhas_fixed_size() [38;5;28;01melse[39;00m [38;5;124m"[39m[38;5;124m"[39m,
+                    a[38;5;241m.[39mrender_formula(prefix[38;5;241m=[39m[38;5;124m"[39m[38;5;124ms.[39m[38;5;124m"[39m),
+                )
+            )
+            txt [38;5;241m=[39m f[38;5;124m"[39m[38;5;124m      static constexpr size_t __get_dim([[maybe_unused]] const {i.name}[39m[38;5;124m"[39m
+            txt [38;5;241m+[39m[38;5;241m=[39m f[38;5;124m"[39m[38;5;124m&{[39m[38;5;124m'[39m[38;5;124ms[39m[38;5;124m'[39m[38;5;124m if not a.has_fixed_size() else [39m[38;5;124m'[39m[38;5;124m'[39m[38;5;124m}, size_t _idx) {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            txt [38;5;241m+[39m[38;5;241m=[39m [38;5;124m"[39m[38;5;124m            switch(_idx) {[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            [38;5;28;01mfor[39;00m idx [38;5;129;01min[39;00m [38;5;28mrange[39m([38;5;28mlen[39m(a[38;5;241m.[39mdims)):
+                txt [38;5;241m+[39m[38;5;241m=[39m f[38;5;124m"[39m[38;5;124m                  case {idx}: return {a.dims[idx].dim.render_formula(prefix=[39m[38;5;124m'[39m[38;5;124ms.[39m[38;5;124m'[39m[38;5;124m)};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            txt [38;5;241m+[39m[38;5;241m=[39m [38;5;124m'[39m[38;5;124m                 default: throw std::runtime_error([39m[38;5;124m"[39m[38;5;124munexpected dimension[39m[38;5;124m"[39m[38;5;124m);[39m[38;5;130;01m\n[39;00m[38;5;124m'[39m
+            txt [38;5;241m+[39m[38;5;241m=[39m [38;5;124m"[39m[38;5;124m            }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            txt [38;5;241m+[39m[38;5;241m=[39m [38;5;124m"[39m[38;5;124m      }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+            f[38;5;241m.[39mwrite(txt)
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a[38;5;241m.[39mtype, mm[[38;5;124m"[39m[38;5;124mEnum[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_enumtype = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_enumtype = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a[38;5;241m.[39mtype, mm[[38;5;124m"[39m[38;5;124mRawType[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_rawtype = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_rawtype = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a[38;5;241m.[39mtype, mm[[38;5;124m"[39m[38;5;124mStruct[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_struct = true;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m      static constexpr bool __is_struct = false;[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __is_container = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    tf(a[38;5;241m.[39mis_container())
+                )
+            )
+            f[38;5;241m.[39mwrite(
+                [38;5;124m"[39m[38;5;124m      static constexpr bool __is_embedded = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                    tf(a[38;5;241m.[39mis_embedded())
+                )
+            )
+            [38;5;28;01mif[39;00m a[38;5;241m.[39mis_embedded():
+                start_end_bit [38;5;241m=[39m get_start_end_bit(a)
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr size_t __embedded_bits = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        get_bits(a[38;5;241m.[39mtype)
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr size_t __embedded_start_bit = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        start_end_bit[[38;5;241m0[39m]
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m      static constexpr size_t __embedded_end_bit = {};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        start_end_bit[[38;5;241m1[39m]
+                    )
+                )
+        [38;5;28;01melse[39;00m:
+            [38;5;28;01mraise[39;00m [38;5;167;01mException[39;00m([38;5;124m"[39m[38;5;124munexpected type constellation[39m[38;5;124m"[39m)
+
+        f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m    }}; // meta struct {}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(a[38;5;241m.[39mname))
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  }; //struct META[39m[38;5;130;01m\n[39;00m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#endif // #ifndef SWIG[39m[38;5;130;01m\n[39;00m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    f[38;5;241m.[39mwrite(f[38;5;124m"[39m[38;5;124m  {i.name}() {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m    mdsd::init_default_values(*this);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    [38;5;28;01mif[39;00m _extra_init_required(i):
+        f[38;5;241m.[39mwrite(f[38;5;124m"[39m[38;5;124m  {i.name}({_get_ctor_params(i)}) {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+        f[38;5;241m.[39mwrite(f[38;5;124m"[39m[38;5;124m    {_get_ctor_body(i)};[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+        f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    f[38;5;241m.[39mwrite(
+        [38;5;124m"[39m[38;5;124m  static std::shared_ptr<{}> item_create() {{ return std::make_shared<{}>(); }}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+            i[38;5;241m.[39mname, i[38;5;241m.[39mname
+        )
+    )
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m}}; //struct {}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(i[38;5;241m.[39mname))
+
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        [38;5;28;01mif[39;00m a[38;5;241m.[39mis_embedded():
+            value_type [38;5;241m=[39m get_cpp_return_type(a[38;5;241m.[39mtype)
+            signed_info [38;5;241m=[39m get_signed_or_unsigned(a[38;5;241m.[39mtype)
+            container_name [38;5;241m=[39m get_container(a)[38;5;241m.[39mname
+
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m  inline {} {}::{}() const {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(value_type, i[38;5;241m.[39mname, a[38;5;241m.[39mname)
+                )
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m     return mdsd::read_{signed_info}_from_container<{value_type}>({container_name},[39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m META::{a.name}::__embedded_start_bit, META::{a.name}::__embedded_end_bit);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m  inline {} {}::{}(size_t idx) const {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        value_type, i[38;5;241m.[39mname, a[38;5;241m.[39mname
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m     return mdsd::read_{signed_info}_from_container<{value_type}>({container_name},[39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits,[39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m META::{a.name}::__embedded_start_bit+1-(idx+1)*META::{a.name}::__embedded_bits);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+            [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mScalarAttribute[39m[38;5;124m"[39m]):
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m  inline void {}::{}({} val) {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        i[38;5;241m.[39mname, a[38;5;241m.[39mname, value_type
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m     {container_name} = mdsd::write_to_container({container_name},[39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m META::{a.name}::__embedded_start_bit, META::{a.name}::__embedded_end_bit, val);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+            [38;5;28;01melse[39;00m:
+                f[38;5;241m.[39mwrite(
+                    [38;5;124m"[39m[38;5;124m  inline void {}::{}(size_t idx, {} val) {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+                        i[38;5;241m.[39mname, a[38;5;241m.[39mname, value_type
+                    )
+                )
+                f[38;5;241m.[39mwrite(
+                    f[38;5;124m"[39m[38;5;124m     {container_name} = mdsd::write_to_container({container_name},[39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m META::{a.name}::__embedded_start_bit-idx*META::{a.name}::__embedded_bits,[39m[38;5;124m"[39m
+                    f[38;5;124m"[39m[38;5;124m META::{a.name}::__embedded_start_bit+1-(idx+1)*META::{a.name}::__embedded_bits, val);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+                )
+                f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  }[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#ifndef SWIG[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    [38;5;66m# ----------------------------------------[39m
+    f[38;5;241m.[39mwrite(
+        [38;5;124m"[39m[38;5;124mtemplate<class VISITOR, class STRUCT> // enable accept for this struct: [39m[38;5;130;01m\n[39;00m[38;5;124m"[39m
+    )
+    f[38;5;241m.[39mwrite(
+        [38;5;124m"[39m[38;5;124mstd::enable_if_t<std::is_same_v<std::remove_const_t<STRUCT>,{}>> accept(VISITOR &&v, STRUCT &s) {{[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(
+            i[38;5;241m.[39mname
+        )
+    )
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m  STRUCT::META::template __accept_varargs<STRUCT>(v, s);[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m}[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    [38;5;66m# ----------------------------------------[39m
+
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m#endif // #ifndef SWIG[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m} // close namespace[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+
+    f[38;5;241m.[39mwrite([38;5;124m"[39m[38;5;124m// swig helper:[39m[38;5;130;01m\n[39;00m[38;5;124m"[39m)
+    [38;5;28;01mfor[39;00m a [38;5;129;01min[39;00m i[38;5;241m.[39mattributes:
+        [38;5;28;01mif[39;00m textx[38;5;241m.[39mtextx_isinstance(a, mm[[38;5;124m"[39m[38;5;124mVariantAttribute[39m[38;5;124m"[39m]):
+            f[38;5;241m.[39mwrite(define_swig_variant_access(i, a))

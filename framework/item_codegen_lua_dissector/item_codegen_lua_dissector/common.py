@@ -35,6 +35,7 @@ def create_folder_and_return_output_filename(obj, base_dir, overwrite):
 
 
 _m = {"uint1": "bool"}
+_m = {"char": "uint8"}
 for i in range(1, 65):
     i32 = 8
     if i > 64:
@@ -45,31 +46,9 @@ for i in range(1, 65):
         i32 = 32
     elif i > 8:
         i32 = 16
-    _m["uint{}".format(i)] = "uint{}_t".format(i32)
-    _m["int{}".format(i)] = "int{}_t".format(i32)
-    _m["sint{}".format(i)] = "int{}_t".format(i32)
-
-
-def get_variant_types(a):
-    return ",".join(map(lambda m: fqn(m.type), a.mappings))
-
-
-def get_cpp_return_type(t):
-    if t is str:
-        return "const char*"
-    else:
-        return fqn(t)
-
-
-def get_property_constexpr(a, pname):
-    t = get_property_type(a, pname)
-    v = get_property(a, pname)
-    if t is str:
-        return '"{}"'.format(v)
-    else:
-        if isinstance(v, bool):
-            v = int(v)
-        return f"{get_cpp_return_type(t)}{{ {v} }}"  # TODO, better: return enum-value directly (same for python code)
+    _m["uint{}".format(i)] = "uint{}".format(i32)
+    _m["int{}".format(i)] = "int{}".format(i32)
+    _m["sint{}".format(i)] = "int{}".format(i32)
 
 
 def fqn(t):
@@ -80,7 +59,7 @@ def fqn(t):
         else:
             return t.name
     else:
-        return "::".join(get_package_names_of_obj(t)) + "::" + t.name
+        return ".".join(get_package_names_of_obj(t)) + "." + t.name
 
 
 def get_signed_or_unsigned(t):
