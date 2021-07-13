@@ -8,10 +8,8 @@
 
 manual_protocol = Proto("MyManualProto",  "My Manual Protocol")
 
-package.prepend_path("manual/point")
-local point = require("point")
-package.prepend_path("manual/polygon")
-local polygon = require("polygon")
+local point = require("point.point")
+local polygon = require("polygon.polygon")
 
 manual_protocol.fields = {}
 for _,f in ipairs(polygon.polygon_fields) do table.insert(manual_protocol.fields, f) end

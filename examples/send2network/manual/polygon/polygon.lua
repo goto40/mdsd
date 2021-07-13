@@ -1,8 +1,7 @@
 field_n = ProtoField.uint32("n", "n", base.DEC)
 field_c = ProtoField.uint8("c", "c", base.ENC_ASCII)
 
-package.prepend_path("manual/point")
-local point = require("point")
+local point = require("point.point")
 
 m={}
 
