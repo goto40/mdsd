@@ -6,7 +6,7 @@ from item_lang.properties import get_property_type, get_property
 from item_lang.common import get_package_names_of_obj
 
 
-def output_filename(base_dir, obj, suffix="h"):
+def output_filename(base_dir, obj, suffix="lua"):
     if base_dir is not None:
         base_dir = os.path.join(base_dir, *get_package_names_of_obj(obj))
         output_file = os.path.join(base_dir, "{}.{}".format(obj.name, suffix))
