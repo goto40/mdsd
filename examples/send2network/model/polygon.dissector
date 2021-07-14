@@ -1,0 +1,6 @@
+import "big_example.item"
+
+dissector polygon {
+    parse big_example.Polygon
+    for udp 50000
+}

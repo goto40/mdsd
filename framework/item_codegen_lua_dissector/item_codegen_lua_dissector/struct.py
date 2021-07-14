@@ -8,8 +8,8 @@ from item_lang.common import (
     obj_is_newer_than_file,
 )
 from item_codegen_lua_dissector.common import (
-    output_filename,
-    fqn
+    modname,
+    fqn,
 )
 from os.path import exists
 
@@ -21,9 +21,6 @@ def generate_lua_for_struct(struct_obj, output_file, overwrite):
         with open(output_file, "w") as f:
             generate_lua_struct(f, struct_obj)
 
-
-def modname(i):
-    return fqn(i).replace(".","_")
 
 def lua_int_getter(t):
     if t.is_enum():
