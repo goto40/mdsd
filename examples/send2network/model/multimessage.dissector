@@ -1,0 +1,6 @@
+import "big_example.item"
+
+dissector multimessage {
+    parse big_example.MultiMessage
+    for udp 60000
+}

@@ -29,18 +29,23 @@ def get_all_referenced_structs(s):
     n = 0
     while n!=len(l):
         n = len(l)
-        c = get_children_of_type('ScalarAttribute', s)
-        for a in c:
-            if textx_isinstance(a.type, mm['Struct']):
-                l.add(a.type)
-        c = get_children_of_type('ArrayAttribute', s)
-        for a in c:
-            if textx_isinstance(a.type, mm['Struct']):
-                l.add(a.type)
-        c = get_children_of_type('VariantMapping', s)
-        for m in c:
-            if textx_isinstance(m.type, mm['Struct']):
-                l.add(m.type)
+        l0 = l.copy()
+        for s in l0:
+            c = get_children_of_type('ScalarAttribute', s)
+            for a in c:
+                if textx_isinstance(a.type, mm['Struct']):
+                    l.add(a.type)
+                    #print(f"1added {a.type.name}")
+            c = get_children_of_type('ArrayAttribute', s)
+            for a in c:
+                if textx_isinstance(a.type, mm['Struct']):
+                    l.add(a.type)
+                    #print(f"2added {a.type.name}")
+            c = get_children_of_type('VariantMapping', s)
+            for m in c:
+                if textx_isinstance(m.type, mm['Struct']):
+                    l.add(m.type)
+                    #print(f"3added {m.type.name}")
     return l
 
 

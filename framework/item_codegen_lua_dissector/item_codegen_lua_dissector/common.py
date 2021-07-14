@@ -68,7 +68,9 @@ for i in range(1, 65):
 
 def fqn(t):
     mm = get_metamodel(t)
-    if textx_isinstance(t, mm["RawType"]):
+    if t.is_enum():
+        t = t.type
+    if t.is_rawtype():
         if t.name in _m:
             return _m[t.name]
         else:
