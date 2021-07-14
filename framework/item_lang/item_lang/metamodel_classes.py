@@ -93,6 +93,9 @@ class VariantAttribute(object):
     def is_array(self):
         return False
 
+    def is_variant(self):
+        return True
+
     def __str__(self):
         return self.parent.name + "." + self.name
 
@@ -101,6 +104,9 @@ class VariantAttribute(object):
 
     def has_enum(self):
         return False
+
+    def has_struct(self):
+        return self.type.is_struct()
 
     def get_referenceed_if_attributes(self):
         return _get_referenceed_if_attributes(self)
@@ -136,6 +142,9 @@ class ScalarAttribute(object):
     def is_array(self):
         return False
 
+    def is_variant(self):
+        return False
+
     def __str__(self):
         return self.parent.name + "." + self.name
 
@@ -144,6 +153,9 @@ class ScalarAttribute(object):
 
     def has_enum(self):
         return self.type.is_enum()
+
+    def has_struct(self):
+        return self.type.is_struct()
 
     def get_referenceed_if_attributes(self):
         return _get_referenceed_if_attributes(self)
@@ -270,6 +282,9 @@ class ArrayAttribute(object):
     def is_array(self):
         return True
 
+    def is_variant(self):
+        return False
+
     def __str__(self):
         return self.parent.name + "." + self.name
 
@@ -278,6 +293,9 @@ class ArrayAttribute(object):
 
     def has_enum(self):
         return self.type.is_enum()
+
+    def has_struct(self):
+        return self.type.is_struct()
 
     def get_referenceed_if_attributes(self):
         return _get_referenceed_if_attributes(self)
