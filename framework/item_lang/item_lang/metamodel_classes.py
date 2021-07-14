@@ -12,6 +12,15 @@ def get_all_classes():
     return res + f.get_all_classes()
 
 
+def _get_referenceed_if_attributes(self):
+    mm = get_metamodel(self)
+    return list(
+        filter(
+            lambda x: textx_isinstance(x.ref, mm["Attribute"]),
+            get_children_of_type("AttrRef", self.if_attr),
+        )
+    )
+
 class RawType(object):
     def __init__(self, **kwargs):
         setattr(self, "parent", None)
@@ -93,6 +102,12 @@ class VariantAttribute(object):
     def has_enum(self):
         return False
 
+    def get_referenceed_if_attributes(self):
+        return _get_referenceed_if_attributes(self)
+
+    def has_if(self):
+        return self.if_attr is not None
+
 
 class ScalarAttribute(object):
     def __init__(self, **kwargs):
@@ -129,6 +144,12 @@ class ScalarAttribute(object):
 
     def has_enum(self):
         return self.type.is_enum()
+
+    def get_referenceed_if_attributes(self):
+        return _get_referenceed_if_attributes(self)
+
+    def has_if(self):
+        return self.if_attr is not None
 
 
 class Struct(object):
@@ -221,7 +242,7 @@ class ArrayAttribute(object):
             l = l + list(
                 filter(
                     lambda x: textx_isinstance(x.ref, mm["Attribute"]),
-                    get_children_of_type("AttrRef", self),
+                    get_children_of_type("AttrRef", d),
                 )
             )
         return l
@@ -257,3 +278,9 @@ class ArrayAttribute(object):
 
     def has_enum(self):
         return self.type.is_enum()
+
+    def get_referenceed_if_attributes(self):
+        return _get_referenceed_if_attributes(self)
+
+    def has_if(self):
+        return self.if_attr is not None

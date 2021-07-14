@@ -22,6 +22,7 @@ def render_ref(
     enum_separator=None,
     repeat_type_name_for_enums=False,
     inhibit_fqn_for_parent=None,
+    compute_constants=False
 ):
     from textx import textx_isinstance, get_metamodel
     from item_lang.common import get_package_names_of_obj
@@ -36,7 +37,10 @@ def render_ref(
     if textx_isinstance(ref, mm["ScalarAttribute"]):
         return prefix + separator.join(map(lambda x: x.name, ref._tx_path)) + postfix
     elif textx_isinstance(ref, mm["Constant"]):
-        return const_separator.join(fqn_parts + [ref.name])
+        if compute_constants:
+            return ref.value.compute_formula()
+        else:
+            return const_separator.join(fqn_parts + [ref.name])
     elif textx_isinstance(ref, mm["EnumEntry"]):
         if repeat_type_name_for_enums:
             return enum_separator.join(fqn_parts + [ref.parent.name, ref.name])

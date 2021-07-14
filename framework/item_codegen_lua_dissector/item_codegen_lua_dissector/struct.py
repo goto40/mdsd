@@ -39,15 +39,15 @@ def generate_lua_struct(f, i):
     f.write("\n")
 
 
-    dim_variables = []
+    concrete_variables = []
     for a in i.attributes:
+        l = a.get_referenceed_if_attributes()
+        concrete_variables = concrete_variables + l
         if a.is_array():
             l = a.get_referenceed_dim_attributes()
-            dim_variables = dim_variables + l
-    dim_variable_names = list(map(lambda x: x.ref._tx_path, dim_variables))
-    for n in dim_variable_names:
-        f.write(f"-- dim variable: {'.'.join(map(lambda x:x.name, n))}\n")
-
+            concrete_variables = concrete_variables + l
+    concrete_variable_names = list(map(lambda x: '.'.join(map(lambda x:x.name, x.ref._tx_path)), concrete_variables))
+    concrete_variable_names = set(concrete_variable_names)
 
     fields = []
     for a in i.attributes:
@@ -66,16 +66,35 @@ def generate_lua_struct(f, i):
     f.write("\n")
 
     f.write("function m.dissector_data(proto, buffer, pos, tree)\n")
+    f.write("  concrete_vars = {}\n")
+    for n in concrete_variable_names:
+        f.write(f"  concrete_vars[\"{n}\"] = \"none\"\n")
     f.write("  length = buffer:len()\n")
     f.write("  if length == 0 then return end\n")
     f.write("  if length == pos then return end\n")
     f.write(f"  local subtree = tree:add(proto, buffer(), \"{i.name}\"\n")
+    prefix="concrete_vars[\""
+    postfix="\"]"
     for a in i.attributes:
+        if a.has_if():
+            f.write(f"  if {a.if_attr.predicate.render_formula(compute_constants=True,prefix=prefix,postfix=postfix)} then\n")
+
         if a in fields:
-            f.write(f"  subtree:add_le(field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
-            f.write(f"  pos = pos+{a.type.get_size_in_bytes()}\n")
+            if a.is_array():
+                f.write(f"  local subtree_array = subtree:add(proto, buffer(), \"array\")\n")
+                f.write(f"  for k = 1, {a.render_formula(compute_constants=True,prefix=prefix,postfix=postfix)} do\n")
+                f.write(f"    subtree_array:add_le(field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
+                f.write(f"    pos = pos+{a.type.get_size_in_bytes()}\n")
+                f.write("  end\n")
+            else:
+                f.write(f"  subtree:add_le(field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
+                if a.name in concrete_variable_names:
+                    f.write(f"  concrete_vars[\"{a.name}\"] = buffer:range(pos,{a.type.get_size_in_bytes()}):le_{fqn(a.type)}()\n")
+                f.write(f"  pos = pos+{a.type.get_size_in_bytes()}\n")
         else:
             f.write(f"  todo {a.name}\n")
-    
+
+        if a.has_if():
+            f.write("  end\n")
     f.write("  return pos\n")
     f.write("end\n")
