@@ -5,7 +5,6 @@ from textx import (
     textx_isinstance,
 )
 from item_lang.common import (
-    get_referenced_elements_of_struct,
     obj_is_newer_than_file,
 )
 from item_codegen_lua_dissector.common import (
@@ -63,7 +62,7 @@ def generate_lua_dissector(f, d):
     
     f.write(f'function {d.name}_protocol.dissector(buffer, pinfo, tree)\n')
     f.write(f'  pinfo.cols.protocol = {d.name}_protocol.name\n')
-    f.write(f'  {modname(d.item)}.dissector_data({d.name}_protocol, buffer, 0, tree)\n')
+    f.write(f'  {modname(d.item)}.dissector_data({d.name}_protocol, buffer, 0, tree,{{}})\n')
     f.write('end\n')
 
     for c in d.channels:
