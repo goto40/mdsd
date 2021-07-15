@@ -1,0 +1,1 @@
+sudo tshark -T json -X lua_script:src-gen/lua/multimessage.lua -Y "udp.port==60000" &
