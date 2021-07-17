@@ -13,7 +13,7 @@
  * send some data ("`SENDING DATA`")
  * kill tshark ("`KILLING TSHARK`")
 
-Output:
+Output (python sender):
 ```
 ...
 SENDING DATA:
@@ -23,6 +23,10 @@ send 2: 72 bytes...
 send 0: 284 bytes...
 send 1: 292 bytes...
 send 2: 300 bytes...
+```
+Output (`tshark`):
+```
+...
 {"index":{"_index":"packets-2021-07-17","_type":"doc"}}
 {"timestamp":"1626523675552","layers":{"frame":{"filtered":"frame"},"eth":{"filtered":"eth"},"ip":{"filtered":"ip"},"udp":{"filtered":"udp"},"_ws_lua__ws_lua_fake":{"filtered
 ":"_ws.lua.fake"},"multimessage":{"multimessage":[{"multimessage_id":"2","multimessage_length":"296"},{"multimessage_n":"3","multimessage":[{"multimessage":[{"multimessage_x"
