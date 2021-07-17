@@ -115,7 +115,7 @@ clear specification language and single source.
    [item_lang.md](docs/item_lang.md) to help you understanding the
    structure of the model. Look at the existing code generators:
    they are implemented straight forward (just print the code
-   in some destination files... << 1000 LOC)
+   in some destination files... in approx. 1000 LOC)
  * Some features I want to add: fix point values, ...
 
 ### algo_lang: language and generators
