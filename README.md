@@ -102,7 +102,7 @@ documentation, provided manually.
 The **item code is stereotypical**. Here, we take full advantage of a 
 clear specification language and single source.
 
-## Maturity... (what do you need to use the framework)
+## Maturity...
 
 ### item_lang: language and code generators
 
