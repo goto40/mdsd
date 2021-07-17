@@ -144,7 +144,6 @@ class empty_init_visitor:
         pass
 
     def visit_scalar_struct(self, struct, attr, meta):
-        print(attr)
         accept(getattr(struct, attr), self)
 
     def visit_array(self, struct, attr, meta):
