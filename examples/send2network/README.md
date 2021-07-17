@@ -7,7 +7,7 @@
  * generates python code (for the data sender scripts [send_via_udp.py](scripts/send_via_udp.py) and [send_via_udp2.py](scripts/send_via_udp2.py))
  * generates lua code (for wireshark)
  * starts `tshark`
-   * with the generated lua dissectors ([multimessage.dissector](model/multimessage.dissector) and (polygon.dissector)[model/polygon.dissector]: `-X lua_script:src-gen/lua/multimessage.lua -X lua_script:src-gen/lua/polygon.lua`
+   * with the generated lua dissectors ([multimessage.dissector](model/multimessage.dissector) and [model/polygon.dissector](polygon.dissector): `-X lua_script:src-gen/lua/multimessage.lua -X lua_script:src-gen/lua/polygon.lua`
    * with an UDP port filter: `-Y "udp.port==50000 || udp.port==60000"`
    * and an appropriate output formatting for the dissector layers (key,value): `-T ek -J "multimessage polygon"`
  * send some data ("`SENDING DATA`")
