@@ -4,6 +4,7 @@ import inspect
 import item_lang.metamodel_formula as f
 from textx import textx_isinstance, get_children_of_type, get_metamodel
 
+
 def get_all_classes():
     res = []
     for _, obj in inspect.getmembers(sys.modules[__name__]):
@@ -21,15 +22,16 @@ def _get_referenceed_if_attributes(self):
         )
     )
 
+
 class RawType(object):
     def __init__(self, **kwargs):
         setattr(self, "parent", None)
         for k in kwargs.keys():
             setattr(self, k, kwargs[k])
-            
+
     def get_size_in_bytes(self):
         assert self.bits % 8 == 0
-        return self.bits//8
+        return self.bits // 8
 
     def is_rawtype(self):
         return True
@@ -49,7 +51,7 @@ class Enum(object):
         setattr(self, "internaltype", "ENUM")
 
     def get_size_in_bytes(self):
-        return self.type.get_size_in_bytes()    
+        return self.type.get_size_in_bytes()
 
     def is_rawtype(self):
         return False

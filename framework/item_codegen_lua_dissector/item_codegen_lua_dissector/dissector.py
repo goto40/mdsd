@@ -27,25 +27,25 @@ def get_all_referenced_structs(s):
     l = set()
     l.add(s)
     n = 0
-    while n!=len(l):
+    while n != len(l):
         n = len(l)
         l0 = l.copy()
         for s in l0:
-            c = get_children_of_type('ScalarAttribute', s)
+            c = get_children_of_type("ScalarAttribute", s)
             for a in c:
-                if textx_isinstance(a.type, mm['Struct']):
+                if textx_isinstance(a.type, mm["Struct"]):
                     l.add(a.type)
-                    #print(f"1added {a.type.name}")
-            c = get_children_of_type('ArrayAttribute', s)
+                    # print(f"1added {a.type.name}")
+            c = get_children_of_type("ArrayAttribute", s)
             for a in c:
-                if textx_isinstance(a.type, mm['Struct']):
+                if textx_isinstance(a.type, mm["Struct"]):
                     l.add(a.type)
-                    #print(f"2added {a.type.name}")
-            c = get_children_of_type('VariantMapping', s)
+                    # print(f"2added {a.type.name}")
+            c = get_children_of_type("VariantMapping", s)
             for m in c:
-                if textx_isinstance(m.type, mm['Struct']):
+                if textx_isinstance(m.type, mm["Struct"]):
                     l.add(m.type)
-                    #print(f"3added {m.type.name}")
+                    # print(f"3added {m.type.name}")
     return l
 
 
@@ -61,24 +61,27 @@ def generate_lua_dissector(f, d):
     for i in refs:
         f.write(f'local {modname(i)} = require("{fqn(i)}")\n')
 
-
-    f.write('local all_fields = {}\n')
+    f.write("local all_fields = {}\n")
     for i in refs:
-        f.write(f'all_fields.{modname(i)} = {modname(i)}.create_fields()\n')
+        f.write(f"all_fields.{modname(i)} = {modname(i)}.create_fields()\n")
 
-    f.write(f'{d.name}_protocol.fields = {{}}\n')
+    f.write(f"{d.name}_protocol.fields = {{}}\n")
     for i in refs:
-        f.write(f'for _,f in pairs(all_fields.{modname(i)}) do table.insert({d.name}_protocol.fields, f) end\n')
-    
-    f.write(f'function {d.name}_protocol.dissector(buffer, pinfo, tree)\n')
-    f.write(f'  pinfo.cols.protocol = {d.name}_protocol.name\n')
-    f.write(f'  {modname(d.item)}.dissector_data({d.name}_protocol, buffer, 0, tree, all_fields, {{}})\n')
-    f.write('end\n')
+        f.write(
+            f"for _,f in pairs(all_fields.{modname(i)}) do table.insert({d.name}_protocol.fields, f) end\n"
+        )
+
+    f.write(f"function {d.name}_protocol.dissector(buffer, pinfo, tree)\n")
+    f.write(f"  pinfo.cols.protocol = {d.name}_protocol.name\n")
+    f.write(
+        f"  {modname(d.item)}.dissector_data({d.name}_protocol, buffer, 0, tree, all_fields, {{}})\n"
+    )
+    f.write("end\n")
 
     for c in d.channels:
         if c.udp:
             f.write('local udp_port = DissectorTable.get("udp.port")\n')
-            f.write(f'udp_port:add({c.port}, {d.name}_protocol)\n')
+            f.write(f"udp_port:add({c.port}, {d.name}_protocol)\n")
         if c.tcp:
             f.write('local tcp_port = DissectorTable.get("tcp.port")\n')
-            f.write(f'tcp_port:add({c.port}, {d.name}_protocol)\n')
+            f.write(f"tcp_port:add({c.port}, {d.name}_protocol)\n")

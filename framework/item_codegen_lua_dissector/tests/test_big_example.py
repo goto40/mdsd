@@ -33,8 +33,8 @@ def test_big_example():
     refpath = join(inpath, "ref")
 
     structs = get_children_of_type("Struct", model)
-    #enums = get_children_of_type("Enum", model)
-    #constants = get_children_of_type("Constants", model)
+    # enums = get_children_of_type("Enum", model)
+    # constants = get_children_of_type("Constants", model)
 
     # for s in structs + enums + constants:
     #     check_file(

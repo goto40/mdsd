@@ -22,7 +22,7 @@ def render_ref(
     enum_separator=None,
     repeat_type_name_for_enums=False,
     inhibit_fqn_for_parent=None,
-    compute_constants=False
+    compute_constants=False,
 ):
     from textx import textx_isinstance, get_metamodel
     from item_lang.common import get_package_names_of_obj

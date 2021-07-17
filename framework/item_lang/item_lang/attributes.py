@@ -1,4 +1,4 @@
-from textx import textx_isinstance, get_metamodel, get_children_of_type
+from textx import textx_isinstance, get_metamodel
 
 
 def get_all_attributes_before(a):

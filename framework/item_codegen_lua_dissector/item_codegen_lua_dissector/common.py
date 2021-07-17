@@ -5,7 +5,7 @@ from item_lang.common import get_package_names_of_obj
 
 
 def modname(i):
-    return fqn(i).replace(".","_")
+    return fqn(i).replace(".", "_")
 
 
 def output_filename(base_dir, obj, suffix="lua"):
@@ -34,7 +34,7 @@ def create_folder_and_return_output_filename(obj, base_dir, overwrite):
     :param obj: a struct, enum or constants object
     :return: filename or None (if the file already exists and has not be overriden
     """
-    if obj.__class__.__name__=="Dissector":
+    if obj.__class__.__name__ == "Dissector":
         concrete_dir = base_dir
     else:
         concrete_dir = os.path.join(base_dir, *get_package_names_of_obj(obj))
