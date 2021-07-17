@@ -68,16 +68,14 @@ def generate_lua_struct(f, i):
     for a in i.attributes:
         if not a.is_embedded() and (a.has_enum() or a.has_rawtype()):
             fields.append(a)
-    for a in fields:
-        f.write(f"local field_{a.name} = ProtoField.{fqn(a.type)}(\"{a.name}\",\"{a.name}\", base.DEC)\n")
 
     f.write("local m = {}\n")
-    f.write("m.fields = {")
-    comma=""
+    f.write("function m.create_fields()\n")
+    f.write("  local f = {}\n")
     for a in fields:
-        f.write(f"{comma}field_{a.name}")
-        comma=","
-    f.write("}\n")
+        f.write(f"  f.field_{a.name} = ProtoField.{fqn(a.type)}(\"{a.name}\",\"{a.name}\", base.DEC)\n")
+    f.write("  return f\n")
+    f.write("end\n")
     f.write("\n")
 
     f.write("function m.create_relevant_sub_map(fieldname, m1)\n")
@@ -91,7 +89,7 @@ def generate_lua_struct(f, i):
     f.write("  return m2\n")
     f.write("end\n")
 
-    f.write("function m.dissector_data(proto, buffer, pos, tree, var_of_interrest)\n")
+    f.write("function m.dissector_data(proto, buffer, pos, tree, all_fields, var_of_interrest)\n")
     f.write("  local concrete_vars = {}\n")
     for n in concrete_variable_names:
         f.write(f"  concrete_vars[\"{n}\"] = \"none\"\n")
@@ -119,11 +117,11 @@ def generate_lua_struct(f, i):
                 else:
                     f.write(f"  local subtree_array = subtree:add(proto, buffer(), \"{a.name} : {a.type.name}-array\")\n")
                 f.write(f"  for k = 1, {a.render_formula(compute_constants=True,prefix=prefix,postfix=postfix)} do\n")
-                f.write(f"    subtree_array:add_le(field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
+                f.write(f"    subtree_array:add_le(all_fields.{modname(i)}.field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
                 f.write(f"    pos = pos+{a.type.get_size_in_bytes()}\n")
                 f.write("  end\n")
             else:
-                f.write(f"  subtree:add_le(field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
+                f.write(f"  subtree:add_le(all_fields.{modname(i)}.field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n")
                 f.write(f"  if concrete_vars[\"{a.name}\"] ~= nil then\n")
                 f.write(f"    concrete_vars[\"{a.name}\"] = buffer:range(pos,{a.type.get_size_in_bytes()}):le_{lua_int_getter(a.type)}()\n")
                 f.write(f'    -- print("SET: {a.name}".."= set:"..concrete_vars[\"{a.name}\"])\n')
@@ -134,7 +132,7 @@ def generate_lua_struct(f, i):
             if_text="if"
             for m in a.mappings:
                 f.write(f"  {if_text} sel=={m.id.compute_formula()} then\n")
-                f.write(f"    pos, _ = {modname(m.type)}.dissector_data(proto, buffer, pos, subtree,{{}})\n")
+                f.write(f"    pos, _ = {modname(m.type)}.dissector_data(proto, buffer, pos, subtree, all_fields,{{}})\n")
                 if_text="elseif"
             f.write(f"  else\n")
             f.write(f"    local subtree_error = subtree:add(proto, buffer(), \"{a.name} : ERROR, unknown id\")\n")
@@ -143,10 +141,10 @@ def generate_lua_struct(f, i):
             if a.is_array():
                 f.write(f"  local subtree_array = subtree:add(proto, buffer(), \"{a.name} : {a.type.name}-array\")\n")
                 f.write(f"  for k = 1, {a.render_formula(compute_constants=True,prefix=prefix,postfix=postfix)} do\n")
-                f.write(f"    pos, _ = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree_array,{{}})\n")
+                f.write(f"    pos, _ = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree_array, all_fields,{{}})\n")
                 f.write("  end\n")
             else:
-                f.write(f" pos, newvars = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree,m.create_relevant_sub_map(\"{a.name}\",concrete_vars))\n")
+                f.write(f" pos, newvars = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree, all_fields, m.create_relevant_sub_map(\"{a.name}\",concrete_vars))\n")
                 f.write('  for key, value in pairs(newvars) do')
                 f.write(f'    concrete_vars["{a.name}."..key] = value\n')
                 f.write(f'    -- print("UPDATE {a.name}."..key.."="..value)\n')

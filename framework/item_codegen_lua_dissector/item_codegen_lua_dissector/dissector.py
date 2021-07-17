@@ -61,13 +61,18 @@ def generate_lua_dissector(f, d):
     for i in refs:
         f.write(f'local {modname(i)} = require("{fqn(i)}")\n')
 
+
+    f.write('local all_fields = {}\n')
+    for i in refs:
+        f.write(f'all_fields.{modname(i)} = {modname(i)}.create_fields()\n')
+
     f.write(f'{d.name}_protocol.fields = {{}}\n')
     for i in refs:
-        f.write(f'for _,f in ipairs({modname(i)}.fields) do table.insert({d.name}_protocol.fields, f) end\n')
+        f.write(f'for _,f in pairs(all_fields.{modname(i)}) do table.insert({d.name}_protocol.fields, f) end\n')
     
     f.write(f'function {d.name}_protocol.dissector(buffer, pinfo, tree)\n')
     f.write(f'  pinfo.cols.protocol = {d.name}_protocol.name\n')
-    f.write(f'  {modname(d.item)}.dissector_data({d.name}_protocol, buffer, 0, tree,{{}})\n')
+    f.write(f'  {modname(d.item)}.dissector_data({d.name}_protocol, buffer, 0, tree, all_fields, {{}})\n')
     f.write('end\n')
 
     for c in d.channels:
