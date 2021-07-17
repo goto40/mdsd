@@ -4,6 +4,7 @@ from big_example.TypeSelector import TypeSelector
 from mdsd.item.printto import printto
 from mdsd.item.io import copy_to_mem, count_bytes
 from mdsd.item_support import adjust_array_sizes_and_variants,set_length_field
+import numpy as np
 import sys
 import socket
 
@@ -23,6 +24,7 @@ def send_via_udp(count, host, port):
         if x%3==0:
             data.header.id = TypeSelector.POLY
             adjust_array_sizes_and_variants(data)
+            data.code=np.int32(-99)
             data.payload.n=3+x
             adjust_array_sizes_and_variants(data)
             for p in range(data.payload.n):
@@ -31,10 +33,12 @@ def send_via_udp(count, host, port):
         elif x%3==1:
             data.header.id = TypeSelector.POINT
             adjust_array_sizes_and_variants(data)
+            data.code=np.int32(100+x)
             data.payload.x=1
             data.payload.y=2
         else:
             data.header.id = TypeSelector.TRIANGLE
+            data.code=np.int32(100+x)
             adjust_array_sizes_and_variants(data)
 
         set_length_field(data)

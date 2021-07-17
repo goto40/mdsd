@@ -93,6 +93,9 @@ class VariantAttribute(object):
     def is_array(self):
         return False
 
+    def is_scalar(self):
+        return False
+
     def is_variant(self):
         return True
 
@@ -141,6 +144,9 @@ class ScalarAttribute(object):
 
     def is_array(self):
         return False
+
+    def is_scalar(self):
+        return True
 
     def is_variant(self):
         return False
@@ -281,6 +287,9 @@ class ArrayAttribute(object):
 
     def is_array(self):
         return True
+
+    def is_scalar(self):
+        return False
 
     def is_variant(self):
         return False
