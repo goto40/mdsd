@@ -1,13 +1,10 @@
 from textx import (
     metamodel_for_language,
     generator_for_language_target,
-    get_children_of_type,
 )
 from os.path import join, abspath, dirname, exists
 from os import mkdir
 from shutil import rmtree
-from codegen_test_support import check_file
-from item_codegen_cpp.common import output_filename
 
 
 this_folder = abspath(dirname(__file__))
@@ -30,13 +27,11 @@ def test_big_example():
     mkdir(outpath)
     gen(mm, model, output_path=outpath, overwrite=True, debug=False)
 
-    refpath = join(inpath, "ref")
-
-    structs = get_children_of_type("Struct", model)
-    # enums = get_children_of_type("Enum", model)
-    # constants = get_children_of_type("Constants", model)
-
-    # for s in structs + enums + constants:
+    # Only smoke tests here!
+    #
+    # refpath = join(inpath, "ref")
+    # structs = get_children_of_type("Struct", model)
+    # for s in structs
     #     check_file(
     #         filename=output_filename(outpath, s),
     #         regex_reference_filename=output_filename(refpath, s, "regex_ref"),

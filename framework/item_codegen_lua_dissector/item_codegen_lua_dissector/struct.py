@@ -1,8 +1,4 @@
 # import textx
-from textx import (
-    get_metamodel,
-    textx_isinstance,
-)
 from item_lang.common import (
     get_referenced_elements_of_struct,
     obj_is_newer_than_file,
@@ -110,7 +106,9 @@ def generate_lua_struct(f, i):
                     (1 << (start_end_bit[1])) - 1
                 )
                 f.write(
-                    f'  f.field_{a.name} = ProtoField.{get_embedded_type(a)}("{a.name}","{a.name} bits: {start_end_bit[0]}..{start_end_bit[1]}", base.DEC, nil, 0x{mask:x})\n'
+                    f"  f.field_{a.name} = ProtoField.{get_embedded_type(a)}"
+                    f'("{a.name}","{a.name} bits: {start_end_bit[0]}..{start_end_bit[1]}"'
+                    f", base.DEC, nil, 0x{mask:x})\n"
                 )
             else:
                 n = a.compute_fixed_size_dim()
@@ -126,7 +124,9 @@ def generate_lua_struct(f, i):
                         (1 << (start_end_bit[1])) - 1
                     )
                     f.write(
-                        f'  f.arrayfield_{k}_{a.name} = ProtoField.{get_embedded_type(a)}("__{a.name}_{k}","{a.name}[{k}] with bits {start_end_bit[0]}..{start_end_bit[1]}", base.DEC, nil, 0x{mask:x})\n'
+                        f"  f.arrayfield_{k}_{a.name} = ProtoField.{get_embedded_type(a)}"
+                        f'("__{a.name}_{k}","{a.name}[{k}] with bits '
+                        f'{start_end_bit[0]}..{start_end_bit[1]}", base.DEC, nil, 0x{mask:x})\n'
                     )
     f.write("  return f\n")
     f.write("end\n")
@@ -165,36 +165,42 @@ def generate_lua_struct(f, i):
         f.write(f"  -- {a.name}\n")
 
         if a.has_if():
-            f.write(
-                f"  if {a.if_attr.predicate.render_formula(compute_constants=True,prefix=prefix,postfix=postfix)} then\n"
+            tmp = a.if_attr.predicate.render_formula(
+                compute_constants=True, prefix=prefix, postfix=postfix
             )
+            f.write(f"  if {tmp} then\n")
 
         if a in fields:
             if a.is_array():
                 if a.type.name == "char":
                     f.write(
-                        f'  local subtree_array = subtree:add(proto, buffer(), "{a.name} : " .. buffer(pos,1):stringz())\n'
+                        f'  local subtree_array = subtree:add(proto, buffer(), "{a.name} : "'
+                        ' .. buffer(pos,1):stringz())\n'
                     )
                 else:
                     f.write(
-                        f'  local subtree_array = subtree:add(proto, buffer(), "{a.name} : {a.type.name}-array")\n'
+                        f'  local subtree_array = subtree:add(proto, buffer(), "{a.name} : '
+                        f'{a.type.name}-array")\n'
                     )
                 f.write(
                     f"  for k = 1, {a.render_formula(compute_constants=True,prefix=prefix,postfix=postfix)} do\n"
                 )
                 f.write(
-                    f"    subtree_array:add_le(all_fields.{modname(i)}.field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n"
+                    f"    subtree_array:add_le(all_fields.{modname(i)}.field_{a.name}, "
+                    f"buffer(pos,{a.type.get_size_in_bytes()}))\n"
                 )
                 f.write("    lastpos = pos\n")
                 f.write(f"    pos = pos+{a.type.get_size_in_bytes()}\n")
                 f.write("  end\n")
             else:
                 f.write(
-                    f"  subtree:add_le(all_fields.{modname(i)}.field_{a.name}, buffer(pos,{a.type.get_size_in_bytes()}))\n"
+                    f"  subtree:add_le(all_fields.{modname(i)}.field_{a.name}, buffer(pos,"
+                    f"{a.type.get_size_in_bytes()}))\n"
                 )
                 f.write(f'  if concrete_vars["{a.name}"] ~= nil then\n')
                 f.write(
-                    f'    concrete_vars["{a.name}"] = buffer:range(pos,{a.type.get_size_in_bytes()}):le_{lua_int_getter(a.type)}()\n'
+                    f'    concrete_vars["{a.name}"] = buffer:range(pos,'
+                    f'{a.type.get_size_in_bytes()}):le_{lua_int_getter(a.type)}()\n'
                 )
                 f.write(
                     f'    -- print("SET: {a.name}".."= set:"..concrete_vars["{a.name}"])\n'
@@ -214,11 +220,11 @@ def generate_lua_struct(f, i):
                     f"    pos, _ = {modname(m.type)}.dissector_data(proto, buffer, pos, subtree, all_fields,{{}})\n"
                 )
                 if_text = "elseif"
-            f.write(f"  else\n")
+            f.write("  else\n")
             f.write(
                 f'    local subtree_error = subtree:add(proto, buffer(), "{a.name} : ERROR, unknown id")\n'
             )
-            f.write(f"  end\n")
+            f.write("  end\n")
         elif a.has_struct():
             if a.is_array():
                 f.write(
@@ -229,13 +235,15 @@ def generate_lua_struct(f, i):
                 )
                 f.write("    lastpos = pos\n")
                 f.write(
-                    f"    pos, _ = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree_array, all_fields,{{}})\n"
+                    f"    pos, _ = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree_array, "
+                    "all_fields,{})\n"
                 )
                 f.write("  end\n")
             else:
                 f.write(" lastpos = pos\n")
                 f.write(
-                    f' pos, newvars = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree, all_fields, m.create_relevant_sub_map("{a.name}",concrete_vars))\n'
+                    f' pos, newvars = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree, '
+                    f'all_fields, m.create_relevant_sub_map("{a.name}",concrete_vars))\n'
                 )
                 f.write("  for key, value in pairs(newvars) do")
                 f.write(f'    concrete_vars["{a.name}."..key] = value\n')
@@ -246,17 +254,22 @@ def generate_lua_struct(f, i):
                 n = a.compute_fixed_size_dim()
                 for k in range(n):
                     f.write(
-                        f"  subtree:add_le(all_fields.{modname(i)}.arrayfield_{k}_{a.name}, buffer(lastpos,{get_container(a).type.get_size_in_bytes()}))\n"
+                        f"  subtree:add_le(all_fields.{modname(i)}.arrayfield_{k}_{a.name}, "
+                        f"buffer(lastpos,{get_container(a).type.get_size_in_bytes()}))\n"
                     )
             else:
                 f.write(
-                    f"  subtree:add_le(all_fields.{modname(i)}.field_{a.name}, buffer(lastpos,{get_container(a).type.get_size_in_bytes()}))\n"
+                    f"  subtree:add_le(all_fields.{modname(i)}.field_{a.name}, "
+                    f"buffer(lastpos,{get_container(a).type.get_size_in_bytes()}))\n"
                 )
+                # TODO
                 # f.write(f"  if concrete_vars[\"{a.name}\"] ~= nil then\n")
-                # f.write(f"    concrete_vars[\"{a.name}\"] = buffer:range(pos,{a.type.get_size_in_bytes()}):le_{lua_int_getter(a.type)}()\n")
+                # f.write(f"    concrete_vars[\"{a.name}\"] = buffer:range(pos,
+                #                            {a.type.get_size_in_bytes()}):le_{lua_int_getter(a.type)}()\n")
                 # f.write(f'    -- print("SET: {a.name}".."= set:"..concrete_vars[\"{a.name}\"])\n')
                 # f.write("  end\n")
-                # f.write(f" pos, newvars = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree, all_fields, m.create_relevant_sub_map(\"{a.name}\",concrete_vars))\n")
+                # f.write(f" pos, newvars = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree, "
+                #                    f"all_fields, m.create_relevant_sub_map(\"{a.name}\",concrete_vars))\n")
                 # f.write('  for key, value in pairs(newvars) do')
                 # f.write(f'    concrete_vars["{a.name}."..key] = value\n')
                 # f.write(f'    -- print("UPDATE {a.name}."..key.."="..value)\n')

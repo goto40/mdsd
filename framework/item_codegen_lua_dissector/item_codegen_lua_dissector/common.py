@@ -1,6 +1,5 @@
 import click
 import os
-from textx import textx_isinstance, get_metamodel
 from item_lang.common import get_package_names_of_obj
 
 
@@ -70,7 +69,6 @@ for i in range(1, 65):
 
 
 def fqn(t):
-    mm = get_metamodel(t)
     if t.is_enum():
         t = t.type
     if t.is_rawtype():
