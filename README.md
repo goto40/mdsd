@@ -106,6 +106,7 @@ clear specification language and single source.
 
 ### item_lang: language and code generators
 
+ * See [framework/README.md](framework/README.md)
  * Maturity: quite usable (many examples included in the tests).
  * You need to install the python projects (and for the
    generated code the corresponding language specific support project,
@@ -119,8 +120,15 @@ clear specification language and single source.
 
 ### algo_lang: language and generators
 
+ * See [framework/README.md](framework/README.md)
  * Maturity: very simple, may change with high probability...
  * See demos and tools. Proof of concept.
+
+### dissector_lang: language and generators (wireshark)
+
+ * See [framework/README.md](framework/README.md)
+ * Maturity: basic functionality
+ * See demos and tools: [examples/send2network](examples/send2network/README.md). Proof of concept.
 
 ### project_tool / SWIG integration
 
