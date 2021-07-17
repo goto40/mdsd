@@ -32,6 +32,18 @@ Toolset to model algorithm stubs (input/output/parameters and responsibility) an
 
 [algo_codegen_python](algo_codegen_python): Python code generator for algorithms.
 
+## dissector_lang
+
+Toolset to model dissectors based on items.
+
+### dissector_lang: Modeling language (textX)
+
+[dissector_lang](dissector_lang): Modeling languages to specify dissectors.
+
+### item_codegen_lua_dissector: Code generator for items and dissectors (textX)
+
+[item_codegen_lua_dissector](item_codegen_lua_dissector): Lua code generator for items and dissectors.
+
 ## supporting libraries and tools
 
 ### codegen_test_support
