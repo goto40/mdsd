@@ -64,3 +64,19 @@ KILLING TSHARK...
 
 Running wireshark manually (or via `run_wireshark_as_sudo.sh`):
 ![images/wireshark.png](images/wireshark.png)
+Note, the model is sketched here:
+```
+struct MultiMessage {
+    scalar header: Header
+    scalar mycontainer: built_in.uint32
+    embedded scalar code: built_in.int20
+    embedded array onoff: OnOff[10]
+    embedded scalar abc: ABC
+    variant payload: header.id -> {
+        POINT: Point
+        TypeSelector.POLY: Polygon
+        big_example.TypeSelector.TRIANGLE: big_example.Triangle
+   }
+}
+```
+(full model see [model/big_example.item](model/big_example.item))
