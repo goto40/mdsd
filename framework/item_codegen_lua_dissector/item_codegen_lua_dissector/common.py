@@ -49,8 +49,11 @@ def create_folder_and_return_output_filename(obj, base_dir, overwrite):
         return None
 
 
-_m = {"uint1": "bool"}
-_m = {"char": "uint8"}
+_m = {
+    "uint1": "uint8",
+    "bool": "uint8",
+    "char": "uint8",
+}
 for i in range(1, 65):
     i32 = 8
     if i > 64:

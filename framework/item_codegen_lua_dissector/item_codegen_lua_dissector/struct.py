@@ -39,6 +39,21 @@ def lua_int_getter(t):
     else:
         raise Exception(f"unexpected internaltype {t.internaltype} in lua_int_getter")
 
+def get_embedded_type(a):
+    c = get_container(a)
+    t = a.type
+    if t.is_enum():
+        t=t.type
+    bits = c.type.bits # 8, 16 32...
+    if t.internaltype=='INT':
+        return f"int{bits}"
+    elif t.internaltype=='UINT':
+        return f"uint{bits}"
+    elif t.internaltype=='BOOL':
+        return f"uint{bits}"
+    else:
+        raise Exception(f"unexpected type {t.internaltype} for embedded field")
+
 
 def generate_lua_struct(f, i):
     """
@@ -82,10 +97,19 @@ def generate_lua_struct(f, i):
         if a in fields:
             f.write(f"  f.field_{a.name} = ProtoField.{fqn(a.type)}(\"{a.name}\",\"{a.name}\", base.DEC)\n")
         elif a.is_embedded():
-            start_end_bit = get_start_end_bit(a)
             if a.is_scalar():
+                start_end_bit = get_start_end_bit(a)
                 mask = ((1<<(start_end_bit[0]+1))-1) - ((1<<(start_end_bit[1]))-1);
-                f.write(f"  f.field_{a.name} = ProtoField.{fqn(a.type)}(\"{a.name}\",\"{a.name}\", base.DEC, nil, 0x{mask:x}) -- bits: {start_end_bit[0]}..{start_end_bit[1]}\n")
+                f.write(f"  f.field_{a.name} = ProtoField.{get_embedded_type(a)}(\"{a.name}\",\"{a.name} bits: {start_end_bit[0]}..{start_end_bit[1]}\", base.DEC, nil, 0x{mask:x})\n")
+            else:
+                n = a.compute_fixed_size_dim()
+                start_end_bit0 = get_start_end_bit(a)
+                delta = (start_end_bit0[0]-start_end_bit0[1]+1)//n
+                assert delta*n == start_end_bit0[0]-start_end_bit0[1]+1
+                for k in range(n):
+                    start_end_bit = ( start_end_bit0[0]-delta*k, start_end_bit0[0]+1-delta*(k+1) )
+                    mask = ((1<<(start_end_bit[0]+1))-1) - ((1<<(start_end_bit[1]))-1);
+                    f.write(f"  f.arrayfield_{k}_{a.name} = ProtoField.{get_embedded_type(a)}(\"__{a.name}_{k}\",\"{a.name}[{k}] with bits {start_end_bit[0]}..{start_end_bit[1]}\", base.DEC, nil, 0x{mask:x})\n")
     f.write("  return f\n")
     f.write("end\n")
     f.write("\n")
@@ -169,11 +193,9 @@ def generate_lua_struct(f, i):
                 f.write("  end\n")
         elif a.is_embedded():
             if a.is_array():
-                pass
-                #f.write(f"  local subtree_array = subtree:add(proto, buffer(), \"{a.name} : {a.type.name}-array\")\n")
-                #f.write(f"  for k = 1, {a.render_formula(compute_constants=True,prefix=prefix,postfix=postfix)} do\n")
-                #f.write(f"    pos, _ = {modname(a.type)}.dissector_data(proto, buffer, pos, subtree_array, all_fields,{{}})\n")
-                #f.write("  end\n")
+                n = a.compute_fixed_size_dim()
+                for k in range(n):
+                    f.write(f"  subtree:add_le(all_fields.{modname(i)}.arrayfield_{k}_{a.name}, buffer(lastpos,{get_container(a).type.get_size_in_bytes()}))\n")
             else:
                 f.write(f"  subtree:add_le(all_fields.{modname(i)}.field_{a.name}, buffer(lastpos,{get_container(a).type.get_size_in_bytes()}))\n")
                 #f.write(f"  if concrete_vars[\"{a.name}\"] ~= nil then\n")

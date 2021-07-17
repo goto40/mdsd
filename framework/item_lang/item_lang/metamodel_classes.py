@@ -248,10 +248,16 @@ class ArrayAttribute(object):
             lambda a, b: a and b, map(lambda x: x.dim.has_fixed_size(), self.dims), True
         )
 
-    def compute_formula(self):
+    def compute_fixed_size_dim(self):
         return reduce(
             lambda a, b: a * b, map(lambda x: x.dim.compute_formula(), self.dims), 1
         )
+
+    def compute_formula(self):
+        """
+        deprecated. use compute_fixed_size_dim
+        """
+        return self.compute_fixed_size_dim()
 
     def get_referenceed_dim_attributes(self):
         mm = get_metamodel(self)

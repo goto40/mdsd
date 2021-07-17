@@ -1,4 +1,6 @@
 import click
+from big_example.OnOff import OnOff
+from big_example.ABC import ABC
 from big_example.MultiMessage import MultiMessage
 from big_example.TypeSelector import TypeSelector
 from mdsd.item.printto import printto
@@ -25,6 +27,13 @@ def send_via_udp(count, host, port):
             data.header.id = TypeSelector.POLY
             adjust_array_sizes_and_variants(data)
             data.code=np.int32(-99)
+            data.onoff[0]=OnOff.ON
+            data.onoff[1]=OnOff.OFF
+            data.onoff[2]=OnOff.OFF
+            data.onoff[3]=OnOff.ON
+            data.onoff[4]=OnOff.ON
+            data.onoff[5]=OnOff.ON
+            data.abc=ABC.C
             data.payload.n=3+x
             adjust_array_sizes_and_variants(data)
             for p in range(data.payload.n):
