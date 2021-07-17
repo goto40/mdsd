@@ -2,7 +2,7 @@
 
 ## UDP
 
-`run_tests.sh' does the following;
+`run_tests.sh' does the following:
 
  * generates python code (for the data sender scripts [send_via_udp.py](scripts/send_via_udp.py) and [send_via_udp2.py](scripts/send_via_udp2.py))
  * generates lua code (for wireshark)
