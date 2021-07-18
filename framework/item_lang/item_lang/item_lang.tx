@@ -1,4 +1,4 @@
-IfAttributeModel:
+Model:
     imports*=Import
     (packages+=ExtPackage | package=Package);
 
@@ -59,7 +59,7 @@ AttrRef: ref=
             ^(package,packages)*.items.constant_entries,
             ^(package,packages)*.items.enum_entries
     ];
-VariantMapping: id=Formula ':' type=[Struct|FQN];
+VariantMapping: id=Formula ':' type=[Struct|FQN] ( '(' properties*=Property[','] ')' )?;
 
 Import: 'import' importURI=STRING;
 

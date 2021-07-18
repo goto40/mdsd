@@ -1,0 +1,20 @@
+    package example
+
+    struct Point {
+      scalar x : built_in.float32
+      scalar y : built_in.float32
+    }
+
+    struct Poly {
+        scalar n : built_in.uint32
+        array p : Point[n]
+    }
+
+    struct VariantTest {
+        scalar id: built_in.uint32 (.minValue=0, .maxValue=1, .defaultValue=0)
+        variant payload : id -> {
+            0 : Point (.fixedSizeInBytes = 20, .defaultValue=0)  // expected: defaultValue not applicable for variant mapping Point
+            1 : Poly (.description="test2") 
+        } (.description="test1")
+    }
+    

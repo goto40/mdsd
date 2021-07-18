@@ -244,17 +244,24 @@ def is_applicable_for(parent, definition):
             return False
 
     attr = parent
-    assert textx_isinstance(attr, mm["Attribute"])
+    assert textx_isinstance(attr, mm["Attribute"]) or textx_isinstance(attr, mm["VariantMapping"])
     if "array" in appl or "scalar" in appl:
         if "array" not in appl and textx_isinstance(attr, mm["ArrayAttribute"]):
             return False
-        elif "scalar" not in appl and textx_isinstance(attr, mm["ScalarAttribute"]):
+        elif "scalar" not in appl and (textx_isinstance(
+            attr, mm["ScalarAttribute"]) or textx_isinstance(
+                attr, mm["VariantMapping"])):
             return False
     appl = list(filter(lambda x: x not in ["scalar", "array"], appl))
     if len(appl) == 0:
         return True
     if textx_isinstance(attr, mm["VariantAttribute"]) and "variant" in appl:
         return True
+    if textx_isinstance(attr, mm["VariantMapping"]):
+        if "struct" in appl:
+            return True
+        else:
+            return False
     if textx_isinstance(attr, mm["ArrayAttribute"]) or textx_isinstance(
         attr, mm["ScalarAttribute"]
     ):
@@ -266,12 +273,16 @@ def is_applicable_for(parent, definition):
             rt_appl = list(
                 filter(lambda x: textx_isinstance(x, mm["ApplicableForRawType"]), appl)
             )
+            if len(rt_appl) == 0:
+                return False
+
             allowed = list(
                 reduce(
-                    lambda x, y: x.extend(y), map(lambda x: x.concrete_types, rt_appl)
+                    lambda x, y: x.extend(y),
+                    map(lambda x: x.concrete_types, rt_appl)
                 )
             )
-            if len(allowed) == 0 and len(rt_appl):
+            if len(allowed) == 0:
                 return True  # all rawtypes allowed
             elif attr.type in allowed:
                 return True

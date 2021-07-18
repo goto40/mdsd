@@ -181,9 +181,15 @@ def check_Constants(c):
 
 def check_Property(p):
     mm = get_metamodel(p)
-    textx_assert(
-        is_applicable(p), p, f"{p.parent.name}.{p.definition.name} not applicable"
-    )
+    if textx_isinstance(p.parent, mm["VariantMapping"]):
+        textx_assert(
+            is_applicable(p), p, f"{p.parent.parent.name}.{p.definition.name} not "
+            f"applicable for variant mapping {p.parent.type.name}"
+        )
+    else:
+        textx_assert(
+            is_applicable(p), p, f"{p.parent.name}.{p.definition.name} not applicable"
+        )
 
     prop_value = get_property(p.parent, p.definition.name)  # throws on error
 

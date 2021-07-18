@@ -279,3 +279,33 @@ def test_property1_defaultStringValue():
     assert mm is not None
     with pytest.raises(Exception, match=r".*defaultStringValue.*"):
         mm.model_from_str(text)
+
+
+def test_property_in_variant_mappings():
+    text = r"""
+    package example
+
+    struct Point {
+      scalar x : built_in.float32
+      scalar y : built_in.float32
+    }
+
+    struct Poly {
+        scalar n : built_in.uint32
+        array p : Point[n]
+    }
+
+    struct VariantTest {
+        scalar id: built_in.uint32 (.minValue=0, .maxValue=1, .defaultValue=0)
+        variant payload : id -> {
+            0 : Point (.fixedSizeInBytes = 20)
+            1 : Poly (.description="test2")
+        } (.description="test1")
+    }
+    """
+    mm = metamodel_for_language("item")
+    assert mm is not None
+    m = mm.model_from_str(text)
+    assert m is not None
+    assert len(m.package.items) == 3
+    # maybe add more checks here (content of properties)

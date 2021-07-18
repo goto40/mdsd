@@ -30,6 +30,7 @@ def lang():
         property optional applicable for rawtype fixpointLsbValue : FLOAT
         property optional applicable for rawtype fixpointOffsetValue : FLOAT
         property optional applicable for rawtype fixpointMsbValue : FLOAT
+        property optional applicable for struct fixedSizeInBytes : UINT
     }
     rawtype double FLOAT 64
     rawtype float64 FLOAT 64
