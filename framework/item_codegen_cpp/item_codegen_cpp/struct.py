@@ -117,13 +117,34 @@ def _get_ctor_body(i):
     for a in i.attributes:
         if a.is_embedded():
             if a.is_array():
-                res += f"for(size_t __idx=0;__idx<_p_{a.name}.size();__idx++) "\
-                       f"{{ {a.name}(__idx, _p_{a.name}[__idx]); }} "
+                res += (
+                    f"for(size_t __idx=0;__idx<_p_{a.name}.size();__idx++) "
+                    f"{{ {a.name}(__idx, _p_{a.name}[__idx]); }} "
+                )
             else:
                 res += f"{a.name}(_p_{a.name}); "
         elif not a.is_container():
             res += f"{a.name} = _p_{a.name}; "
     return res
+
+
+def meta_name_of_variant_mapping(m):
+    return f"__{m.parent.name}_{m.type.name}"
+
+
+def insert_normal_meta_info(f, pdefs, a):
+    for pname in pdefs:
+        if has_property(a, pname):
+            f.write("      static constexpr bool __has_{} = true;\n".format(pname))
+            f.write(
+                "      static constexpr {} {}() {{ return {};}}\n".format(
+                    get_cpp_return_type(get_property_type(a, pname)),
+                    pname,
+                    get_property_constexpr(a, pname),
+                )
+            )
+        else:
+            f.write("      static constexpr bool __has_{} = false;\n".format(pname))
 
 
 def generate_cpp_struct(f, i):
@@ -163,6 +184,26 @@ def generate_cpp_struct(f, i):
                 fqn(c.type), c.name, c.value.render_formula()
             )
         )
+
+    for a in i.attributes:
+        if a.is_variant():
+            for m in a.mappings:
+                pdefs = get_all_possible_properties(m)
+                pdefs = sorted(pdefs.keys())
+                f.write("    struct {} {{\n".format(meta_name_of_variant_mapping(m)))
+                f.write("      using STRUCT={};\n".format(i.name))
+                f.write("      static constexpr const char* __name() ")
+                f.write('{{ return "{}"; }}\n'.format(a.name))
+                f.write("      static constexpr bool __is_variant_entry = true;\n")
+                f.write("      static constexpr bool __is_scalar = true;\n")
+                f.write("      static constexpr bool __is_variant = false;\n")
+                f.write("      static constexpr bool __is_array = false;\n")
+                f.write("      static constexpr bool __is_enumtype = false;\n")
+                f.write("      static constexpr bool __is_rawtype = false;\n")
+                f.write("      static constexpr bool __is_struct = true;\n")
+                f.write("      static constexpr bool __is_container = false;\n")
+                insert_normal_meta_info(f, pdefs, m)
+                f.write("    }\n")
 
     for a in i.attributes:
         if a.is_embedded():
@@ -225,6 +266,7 @@ def generate_cpp_struct(f, i):
         f.write("      using STRUCT={};\n".format(i.name))
         f.write("      static constexpr const char* __name() ")
         f.write('{{ return "{}"; }}\n'.format(a.name))
+        f.write("      static constexpr bool __is_variant_entry = false;\n")
         if not textx.textx_isinstance(a, mm["VariantAttribute"]):
             f.write(f"      using __type = {fqn(a.type)};")
         f.write(f"      static constexpr bool __is_dynamic = {tf(is_dynamic(a))};\n")
@@ -358,21 +400,12 @@ def generate_cpp_struct(f, i):
         else:
             f.write("      static constexpr bool __is_fixpoint = false;\n")
 
-        for pname in pdefs:
-            if has_property(a, pname):
-                f.write("      static constexpr bool __has_{} = true;\n".format(pname))
-                f.write(
-                    "      static constexpr {} {}() {{ return {};}}\n".format(
-                        get_cpp_return_type(get_property_type(a, pname)),
-                        pname,
-                        get_property_constexpr(a, pname),
-                    )
-                )
-            else:
-                f.write("      static constexpr bool __has_{} = false;\n".format(pname))
+        insert_normal_meta_info(f, pdefs, a)
 
         if textx.textx_isinstance(a, mm["VariantAttribute"]):
-            f.write("      template<class S, class F> // S may also be const\n")
+            f.write(
+                "      template<class S, template<class> class F> // S may also be const\n"
+            )
             f.write(
                 "      static void __call_function_on_concrete_variant_type(S &s, F f) {\n"
             )
@@ -384,11 +417,15 @@ def generate_cpp_struct(f, i):
                 f.write("          case {}: ".format(m.id))
                 if textx.textx_isinstance(m.type, mm["RawType"]):
                     f.write(
-                        "f(std::get<{}>(s.{})); break;\n".format(fqn(m.type), a.name)
+                        "f<STRUCT::META::{}>(std::get<{}>(s.{})); break;\n".format(
+                            meta_name_of_variant_mapping(m), fqn(m.type), a.name
+                        )
                     )
                 else:
                     f.write(
-                        "f(std::get<{}>(s.{})); break;\n".format(fqn(m.type), a.name)
+                        "f<STRUCT::META::{}>(std::get<{}>(s.{})); break;\n".format(
+                            meta_name_of_variant_mapping(m), fqn(m.type), a.name
+                        )
                     )
             f.write('          default: throw std::runtime_error("(unexpected id)");\n')
             f.write("        }\n")

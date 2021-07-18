@@ -60,7 +60,7 @@ struct MultiMessage {
     embedded array onoff: OnOff[10]
     embedded scalar abc: ABC
     variant payload: header.id -> {
-        POINT: Point
+        POINT: Point (.fixedSizeInBytes=100)
         TypeSelector.POLY: Polygon
         big_example.TypeSelector.TRIANGLE: big_example.Triangle
    }
