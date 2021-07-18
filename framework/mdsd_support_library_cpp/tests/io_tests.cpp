@@ -74,6 +74,21 @@ TEST_CASE( "Simple.io2", "[io_tests]" ) {
 
 }
 
+TEST_CASE( "Simple.io2_with_big_example", "[io_tests]" ) {
+  big_example::MultiMessage v1;
+
+  v1.header.id = big_example::TypeSelector::TRIANGLE;
+  adjust_array_sizes_and_variants(v1);
+  std::array<std::byte, 10000> mem;
+  size_t n = mdsd::copy_to_mem(v1,mem.data(), mem.size());
+  REQUIRE( n > 500 );
+}
+
+TEST_CASE( "fixedSizeInBytes", "[io_tests]" ) {
+  mdsd::Struct<big_example::Triangle> t;
+  REQUIRE( t.count_bytes() > 3*100 );
+}
+
 TEST_CASE( "virtual_struct_io", "[io_tests]" ) {
   std::array<std::byte, 10000> mem;
   mdsd::Struct<Polygon> p;

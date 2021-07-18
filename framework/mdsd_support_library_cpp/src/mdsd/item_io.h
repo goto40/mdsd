@@ -42,12 +42,34 @@ struct CopyToMemVisitor {
   }
   template<class META, class T>
   void visit_item_scalar(const T& x) {
+      size_t pos0 = pos;
       accept(ConstVisitor{*this}, x);
+      if constexpr (META::__has_fixedSizeInBytes) {
+        if (pos-pos0 > META::fixedSizeInBytes()) {
+          throw std::runtime_error("unexpected struct size > fixedSizeInBytes.");
+        }
+        else if (pos-pos0 < META::fixedSizeInBytes()) {
+          size_t fill_space = META::fixedSizeInBytes() - (pos-pos0);
+          std::fill(dest+pos, dest+pos+fill_space, std::byte{0x0});
+          pos += fill_space;
+        }
+      }
   }
   template<class META, class T>
   void visit_item_array(const T& x) {
     for (size_t i=0;i<x.size();i++) {
+      size_t pos0 = pos;
       accept(ConstVisitor{*this}, x[i]);
+      if constexpr (META::__has_fixedSizeInBytes) {
+        if (pos-pos0 > META::fixedSizeInBytes()) {
+          throw std::runtime_error("unexpected struct size > fixedSizeInBytes.");
+        }
+        else if (pos-pos0 < META::fixedSizeInBytes()) {
+          size_t fill_space = META::fixedSizeInBytes() - (pos-pos0);
+          std::fill(dest+pos, dest+pos+fill_space, std::byte{0x0});
+          pos += fill_space;
+        }
+      }
     }
   }
 };
@@ -93,13 +115,31 @@ struct CopyFromMemVisitor {
   template<class META, class T>
   void visit_item_scalar(T& x) {
       //std::cout << "visit_item_scalar " << META::__name() << "\n";
+      size_t pos0 = pos;
       accept(InitVisitor{*this}, x);
+      if constexpr (META::__has_fixedSizeInBytes) {
+        if (pos-pos0 > META::fixedSizeInBytes()) {
+          throw std::runtime_error("unexpected struct size > fixedSizeInBytes.");
+        }
+        else if (pos-pos0 < META::fixedSizeInBytes()) {
+          pos += META::fixedSizeInBytes() - (pos-pos0);
+        }
+      }
   }
   template<class META, class T>
   void visit_item_array(T& x) {
     //std::cout << "visit_item_array " << META::__name() << "\n";
     for (size_t i=0;i<x.size();i++) {
+      size_t pos0 = pos;
       accept(InitVisitor{*this}, x[i]);
+      if constexpr (META::__has_fixedSizeInBytes) {
+        if (pos-pos0 > META::fixedSizeInBytes()) {
+          throw std::runtime_error("unexpected struct size > fixedSizeInBytes.");
+        }
+        else if (pos-pos0 < META::fixedSizeInBytes()) {
+          pos += META::fixedSizeInBytes() - (pos-pos0);
+        }
+      }
     }
   }
 };
@@ -128,12 +168,30 @@ struct ByteCountVisitor {
   }
   template<class META, class T>
   void visit_item_scalar(const T& x) {
+      size_t old_count=count;
       accept(ConstVisitor{*this}, x);
+      if constexpr (META::__has_fixedSizeInBytes) {
+        if (count-old_count > META::fixedSizeInBytes()) {
+          throw std::runtime_error("unexpected struct size > fixedSizeInBytes.");
+        }
+        else if (count-old_count < META::fixedSizeInBytes()) {
+          count += META::fixedSizeInBytes() - (count-old_count);
+        }
+      }
   }
   template<class META, class T>
   void visit_item_array(const T& x) {
     for (size_t i=0;i<x.size();i++) {
+      size_t old_count=count;
       accept(ConstVisitor{*this}, x[i]);
+      if constexpr (META::__has_fixedSizeInBytes) {
+        if (count-old_count > META::fixedSizeInBytes()) {
+          throw std::runtime_error("unexpected struct size > fixedSizeInBytes.");
+        }
+        else if (count-old_count < META::fixedSizeInBytes()) {
+          count += META::fixedSizeInBytes() - (count-old_count);
+        }
+      }
     }
   }
 };

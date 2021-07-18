@@ -49,7 +49,7 @@ struct Color {
 
 struct Triangle {
     constant three: built_in.uint32 = (MyOtherConstants.three+3)/2
-    array p: Point[Header.three]
+    array p: Point[Header.three] (.fixedSizeInBytes = 100)
     array c: Color[three]
 }
 
@@ -62,7 +62,7 @@ struct MultiMessage {
     variant payload: header.id -> {
         POINT: Point
         TypeSelector.POLY: Polygon
-        big_example.TypeSelector.TRIANGLE: big_example.Triangle
+        big_example.TypeSelector.TRIANGLE: big_example.Triangle (.fixedSizeInBytes = 500)
    }
 }
 
