@@ -10,6 +10,15 @@ inline namespace item {
 /** The basic modifying visitor */
 template<class V>
 struct InitVisitor {
+
+    struct F {
+        V &v;
+        template<class IMETA, class T>
+        void operator()(T& a) {
+            v.template visit_item_scalar<IMETA>(a);
+        }
+    };
+
     V& v;
     InitVisitor(V &&_v) :v(_v){}
     InitVisitor(V &_v) :v(_v){}
@@ -19,9 +28,8 @@ struct InitVisitor {
             if constexpr (META::__is_scalar) {
                 if constexpr (META::__is_variant) {
                     META::__init_variant_type_if_type_is_not_matching(s);
-                    META::__call_function_on_concrete_variant_type(s, [&v=v](auto &a){
-                        v.template visit_item_scalar<META>(a);
-                    });
+                    F f{v};
+                    META::__call_function_on_concrete_variant_type(s, f);
                 }
                 else if constexpr (!META::__is_struct) {
                     v.template visit_scalar<META>(x);
@@ -56,6 +64,14 @@ struct InitVisitor {
 /** The basic non-modifying visitor */
 template<class V>
 struct ConstVisitor {
+    struct F {
+        V &v;
+        template<class IMETA, class T>
+        void operator()(const T& a) {
+            v.template visit_item_scalar<IMETA>(a);
+        }
+    };
+
     V& v;
     ConstVisitor(V &&_v) :v(_v){}
     ConstVisitor(V &_v) :v(_v){}
@@ -64,9 +80,8 @@ struct ConstVisitor {
             decltype(META::__get_ref(s)) x = META::__get_ref(s);
             if constexpr (META::__is_scalar) {
                 if constexpr (META::__is_variant) {
-                    META::__call_function_on_concrete_variant_type(s, [&v=v](const auto &a){
-                        v.template visit_item_scalar<META>(a);
-                    });
+                    F f{v};
+                    META::__call_function_on_concrete_variant_type(s, f);
                 }
                 else if constexpr (!META::__is_struct) {
                     v.template visit_scalar<META>(x);

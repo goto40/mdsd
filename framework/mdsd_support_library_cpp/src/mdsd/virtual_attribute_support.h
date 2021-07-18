@@ -34,6 +34,16 @@ std::vector<std::unique_ptr<AttributeBase>> get_all_attributes(STRUCT &s);
 /** TODO: getStruct() getStruct(Idx) ... ??? */
 template<class META>
 struct AttributeWrapper : AttributeBase {
+  template<class C>
+  struct F {
+      C c;
+      F(C c) : c(c) {}
+      template<class IMETA, class T>
+      void operator()(T& a) {
+          c(a);
+      }
+  };
+
   typename META::STRUCT& s;
   AttributeWrapper(typename META::STRUCT &__s) : s(__s) {}
   AttributeWrapper(const AttributeWrapper&) = default;
@@ -54,9 +64,9 @@ struct AttributeWrapper : AttributeBase {
   std::unique_ptr<AttributeBase> get_attribute_in_struct([[maybe_unused]] std::string_view name) override { 
     if constexpr (META::__is_variant) {
       std::unique_ptr<AttributeBase> ret; 
-      META::__call_function_on_concrete_variant_type(s,[&name, &ret](auto &x){
+      META::__call_function_on_concrete_variant_type(s,F{[&name, &ret](auto &x){
         ret = get_attribute(x, name);
-      });
+      }});
       return ret;
     }
     else if constexpr (!META::__is_array && META::__is_struct) {
@@ -75,9 +85,9 @@ struct AttributeWrapper : AttributeBase {
   std::vector<std::unique_ptr<AttributeBase>> get_all_attributes_in_struct() override { 
     if constexpr (META::__is_variant) {
       std::vector<std::unique_ptr<AttributeBase>> ret; 
-      META::__call_function_on_concrete_variant_type(s,[&ret](auto &x){
+      META::__call_function_on_concrete_variant_type(s,F{[&ret](auto &x){
         ret = get_all_attributes(x);
-      });
+      }});
       return ret;
     }
     else if constexpr (!META::__is_array && META::__is_struct) {
