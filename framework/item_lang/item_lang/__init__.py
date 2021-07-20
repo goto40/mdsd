@@ -26,7 +26,8 @@ def lang():
         property optional description : STRING
         property optional applicable for scalar, struct is_payload : BOOL
         property optional applicable for scalar, rawtype, enum is_message_id_field : BOOL { 0 to 1 times per message }
-        property optional applicable for scalar, rawtype, enum is_message_length_field : BOOL { 0 to 1 times per message }
+        property optional applicable for scalar, rawtype, enum is_message_length_field :
+                                                                                     BOOL { 0 to 1 times per message }
         property optional applicable for rawtype fixpointLsbValue : FLOAT
         property optional applicable for rawtype fixpointOffsetValue : FLOAT
         property optional applicable for rawtype fixpointMsbValue : FLOAT

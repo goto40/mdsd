@@ -204,7 +204,7 @@ def check_Property(p):
                 len(prop_value) == 1, p, "only exactly one char is allowed as default"
             )
 
-    #if p.definition.name == "fixedSizeInBytes":
+    # if p.definition.name == "fixedSizeInBytes":
     #    struct_type = p.parent.type
     #    assert textx_isinstance(struct_type, mm['Struct'])
     #    value = get_property(p.parent, "fixedSizeInBytes")
